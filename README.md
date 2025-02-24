@@ -1,3 +1,3 @@
-Buld Ease App
-Capstone Project
+Buld Ease App  
+Capstone Project  
 Run - npm run dev
