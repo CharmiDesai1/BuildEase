@@ -3,7 +3,7 @@
   display: flex;
   padding-top: 0px;
   flex-direction: column;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
   align-items: stretch;
   white-space: nowrap;
@@ -54,7 +54,7 @@
   width: 100%;
   max-width: 1796px;
   align-items: center; /* Ensures all elements align horizontally */
-  justify-content: space-between; /* Adjust spacing */
+  justify-content: space-around; 
   padding: 10px 20px;
   gap: 40px 62px;
   font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
@@ -123,8 +123,10 @@
 .rightIcons {
   display: flex;
   align-items: center;
-  gap: 20px; /* Spacing between icons */
+  gap: 10px;
+  margin-right: 20px;
 }
+
 
 .img {
   aspect-ratio: 1.00;
@@ -143,7 +145,7 @@
   width: 80px;
   height: 75px;
   gap: 10px;
-  margin-right: 0px;
+  margin-right: 10px;
 }
 
 .iconWrapper2 {
@@ -154,7 +156,7 @@
   height: 75px;
   gap: 10px;
   margin-top: 33px;
-  margin-right: 25px;
+  margin-right: 10px;
 }
 
 .img2 {
@@ -283,12 +285,13 @@
 }
 
 .imageColumn {
-  flex: 0 0 40%;
+  flex: 0 0 30%; /* Reduce width from 40% to 30% */
 }
 
 .projectImage {
   width: 100%;
   height: auto;
+  max-height: 250px; /* Adjust the maximum height */
   object-fit: contain;
 }
 

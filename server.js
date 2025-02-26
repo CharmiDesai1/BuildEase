@@ -120,6 +120,15 @@ app.post('/signup', async (req, res) => {
     }
   });
   
-
+  app.get("/api/projects", async (req, res) => {
+    try {
+      let pool = await sql.connect(config);
+      let result = await pool.request().query("SELECT * FROM Projects");
+      res.json(result.recordset);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
 
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));
