@@ -6,6 +6,7 @@ const dbOperation = require('./dbFiles/dbOperation');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
+const sql = require("mssql"); // Ensure mssql is imported
 
 const API_PORT = process.env.PORT || 5000;
 const app = express();
@@ -99,6 +100,38 @@ app.get("/api/projects", async (req, res) => {
   } catch (error) {
     console.error("Error fetching projects:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Route to download/view the PDF
+app.get("/download/:id", async (req, res) => {
+  try {
+    const pool = await sql.connect(require("./dbFiles/dbConfig")); // Use the existing dbConfig
+    const { id } = req.params;
+
+    const result = await pool
+      .request()
+      .input("id", sql.Int, id)
+      .query("SELECT file_name, file_data FROM PdfDocuments WHERE id = @id");
+
+    if (result.recordset.length === 0) {
+      console.log(`❌ No PDF found for ID: ${id}`);
+      return res.status(404).send("File not found");
+    }
+
+    const { file_name, file_data } = result.recordset[0];
+
+    if (!file_data) {
+      console.log(`❌ PDF data is NULL for ID: ${id}`);
+      return res.status(404).send("PDF data is missing");
+    }
+
+    res.setHeader("Content-Disposition", `inline; filename=${file_name}`);
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(file_data);
+  } catch (error) {
+    console.error("❌ Error fetching PDF:", error);
+    res.status(500).send("Internal Server Error: " + error.message);
   }
 });
 

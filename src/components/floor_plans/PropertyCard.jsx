@@ -13,6 +13,11 @@ export function ProjectCard({
   downloadIconSrc,
   hasViewAnnotated
 }) {
+  const handleDownload = () => {
+    const pdfId = 1; // Directly setting pdfId to 1
+    window.open(`http://localhost:5000/download/${pdfId}`, "_blank");
+  };
+
   return (
     <article className={styles.projectCard}>
       <div className={styles.projectContent}>
@@ -51,7 +56,8 @@ export function ProjectCard({
               </span>
             </button>
           )}
-          <button className={styles.downloadButton}>
+          {/* Ensure the download button always uses ID = 1 */}
+          <button className={styles.downloadButton} onClick={handleDownload}>
             DOWNLOAD
             <span className={styles.downloadIconContainer}>
               <img src={downloadIconSrc} alt="Download Icon" className={styles.downloadIcon} />
