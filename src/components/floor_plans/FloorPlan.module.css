@@ -1,0 +1,620 @@
+.floorPlan {
+  background-color: rgba(255, 255, 255, 1);
+  display: flex;
+  padding-top: 0px;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  align-items: stretch;
+  white-space: nowrap;
+}
+
+
+.header {
+  width: 100%;
+  padding: 0; /* Remove extra padding   */
+  margin: 0; /* Remove extra margin */
+  display: flex;
+  justify-content: space-between; /* Pushes content to the edges */
+  align-items: center;
+  padding: 10px 20px;
+  background-color: white; /* Match background */
+}
+
+.logoIcon {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  margin: 0 auto; /* Center the image */
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.profileIcon {
+  display: block;
+  width: 80px; /* Increase size */
+  height: auto;
+  margin: 0 auto; /* Center the image */
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.buildEase {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center text and image */
+  font-size: 24px;
+  font-weight: bold;
+  color: rgba(85, 155, 198, 1);
+}
+
+.nav {
+  display: flex;
+  margin-left: 25px;
+  width: 100%;
+  max-width: 1796px;
+  align-items: center; /* Ensures all elements align horizontally */
+  justify-content: space-around; 
+  padding: 10px 20px;
+  gap: 40px 62px;
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 22px;
+  color: rgba(85, 155, 198, 1);
+  font-weight: 700;
+  letter-spacing: 0.11px;
+  line-height: 1;
+  margin-bottom: 0;
+  justify-content: space-evenly;
+}
+
+.navLinks {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.navLinks li {
+  margin: 0 10px;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #4a4a4a;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 20px;
+}
+
+.home {
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
+  padding: 28px 23px;
+  text-decoration: none;
+}
+
+.manageSites {
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
+  padding: 28px 19px;
+  text-decoration: none;
+}
+
+.suggestions {
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
+  padding: 28px 67px;
+  color: rgba(255, 255, 255, 1);
+  text-decoration: none;
+}
+
+.floorPlans {
+  border-radius: 15px;
+  background-color: rgba(85, 155, 198, 1);
+  box-shadow: -10px -10px 20px rgba(255, 255, 255, 1);
+  padding: 28px 31px;
+  text-decoration: none;
+}
+
+.rightIcons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 20px;
+}
+
+
+.img {
+  aspect-ratio: 1.00;
+  object-fit: contain;
+  object-position: center;
+  gap: 10px;
+  width: 58px;
+  margin-top: 0px;
+  cursor: pointer;
+}
+
+.iconWrapper {
+  border-radius: 43px;
+  background-color: rgba(249, 249, 249, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.08);
+  width: 80px;
+  height: 75px;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+.iconWrapper2 {
+  border-radius: 43px;
+  background-color: rgba(249, 249, 249, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.08);
+  width: 60px;
+  height: 50px;
+  gap: 10px;
+  margin-top: 20px;
+  margin-right: 10px;
+}
+
+.img2 {
+  width: 100vw; /* Full width of the viewport */
+  height: auto; /* Maintain aspect ratio */
+  max-height: 300px; /* Reduce height without cropping */
+  object-fit: contain; /* Ensures the full image is visible */
+  object-position: center;
+  display: block; /* Avoids unwanted spacing */
+}
+
+.searchSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center; /* Ensure vertical alignment */
+  background: white; /* Full white background */
+  border-radius: 30px;
+  padding: 10px 20px;
+  width: 100%;
+  max-width: 700px;
+}
+
+.searchOngoingProject {
+  border-radius: 20px;  /* Reduced from 43px */
+  background-color: rgba(249, 249, 249, 1);
+  margin-top: 20px; /* Reduced margin */
+  width: 800px; /* Adjusted width */
+  max-width: 100%; /* Responsive */
+  padding: 10px 20px; /* Reduced padding */
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px; /* Reduced font size */
+  color: rgba(176, 176, 176, 1);
+  font-weight: 500;
+  line-height: 1;
+  border: none;
+}
+
+
+.ongoingProjects {
+  color: rgba(85, 155, 198, 1);
+  font-size: 48px;
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.24px;
+  margin-top: 39px;
+  margin-bottom: 0px;
+}
+
+.searchIcon {
+  display: block;
+  width: 50px; /* Increase size */
+  height: auto;
+  margin: 0 auto; /* Center the image */
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+
+.projectsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 40px; /* Reduce excessive gap */
+  padding: 0 20px; /* Reduce horizontal padding */
+  align-items: center; /* Center everything */
+}
+
+.projectCard {
+  border-radius: 20px; /* Keep rounded corners */
+  background-color: #f3f3f3;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 20px 30px; /* Reduce excessive padding */
+  max-width: 100%; /* Prevent overflow */
+  width: 90%; /* Adjust width to fit inside container */
+  margin: 0 auto 50px auto;
+  overflow: hidden;
+}
+
+.projectContent {
+  display: flex;
+  gap: 20px;
+}
+
+.projectInfo {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+}
+
+.imageColumn {
+  flex: 0 0 30%; /* Reduce width from 40% to 30% */
+}
+
+.projectImage {
+  width: 100%;
+  height: auto;
+  max-height: 250px; /* Adjust the maximum height */
+  object-fit: contain;
+}
+
+.detailsColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.projectTitle {
+  color: rgb(85, 155, 198);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: 0.18px;
+}
+
+.projectDetails {
+  display: flex;
+  gap: 20px;
+  color: rgb(85, 155, 198);
+  font-size: 22px;
+  letter-spacing: 0.11px;
+}
+
+.propertyType {
+  font-weight: 400;
+}
+
+.propertySpecs {
+  font-weight: 700;
+}
+
+.actionsColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  color: #fff;
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.suggestionCount,
+.commentCount {
+  background-color: rgb(85, 155, 198);
+  border: 5px solid #eaeff7;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.suggestionsButton,
+.commentsButton {
+  border-radius: 43px;
+  background-color: rgb(85, 155, 198);
+  box-shadow: -10px -10px 20px #fff;
+  padding: 29px 70px;
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 20px;
+  color: #fff;
+  letter-spacing: 0.1px;
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.scrollToTop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 25px;
+  background-color: rgb(85, 155, 198);
+  padding: 10px 20px;
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 64px;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  z-index: 100;
+}
+
+@media (max-width: 991px) {
+  .SuggestionPage {
+    padding-top: 100px;
+  }
+
+  .header {
+    padding: 0 20px;
+  }
+
+  .headerContent {
+    max-width: 100%;
+  }
+
+  .buildEase {
+    margin-top: 40px;
+  }
+
+  .home,
+  .suggestions {
+    padding: 28px 20px;
+    white-space: initial;
+  }
+
+  .breadcrumb {
+    margin-left: 10px;
+    margin-top: 40px;
+  }
+
+  .searchSection {
+    padding: 0 20px;
+  }
+
+  .searchInput {
+    padding: 31px 20px;
+  }
+
+  .projectsSection {
+    padding: 0 20px;
+    margin-top: 40px;
+  }
+
+  .projectCard {
+    padding: 20px;
+  }
+
+  .projectContent {
+    flex-direction: column;
+  }
+
+  .projectInfo {
+    flex-direction: column;
+  }
+
+  .imageColumn {
+    flex: 1;
+  }
+
+  .actionsColumn {
+    align-items: stretch;
+  }
+
+  .scrollToTop {
+    font-size: 20px;
+  }
+}
+
+.SuggestionPage {
+  font-size: 14px;
+}
+
+.buildEase {
+  font-size: 18px;
+}
+
+.nav {
+  font-size: 16px;
+  gap: 20px;
+  padding: 5px 10px;
+}
+
+.navLinks {
+  gap: 10px;
+}
+
+.home,
+.manageSites,
+.suggestions,
+.floorPlans {
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+.suggestions {
+  padding: 12px 40px;
+}
+
+.searchOngoingProject,
+.searchInput {
+  font-size: 16px;
+  padding: 8px 16px;
+}
+
+.ongoingProjects {
+  font-size: 32px;
+}
+
+.menuIcon {
+  font-size: 24px;
+}
+
+.sortBy {
+  font-size: 18px;
+}
+
+.projectTitle {
+  font-size: 24px;
+}
+
+.projectDetails {
+  font-size: 16px;
+}
+
+.actionsColumn {
+  font-size: 20px;
+}
+
+.suggestionCount,
+.commentCount {
+  width: 40px;
+  height: 40px;
+}
+
+.suggestionsButton,
+.commentsButton {
+  padding: 12px 30px;
+  font-size: 14px;
+}
+
+.scrollToTop {
+  font-size: 24px;
+  padding: 6px 12px;
+}
+
+@media (max-width: 991px) {
+  .FloorPlan {
+    font-size: 12px;
+  }
+
+  .nav {
+    font-size: 14px;
+    gap: 10px;
+    padding: 5px;
+  }
+
+  .home,
+  .suggestions {
+    padding: 10px 12px;
+  }
+
+  .searchInput {
+    padding: 8px 12px;
+  }
+
+  .projectsSection {
+    padding: 0 10px;
+    margin-top: 20px;
+  }
+}
+
+/* Buttons Container */
+.actionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Fix Button Styling */
+.viewAnnotatedButton,
+.downloadButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #559bc6;
+  border-radius: 30px;
+  width: 280px;
+  padding: 12px 20px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  box-shadow: -3px -3px 6px rgba(255, 255, 255, 1), 3px 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.viewAnnotatedButton:hover,
+.downloadButton:hover {
+  background-color: #3e7ea8;
+}
+
+/* Button Icons */
+.viewIconContainer,
+.downloadIconContainer {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.viewIcon,
+.downloadIcon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+/* Fix the Floating Number Issue */
+.ratingBadge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #559bc6;
+  color: #fff;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+
+  .viewAnnotatedButton,
+  .downloadButton {
+    width: 100%;
+  }
+
+  .scrollToTop {
+    font-size: 12px;
+  }
+}
+
+.scrollToTop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 15px; /* Reduced from 25px */
+  background-color: rgb(85, 155, 198);
+  padding: 8px 16px; /* Reduced padding */
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px; /* Reduced from 64px */
+  color: #fff;
+  font-weight: 600; /* Slightly reduced font weight */
+  border: none;
+  cursor: pointer;
+  z-index: 100;
+}
+

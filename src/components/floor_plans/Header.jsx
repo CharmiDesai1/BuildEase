@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./DevelopersLandingPage.module.css";
+import styles from "./FloorPlan.module.css";
 import icon from "./image 28.png";
 import icon2 from "./profile.png";
 import { Link } from "react-router-dom";
@@ -15,10 +15,10 @@ export function Header() {
 
         {/* Centered navigation links */}
         <ul className={styles.navLinks}>
-          <li><a href="#" className={styles.home}>Home</a></li>
+          <li><Link to="/developers-landing-page" className={styles.Home}>Home</Link></li>
           <li><a href="#" className={styles.manageSites}>Manage sites</a></li>
           <li><Link to="/suggestion-page" className={styles.suggestions}>Suggestions</Link></li>
-          <li><Link to="/floor-plan-page" className={styles.floorPlans}>Floor Plans</Link></li>
+          <li><a href="#" className={styles.floorPlans}>Floor plans</a></li>
         </ul>
 
         {/* Right-aligned notification & profile icons */}

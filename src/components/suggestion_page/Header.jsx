@@ -18,7 +18,7 @@ export function Header() {
         <li><Link to="/developers-landing-page" className={styles.home}>Home</Link></li>
           <li><a href="#" className={styles.manageSites}>Manage sites</a></li>
           <li><a href="#" className={styles.suggestions}>Suggestions</a></li>
-          <li><a href="#" className={styles.floorPlans}>Floor plans</a></li>
+          <li><Link to="/floor-plan-page" className={styles.floorPlans}>Floor Plans</Link></li>
         </ul>
 
         {/* Right-aligned notification & profile icons */}
