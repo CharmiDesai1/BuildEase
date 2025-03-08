@@ -6,7 +6,8 @@ const dbOperation = require('./dbFiles/dbOperation');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
-const sql = require("mssql"); // Ensure mssql is imported
+const sql = require("mssql");
+const dbConfig = require("./dbFiles/dbConfig");
 
 const API_PORT = process.env.PORT || 5000;
 const app = express();
@@ -103,12 +104,29 @@ app.get("/api/projects", async (req, res) => {
   }
 });
 
-// Route to download/view the PDF
+app.get("/projects", async (req, res) => {
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .query("SELECT id, project_name, apartment_type, carpet_area, development_stage, rating, image_url FROM PdfDocuments");
+
+    res.json(result.recordset);
+  } catch (error) {
+    console.error("❌ Error fetching projects:", error);
+    res.status(500).send("Internal Server Error: " + error.message);
+  }
+});
+
 app.get("/download/:id", async (req, res) => {
   try {
-    const pool = await sql.connect(require("./dbFiles/dbConfig")); // Use the existing dbConfig
     const { id } = req.params;
+    if (!id || isNaN(id)) {
+      console.log("❌ Invalid or missing ID.");
+      return res.status(400).send("Bad Request: Invalid PDF ID.");
+    }
 
+    const pool = await sql.connect(dbConfig);
     const result = await pool
       .request()
       .input("id", sql.Int, id)
@@ -116,21 +134,24 @@ app.get("/download/:id", async (req, res) => {
 
     if (result.recordset.length === 0) {
       console.log(`❌ No PDF found for ID: ${id}`);
-      return res.status(404).send("File not found");
+      return res.status(404).send("File not found.");
     }
 
     const { file_name, file_data } = result.recordset[0];
 
-    if (!file_data) {
-      console.log(`❌ PDF data is NULL for ID: ${id}`);
-      return res.status(404).send("PDF data is missing");
+    if (!file_data || !(file_data instanceof Buffer)) {
+      console.log(`❌ Invalid PDF data for ID: ${id}`);
+      return res.status(404).send("PDF data is missing or corrupted.");
     }
 
-    res.setHeader("Content-Disposition", `inline; filename=${file_name}`);
+    res.setHeader("Content-Disposition", `inline; filename="${file_name}"`);
     res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Length", file_data.length);
+
+    console.log(`✅ Sending PDF: ${file_name} (ID: ${id})`);
     res.send(file_data);
   } catch (error) {
-    console.error("❌ Error fetching PDF:", error);
+    console.error(`❌ Error fetching PDF (ID: ${req.params.id}):`, error);
     res.status(500).send("Internal Server Error: " + error.message);
   }
 });

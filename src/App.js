@@ -5,7 +5,7 @@ import { Signup } from "./Signup";
 import DevelopersLandingPage from "./components/developers_landing/DevelopersLandingPage";
 import SuggestionPage from "./components/suggestion_page/SuggestionPage";
 import FloorPlanPage from "./components/floor_plans/FloorPlan";
-
+import HomeUserPage from "./components/home_user/Home";
 function App() {
   const [returnedData, setReturnedData] = useState(['hello']);
 
@@ -31,6 +31,7 @@ function App() {
         <Route path="/developers-landing-page" element={<DevelopersLandingPage />} />
         <Route path="/suggestion-page" element={<SuggestionPage />} />
         <Route path="/floor-plan-page" element={<FloorPlanPage />} />
+        <Route path="/home-user-page" element={<HomeUserPage />} />
       </Routes>
       </div>
     </Router>

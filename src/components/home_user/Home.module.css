@@ -1,4 +1,4 @@
-.floorPlan {
+.Home {
   background-color: rgba(255, 255, 255, 1);
   display: flex;
   padding-top: 0px;
@@ -90,8 +90,8 @@
 
 .home {
   border-radius: 15px;
-  background-color: rgba(255, 255, 255, 1);
-  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
+  background-color: rgba(85, 155, 198, 1);
+  box-shadow: -10px -10px 20px rgba(255, 255, 255, 1);
   padding: 28px 23px;
   text-decoration: none;
 }
@@ -105,10 +105,10 @@
   text-decoration: none;
 }
 
-.floorPlans {
+.FloorPlan {
   border-radius: 15px;
-  background-color: rgba(85, 155, 198, 1);
-  box-shadow: -10px -10px 20px rgba(255, 255, 255, 1);
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
   padding: 28px 31px;
   text-decoration: none;
 }
@@ -342,6 +342,49 @@
   z-index: 100;
 }
 
+/* Styles for the metadata section */
+.projectMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding: 10px 0;
+  width: 100%;
+  max-width: 500px; /* Adjust width as per layout */
+}
+
+/* Styles for individual meta items */
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #559bc6;
+  gap: 5px;
+}
+
+/* Icon styles */
+.metaIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Styling for the possession date text */
+.metaItem strong {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Subtext for possession date */
+.metaSubText {
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+}
+
 @media (max-width: 991px) {
   .SuggestionPage {
     padding-top: 100px;
@@ -428,7 +471,7 @@
 
 .home,
 .suggestions,
-.floorPlans {
+.FloorPlan {
   padding: 12px 16px;
   font-size: 14px;
 }
@@ -485,7 +528,7 @@
 }
 
 @media (max-width: 991px) {
-  .FloorPlan {
+  .Home {
     font-size: 12px;
   }
 

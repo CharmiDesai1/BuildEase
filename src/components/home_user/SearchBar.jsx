@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./FloorPlan.module.css";
+import styles from "./Home.module.css";
 import icon3 from "./search.png";
 
 export function SearchBar({ projects, setFilteredProjects }) {
@@ -38,7 +38,7 @@ export function SearchBar({ projects, setFilteredProjects }) {
           ))}
         </select>
       </div>
-      <h2 className={styles.ongoingProjects}>Floor Plans</h2>
+      <h2 className={styles.ongoingProjects}>YOUR PROPERTY</h2>
     </section>
   );
 }

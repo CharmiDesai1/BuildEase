@@ -98,14 +98,6 @@
   text-decoration: none;
 }
 
-.manageSites {
-  border-radius: 15px;
-  background-color: rgba(255, 255, 255, 1);
-  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
-  padding: 28px 19px;
-  text-decoration: none;
-}
-
 .suggestions {
   border-radius: 15px;
   background-color: rgba(255, 255, 255, 1);
@@ -471,7 +463,6 @@
   }
 
   .home,
-  .manageSites,
   .suggestions,
   .floorPlans {
     padding: 28px 20px;
@@ -583,7 +574,6 @@
 }
 
 .home,
-.manageSites,
 .suggestions,
 .floorPlans {
   padding: 12px 16px;

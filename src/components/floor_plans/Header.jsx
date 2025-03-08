@@ -15,8 +15,7 @@ export function Header() {
 
         {/* Centered navigation links */}
         <ul className={styles.navLinks}>
-          <li><Link to="/developers-landing-page" className={styles.Home}>Home</Link></li>
-          <li><a href="#" className={styles.manageSites}>Manage sites</a></li>
+          <li><Link to="/developers-landing-page" className={styles.home}>Home</Link></li>
           <li><Link to="/suggestion-page" className={styles.suggestions}>Suggestions</Link></li>
           <li><a href="#" className={styles.floorPlans}>Floor plans</a></li>
         </ul>

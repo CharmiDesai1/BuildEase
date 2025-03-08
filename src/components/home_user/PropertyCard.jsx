@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import styles from "./FloorPlan.module.css";
+import styles from "./Home.module.css";
 import viewIcon from "./view.png";
 import downloadIcon from "./download.png";
+import suggestionIcon from "./suggestion.png"; // Added icon for suggestion
+import progressIcon from "./progress.png"; // Added icon for progress
+import calendarIcon from "./calendar.png";
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
@@ -44,6 +47,7 @@ export const ProjectCard = ({
   area,
   status,
   imageSrc,
+  possessionDate = "May-2025",
   hasViewAnnotated
 }) => {
   const handleDownload = () => {
@@ -79,17 +83,35 @@ export const ProjectCard = ({
             </div>
           </div>
         </div>
+
+        <div className={styles.projectMeta}>
+              <div className={styles.metaItem}>
+                <img src={calendarIcon} alt="Calendar Icon" className={styles.metaIcon} />
+                <span>Possession date <br /><strong>{possessionDate}</strong></span>
+              </div>
+              
+              <div className={styles.metaItem}>
+                <img src={suggestionIcon} alt="Suggestion Icon" className={styles.metaIcon} />
+                <span>View suggestion</span>
+              </div>
+
+              <div className={styles.metaItem}>
+                <img src={progressIcon} alt="Progress Icon" className={styles.metaIcon} />
+                <span>View current progress</span>
+              </div>
+            </div>
+
         <div className={styles.actionsColumn}>
           {hasViewAnnotated && (
             <button className={styles.viewAnnotatedButton}>
-              VIEW ANNOTATED PLANS
+              VIEW FLOOR PLAN
               <span className={styles.viewIconContainer}>
                 <img src={viewIcon} alt="View Icon" className={styles.viewIcon} />
               </span>
             </button>
           )}
           <button className={styles.downloadButton} onClick={handleDownload}>
-            DOWNLOAD
+          DOWNLOAD BROCHURE
             <span className={styles.downloadIconContainer}>
               <img src={downloadIcon} alt="Download Icon" className={styles.downloadIcon} />
             </span>

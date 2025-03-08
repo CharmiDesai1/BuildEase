@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./DevelopersLandingPage.module.css";
+import styles from "./Home.module.css";
 import icon from "./image 28.png";
 import icon2 from "./profile.png";
 import { Link } from "react-router-dom";
@@ -12,9 +12,9 @@ export function Header() {
           <img src={icon} alt="icon" className={styles.logoIcon} /> Build-ease
         </h1>
         <ul className={styles.navLinks}>
-          <li><a href="#" className={styles.home}>Home</a></li>
+          <li><Link to="/home-user-page" className={styles.home}>Home</Link></li>
           <li><Link to="/suggestion-page" className={styles.suggestions}>Suggestions</Link></li>
-          <li><Link to="/floor-plan-page" className={styles.floorPlans}>Floor Plans</Link></li>
+          <li><a href="#" className={styles.FloorPlan}>Floor plans</a></li>
         </ul>
 
         <div className={styles.rightIcons}>
