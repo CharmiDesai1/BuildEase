@@ -21,7 +21,7 @@ export const SignupStartPage = () => {
             <Link to="/signup" className="signupLink">SignUp as Developer</Link></button>
             <div className="divider">OR</div>
             <button type="submit" className="loginButton"> 
-            <Link to="/signup" className="signupLink">SignUp as Customer</Link></button>
+            <Link to="/signup-user" className="signupLink">SignUp as Customer</Link></button>
             <p className="signupPrompt">
               Already an account yet? <Link to="/" className="signupLink">Login</Link>
             </p>
