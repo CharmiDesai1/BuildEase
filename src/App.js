@@ -1,11 +1,14 @@
 import React, {useState} from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { LoginPage } from "./LoginPage";
-import { Signup } from "./Signup";
+import { LoginPage } from "./components/Login/LoginPage";
+import { Signup } from "./components/Signup/Signup";
 import DevelopersLandingPage from "./components/developers_landing/DevelopersLandingPage";
 import SuggestionPage from "./components/suggestion_page/SuggestionPage";
 import FloorPlanPage from "./components/floor_plans/FloorPlan";
 import HomeUserPage from "./components/home_user/Home";
+import { LoginStartPage } from './components/Login/LoginStartPage';
+import { SignupStartPage } from './components/Signup/SignupStartPage';
+
 function App() {
   const [returnedData, setReturnedData] = useState(['hello']);
 
@@ -26,7 +29,9 @@ function App() {
     <Router>
     <div className = "App">
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/" element={<LoginStartPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup-start" element={<SignupStartPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/developers-landing-page" element={<DevelopersLandingPage />} />
         <Route path="/suggestion-page" element={<SuggestionPage />} />

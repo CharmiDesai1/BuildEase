@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles.css";
+import "./styles.css";
 
 export const Input = ({ label, type = "text", placeholder, id, name, value, onChange, required }) => {
   return (
