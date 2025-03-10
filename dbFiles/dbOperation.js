@@ -137,27 +137,35 @@ const googleLoginUser = async (displayName, email) => {
 };
 
 const loginUser = async (email, password) => {
+    console.log("📡 loginUser function called with:", email);
+
     try {
-        await poolConnect;
-        const result = await pool.request()
-            .input('email', sql.VarChar(100), email)
-            .query('SELECT * FROM Users WHERE email = @email');
+        await poolConnect; // ✅ Ensure the connection is established
+        const result = await pool
+            .request()
+            .input("email", sql.VarChar(100), email)
+            .query("SELECT * FROM Users WHERE email = @email");
 
-        if (result.recordset.length === 0) {
-            return { success: false, message: "Invalid user" };
+        console.log("✅ Query executed. Result:", result.recordset);
+
+        if (!result.recordset.length) {
+            console.log("❌ No user found for:", email);
+            return { success: false, message: "Invalid email or password" };
         }
 
-        const developer = result.recordset[0];
-        const isPasswordValid = await bcrypt.compare(password, developer.password_hash);
+        const user = result.recordset[0];
+        console.log("✅ Found user:", user);
 
-        if (!isPasswordValid) {
-            return { success: false, message: "Invalid password" };
+        if (!user.user_id) {
+            console.error("❌ user_id is missing in database!");
+            return { success: false, message: "User ID missing in database record" };
         }
 
-        return { success: true, developer };
+        return { success: true, user };
+
     } catch (error) {
-        console.error('Login Error:', error);
-        throw error;
+        console.error("❌ Database error:", error);
+        return { success: false, message: "Database error", error };
     }
 };
 
@@ -184,7 +192,6 @@ async function fetchProjects() {
     if (!id || isNaN(id)) {
       throw new Error("Invalid PDF ID.");
     }
-  
     const pool = await sql.connect(dbConfig);
     const result = await pool
       .request()
@@ -194,7 +201,6 @@ async function fetchProjects() {
     if (result.recordset.length === 0) {
       throw new Error("PDF not found.");
     }
-  
     return result.recordset[0];
   }
 
@@ -213,7 +219,6 @@ async function fetchProjects() {
         FROM UserPropertyDocuments 
         WHERE user_id = @userId
       `);
-  
     return result.recordset;
   }
   
@@ -228,11 +233,9 @@ async function fetchProjects() {
         FROM UserPropertyDocuments 
         WHERE user_id = @userId AND id = @propertyId
       `);
-  
     if (result.recordset.length === 0) {
       throw new Error("File not found.");
     }
-  
     return result.recordset[0];
   }
   

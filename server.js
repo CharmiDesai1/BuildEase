@@ -105,9 +105,9 @@ app.post('/signup-user', async (req, res) => {
 
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  
+  console.log("Login route hit with email:", email);
   try {
-    const result = await dbOperation.loginDeveloper(email, password);
+    const result = await dbOperation.loginDeveloper(email, password)
     
     if (!result.success) {
       return res.status(401).send({ message: result.message });
@@ -119,6 +119,34 @@ app.post('/login', async (req, res) => {
     res.status(500).send({ message: 'Login failed', error });
   }
 });
+
+app.post('/login-user', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+      console.log("📡 Login API called with:", email);
+      const result = await dbOperation.loginUser(email, password);
+
+      if (!result.success) {
+          console.error("❌ Login failed:", result.message);
+          return res.status(401).json({ message: result.message });
+      }
+
+      console.log("✅ User Login Successful:", result.user);
+
+      if (!result.user || !result.user.user_id) {
+          console.error("❌ user_id is missing in backend response!");
+          return res.status(500).json({ message: "User ID missing in response" });
+      }
+
+      return res.status(200).json({ message: "Login successful", user: result.user });
+
+  } catch (error) {
+      console.error("❌ Login Error (Full Error Log):", error);
+      return res.status(500).json({ message: "Login failed", error: error.message });
+  }
+});
+
 
 app.get("/api/projects", async (req, res) => {
   try {
@@ -180,43 +208,44 @@ app.get("/user-properties/:userId", async (req, res) => {
 });  
 
 app.get("/download-property/:userId/:propertyId/:fileType", async (req, res) => {
-try {
   const { userId, propertyId, fileType } = req.params;
+  console.log(`📡 Open request received for user: ${userId}, property: ${propertyId}, fileType: ${fileType}`);
 
-  if (!["brochure", "floorplan"].includes(fileType)) {
-    return res.status(400).json({ message: "Invalid file type requested." });
+  try {
+      const pool = await sql.connect(dbConfig);
+      const result = await pool
+          .request()
+          .input("userId", sql.Int, userId)
+          .input("propertyId", sql.Int, propertyId)
+          .query(`
+              SELECT 
+                  ${fileType === "floorplan" ? "floor_plan_file_name, floor_plan_file_data" : "brochure_file_name, brochure_file_data"}
+              FROM UserPropertyDocuments 
+              WHERE user_id = @userId AND id = @propertyId
+          `);
+
+      if (result.recordset.length === 0) {
+          console.error("❌ No file found for this property.");
+          return res.status(404).json({ message: "File not found." });
+      }
+
+      const file = result.recordset[0];
+
+      const fileName = fileType === "floorplan" ? file.floor_plan_file_name : file.brochure_file_name;
+      const fileData = fileType === "floorplan" ? file.floor_plan_file_data : file.brochure_file_data;
+
+      if (!fileData) {
+          console.error("❌ File data is missing or corrupted.");
+          return res.status(400).json({ message: "File data is missing or corrupted." });
+      }
+
+      res.setHeader("Content-Disposition", `inline; filename=${fileName}`);
+      res.setHeader("Content-Type", "application/pdf");
+      res.send(fileData);
+  } catch (error) {
+      console.error("❌ Error retrieving file:", error);
+      res.status(500).json({ message: "Server error while retrieving file." });
   }
-
-  const pool = await sql.connect(dbConfig);
-  const result = await pool
-    .request()
-    .input("userId", sql.Int, userId)
-    .input("propertyId", sql.Int, propertyId)
-    .query(
-      `SELECT 
-        ${fileType === "brochure" ? "brochure_file_name, brochure_file_data" : "floor_plan_file_name, floor_plan_file_data"} 
-       FROM UserPropertyDocuments 
-       WHERE user_id = @userId AND id = @propertyId`
-    );
-
-  if (result.recordset.length === 0) {
-    return res.status(404).json({ message: "File not found for the given property." });
-  }
-
-  const fileName = result.recordset[0][`${fileType}_file_name`];
-  const fileData = result.recordset[0][`${fileType}_file_data`];
-
-  if (!fileData) {
-    return res.status(404).json({ message: "File data is missing or corrupted." });
-  }
-
-  res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-  res.setHeader("Content-Type", "application/pdf");
-  res.send(fileData);
-} catch (error) {
-  console.error("❌ Error downloading file:", error);
-  res.status(500).send("Internal Server Error: " + error.message);
-}
 });
 
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));
