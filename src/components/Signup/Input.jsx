@@ -23,5 +23,3 @@ export const Input = ({ label, type = "text", placeholder, id, name, value, onCh
     </div>
   );
 };
-
-

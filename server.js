@@ -25,41 +25,58 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/auth/google/callback'
-  },
-  async (accessToken, refreshToken, profile, done) => {
-    console.log('Google profile:', profile);
-    done(null, profile);
-  }
-));
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:5000/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        const email = profile.emails[0].value;
+        const displayName = profile.displayName;
 
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
+        // 🔹 Check if user exists in Developer or Users table
+        const isDeveloper = await dbOperation.getDevelopers().then(devs => devs.some(dev => dev.email === email));
+        const isUser = await dbOperation.getUsers().then(users => users.some(user => user.email === email));
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
+        if (isDeveloper) {
+          console.log("Developer Login Successful");
+          return done(null, { email, role: "developer" });
+        } else if (isUser) {
+          console.log("User Login Successful");
+          return done(null, { email, role: "user" });
+        } else {
+          console.log("New User - Registering as Regular User");
+          await dbOperation.googleLoginUser(displayName, email);
+          return done(null, { email, role: "user" });
+        }
+      } catch (error) {
+        return done(error, null);
+      }
+    }
+  )
+);
 
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+// 🔹 Serialize & Deserialize User
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
 
-app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  async (req, res) => {
-    try {
-      const { displayName, emails } = req.user;
-      const email = emails[0].value;
+// 🔹 Google Auth Route
+app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
-      await dbOperation.googleLogin(displayName, email);
-      console.log('Google user saved with random password');
-      
-      res.redirect('http://localhost:3000/developers-landing-page');
-    } catch (error) {
-      console.error('Google Auth Database Error:', error);
-      res.status(500).send('Database error');
+// 🔹 Google Auth Callback
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    console.log("User after login:", req.user); // Debugging
+
+    if (req.user.role === "developer") {
+      res.redirect("http://localhost:3000/developers-landing-page");
+    } else {
+      res.redirect("http://localhost:3000/home-user-page");
     }
   }
 );
@@ -70,6 +87,19 @@ app.post('/signup', async (req, res) => {
   
   try {
     const result = await dbOperation.insertDeveloper(fullName, email, password);
+    res.status(200).send({ message: 'User registered successfully', result });
+  } catch (error) {
+    console.error('Signup Error:', error);
+    res.status(500).send({ message: 'Error registering user', error });
+  }
+});
+
+app.post('/signup-user', async (req, res) => {
+  console.log("Data received on backend:", req.body);
+  const { fullName, email, password } = req.body;
+  
+  try {
+    const result = await dbOperation.insertUser(fullName, email, password);
     res.status(200).send({ message: 'User registered successfully', result });
   } catch (error) {
     console.error('Signup Error:', error);
