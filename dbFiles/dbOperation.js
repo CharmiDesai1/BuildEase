@@ -1,9 +1,9 @@
 const config = require('./dbConfig');
+const dbConfig = require("./dbConfig");
 const bcrypt = require("bcrypt");
 const sql = require("mssql");
 const saltRounds = 10;
 
-// Establish Database Connection
 const pool = new sql.ConnectionPool(config);
 const poolConnect = pool.connect();
 
@@ -172,14 +172,71 @@ const getProjects = async () => {
     }
 };
 
+async function fetchProjects() {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .query("SELECT id, project_name, apartment_type, carpet_area, development_stage, rating, image_url FROM PdfDocuments");
+    return result.recordset;
+  }
+  
+  async function getPdfById(id) {
+    if (!id || isNaN(id)) {
+      throw new Error("Invalid PDF ID.");
+    }
+  
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("id", sql.Int, id)
+      .query("SELECT id, file_name, file_data FROM PdfDocuments WHERE id = @id");
+  
+    if (result.recordset.length === 0) {
+      throw new Error("PDF not found.");
+    }
+  
+    return result.recordset[0];
+  }
+
+  async function getUserProperties(userId) {
+    if (!userId || isNaN(userId)) {
+      throw new Error("Invalid User ID.");
+    }
+  
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .query(`
+        SELECT id, project_name, apartment_type, carpet_area, development_stage, image_url, 
+               brochure_file_name, floor_plan_file_name
+        FROM UserPropertyDocuments 
+        WHERE user_id = @userId
+      `);
+  
+    return result.recordset;
+  }
+  
+  async function getPropertyFile(userId, propertyId) {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .input("propertyId", sql.Int, propertyId)
+      .query(`
+        SELECT brochure_file_name, brochure_file_data, floor_plan_file_name, floor_plan_file_data
+        FROM UserPropertyDocuments 
+        WHERE user_id = @userId AND id = @propertyId
+      `);
+  
+    if (result.recordset.length === 0) {
+      throw new Error("File not found.");
+    }
+  
+    return result.recordset[0];
+  }
+  
 module.exports = {
-    getDevelopers,
-    insertDeveloper,
-    googleLogin,
-    loginDeveloper,
-    getProjects,
-    getUsers,
-    insertUser,
-    googleLoginUser,
-    loginUser
+    getDevelopers, insertDeveloper, googleLogin, loginDeveloper, getProjects, getUsers, insertUser,
+    googleLoginUser, loginUser, fetchProjects, getPdfById, getUserProperties, getPropertyFile
 };

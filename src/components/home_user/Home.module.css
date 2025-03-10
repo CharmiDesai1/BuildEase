@@ -289,7 +289,8 @@
 .actionsColumn {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
   color: #fff;
   font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
@@ -342,27 +343,28 @@
   z-index: 100;
 }
 
-/* Styles for the metadata section */
 .projectMeta {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; /* Ensures all children take equal height */
+  text-align: center;
   margin-top: 15px;
   padding: 10px 0;
   width: 100%;
-  max-width: 500px; /* Adjust width as per layout */
+  max-width: 500px;
 }
 
-/* Styles for individual meta items */
 .metaItem {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   text-align: center;
   font-size: 14px;
   font-weight: 500;
   color: #559bc6;
   gap: 5px;
+  flex: 1; /* Ensures equal width distribution */
 }
 
 /* Icon styles */
