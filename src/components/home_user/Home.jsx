@@ -17,7 +17,6 @@ function Home() {
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({ email: "", password: "" });
 
-  // ✅ Fetch User ID from Local Storage on Component Mount
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     if (storedUserId) {
@@ -30,7 +29,6 @@ function Home() {
     }
   }, []);
 
-  // ✅ Fetch Properties for Logged-in User
   const fetchUserProperties = async (userId) => {
     try {
       console.log("📡 Fetching properties from:", `http://localhost:5000/user-properties/${userId}`);

@@ -11,13 +11,13 @@
 
 .header {
   width: 100%;
-  padding: 0; /* Remove extra padding */
-  margin: 0; /* Remove extra margin */
+  padding: 0;
+  margin: 0;
   display: flex;
-  justify-content: space-between; /* Pushes content to the edges */
+  justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: white; /* Match background */
+  background-color: white;
 }
 
 .logoIcon {
@@ -25,16 +25,16 @@
   width: 40px;
   height: 40px;
   margin-right: 10px;
-  margin: 0 auto; /* Center the image */
+  margin: 0 auto;
   margin-bottom: 5px;
   cursor: pointer;
 }
 
 .profileIcon {
   display: block;
-  width: 80px; /* Increase size */
+  width: 80px;
   height: auto;
-  margin: 0 auto; /* Center the image */
+  margin: 0 auto;
   margin-bottom: 5px;
   cursor: pointer;
 }
@@ -42,7 +42,7 @@
 .buildEase {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center text and image */
+  align-items: center;
   font-size: 24px;
   font-weight: bold;
   color: rgba(85, 155, 198, 1);
@@ -53,7 +53,7 @@
   margin-left: 25px;
   width: 100%;
   max-width: 1796px;
-  align-items: center; /* Ensures all elements align horizontally */
+  align-items: center;
   justify-content: space-around; 
   padding: 10px 20px;
   gap: 40px 62px;
@@ -144,48 +144,44 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Ensures even spacing */
+  justify-content: space-between;
   padding: 20px 50px;
-  max-width: 1400px; /* Limit max width */
+  max-width: 1400px;
   margin: 0 auto;
 }
 
-/* ✅ Flexbox for side-by-side alignment */
 .heroSection {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Spread image and text evenly */
-  gap: 20px; /* Maintain a consistent gap */
+  justify-content: flex-start; 
+  gap: 20px; 
   width: 100%;
-  max-width: 1100px; /* Reduce max-width */
+  max-width: 1100px;
   margin: 0 auto;
   padding: 0px 20px;
 }
 
-/* ✅ Ensure image does not take up too little space */
 .heroImage {
   object-fit: cover;
   object-position: center;
-  width: 35%; /* Increased slightly */
+  width: 35%;
   height: auto;
   max-height: 250px;
   border-radius: 10px;
   margin-left: 0px;
 }
 
-/* ✅ Ensure text takes proper space and does not move right */
 .projectInfo {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  flex: 1; /* Increase width */
-  max-width: 60%; /* Prevents text from shifting too far right */
+  flex: 1; 
+  max-width: 60%;
 }
 
-/* ✅ Adjust font sizes */
 .projectName {
-  font-size: 32px; /* Proper balance */
+  font-size: 32px;
   font-weight: bold;
   color: #559bc6;
   margin-bottom: 10px;
@@ -196,20 +192,21 @@
   flex-direction: column;
   font-size: 18px;
   gap: 5px;
+  color: #559bc6;
 }
 
-/* ✅ Ensure text aligns properly */
 .bhkSpec,
 .constructionStatus,
 .areaSpec {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 5px;
+  color: #559bc6;
 }
 
 .propertyContainer {
   width: 100%;
-  background-color: #f9f9f9; /* Light background */
+  background-color: #f9f9f9;
   padding: 30px;
   border-radius: 10px;
   display: flex;
@@ -218,7 +215,6 @@
   flex-direction: column;
 }
 
-/* ✅ Responsive adjustments */
 @media (max-width: 991px) {
   .heroSection {
     flex-direction: column;
@@ -319,13 +315,13 @@
   }
 
   .submitter {
-    font-size: 28px;
+    font-size: 25px;
     font-weight: bold;
     margin: 0;
   }
 
   .date {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 500;
     text-align: right;
     margin-right: 20px;
@@ -336,8 +332,8 @@
   }
 
   .suggestionText {
-    font-size: 32px;
-    line-height: 48px;
+    font-size: 25px;
+    line-height: 28px;
     margin-top: 10px;
   }
 
@@ -362,14 +358,42 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
+  }
+
+  .voteSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 5px;
   }
 
   .icon {
-    width: 40px; /* ✅ Reduced arrow size */
-    height: 40px; /* ✅ Reduced arrow size */
+    width: 40px;
+    height: 40px;
     margin-bottom: 2px;
     margin-top: 15px;
+  }
+
+  .voteCount {
+    font-size: 14px;
+    font-weight: bold;
+    color: #559bc6;
+  }
+
+  .voteButton {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .voteButton img {
+    width: 40px;
+    height: 40px;
   }
 
   @media (width <= 991px) {

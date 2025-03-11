@@ -238,8 +238,86 @@ async function fetchProjects() {
     }
     return result.recordset[0];
   }
+
+  async function getSuggestions(propertyId) {
+    try {
+      let pool = await sql.connect(config);
+      let result = await pool
+        .request()
+        .input("propertyId", sql.Int, propertyId)
+        .query(`
+          SELECT 
+            ps.id,
+            ps.suggestion_text AS suggestion,
+            ps.likes,
+            ps.dislikes,
+            u.full_name AS submitter  -- Use 'full_name' instead of 'name'
+          FROM PropertySuggestions ps
+          LEFT JOIN Users u ON ps.user_id = u.user_id
+          WHERE ps.property_id = @propertyId
+        `);
+      
+      return result.recordset;
+    } catch (error) {
+      console.error("Database Error in getSuggestions:", error);
+      return [];
+    }
+  }
+
+  const voteOnSuggestion = async (userId, suggestionId, voteType) => {
+    try {
+      const pool = await sql.connect(config);
+      const result = await pool
+        .request()
+        .input("suggestionId", sql.Int, suggestionId)
+        .query("SELECT likes, dislikes, voted_users FROM PropertySuggestions WHERE id = @suggestionId");
+  
+      if (result.recordset.length === 0) {
+        return { success: false, message: "Suggestion not found." };
+      }
+  
+      let { likes, dislikes, voted_users } = result.recordset[0];
+      voted_users = JSON.parse(voted_users || "[]");
+      const existingVote = voted_users.find((vote) => vote.userId === userId);
+  
+      if (existingVote) {
+        if (existingVote.vote === voteType) {
+          return { success: false, message: "User has already voted this way." };
+        }
+        if (existingVote.vote === "up" && voteType === "down") {
+          likes -= 1;
+          dislikes += 1;
+        } else if (existingVote.vote === "down" && voteType === "up") {
+          dislikes -= 1;
+          likes += 1;
+        }
+  
+        existingVote.vote = voteType;
+      } else {
+        if (voteType === "up") likes += 1;
+        else dislikes += 1;
+        voted_users.push({ userId, vote: voteType });
+      }
+
+      await pool
+        .request()
+        .input("suggestionId", sql.Int, suggestionId)
+        .input("likes", sql.Int, likes)
+        .input("dislikes", sql.Int, dislikes)
+        .input("votedUsers", sql.NVarChar(sql.MAX), JSON.stringify(voted_users))
+        .query(
+          "UPDATE PropertySuggestions SET likes = @likes, dislikes = @dislikes, voted_users = @votedUsers WHERE id = @suggestionId"
+        );
+  
+      return { success: true, message: "Vote recorded successfully." };
+    } catch (error) {
+      console.error("Error voting on suggestion:", error);
+      return { success: false, message: "Database error" };
+    }
+  };
   
 module.exports = {
     getDevelopers, insertDeveloper, googleLogin, loginDeveloper, getProjects, getUsers, insertUser,
-    googleLoginUser, loginUser, fetchProjects, getPdfById, getUserProperties, getPropertyFile
+    googleLoginUser, loginUser, fetchProjects, getPdfById, getUserProperties, getPropertyFile, getSuggestions,
+    voteOnSuggestion
 };

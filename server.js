@@ -7,8 +7,9 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
 const sql = require("mssql");
-const { fetchProjects, getPdfById } = require("./dbFiles/dbOperation");
+const { fetchProjects, getPdfById, getSuggestions } = require("./dbFiles/dbOperation");
 const dbConfig = require("./dbFiles/dbConfig");
+
 const API_PORT = process.env.PORT || 5000;
 const app = express();
 
@@ -245,6 +246,39 @@ app.get("/download-property/:userId/:propertyId/:fileType", async (req, res) => 
   } catch (error) {
       console.error("❌ Error retrieving file:", error);
       res.status(500).json({ message: "Server error while retrieving file." });
+  }
+});
+
+app.get("/api/suggestions", async (req, res) => {
+  const { propertyId } = req.query;
+
+  if (!propertyId) {
+    return res.status(400).json({ message: "Missing propertyId" });
+  }
+
+  try {
+    const suggestions = await getSuggestions(parseInt(propertyId, 10));
+    res.status(200).json(suggestions);
+  } catch (error) {
+    console.error("Error fetching suggestions:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.post("/api/vote", async (req, res) => {
+  const { userId, suggestionId, voteType } = req.body;
+  console.log("📩 Received Vote API Request:", req.body);
+
+  if (!userId || !suggestionId || !voteType) {
+    console.error("❌ Missing required fields:", { userId, suggestionId, voteType });
+    return res.status(400).json({ message: "Missing required fields." });
+  }
+  try {
+    const result = await dbOperation.voteOnSuggestion(userId, suggestionId, voteType);
+    res.json(result);
+  } catch (error) {
+    console.error("❌ Vote API Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
