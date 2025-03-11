@@ -6,6 +6,7 @@ import DevelopersLandingPage from "./components/developers_landing/DevelopersLan
 import SuggestionPage from "./components/suggestion_page/SuggestionPage";
 import FloorPlanPage from "./components/floor_plans/FloorPlan";
 import HomeUserPage from "./components/home_user/Home";
+import SuggestionUserPage from "./components/Suggestion_user/Suggestions";
 import { LoginStartPage } from './components/Login/LoginStartPage';
 import { SignupStartPage } from './components/Signup/SignupStartPage';
 import { LoginUser } from './components/Login/LoginUser';
@@ -41,6 +42,7 @@ function App() {
         <Route path="/suggestion-page" element={<SuggestionPage />} />
         <Route path="/floor-plan-page" element={<FloorPlanPage />} />
         <Route path="/home-user-page" element={<HomeUserPage />} />
+        <Route path="/suggestion-user-page" element={<SuggestionUserPage />} />
       </Routes>
       </div>
     </Router>

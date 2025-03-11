@@ -1,0 +1,407 @@
+.suggestions_main {
+  background-color: rgba(255, 255, 255, 1);
+  display: flex;
+  padding-top: 0px;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  align-items: stretch;
+  white-space: nowrap;
+}
+
+.header {
+  width: 100%;
+  padding: 0; /* Remove extra padding */
+  margin: 0; /* Remove extra margin */
+  display: flex;
+  justify-content: space-between; /* Pushes content to the edges */
+  align-items: center;
+  padding: 10px 20px;
+  background-color: white; /* Match background */
+}
+
+.logoIcon {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  margin: 0 auto; /* Center the image */
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.profileIcon {
+  display: block;
+  width: 80px; /* Increase size */
+  height: auto;
+  margin: 0 auto; /* Center the image */
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.buildEase {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center text and image */
+  font-size: 24px;
+  font-weight: bold;
+  color: rgba(85, 155, 198, 1);
+}
+
+.nav {
+  display: flex;
+  margin-left: 25px;
+  width: 100%;
+  max-width: 1796px;
+  align-items: center; /* Ensures all elements align horizontally */
+  justify-content: space-around; 
+  padding: 10px 20px;
+  gap: 40px 62px;
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 22px;
+  color: rgba(85, 155, 198, 1);
+  font-weight: 700;
+  letter-spacing: 0.11px;
+  line-height: 1;
+  margin-bottom: 0;
+  justify-content: space-evenly;
+}
+
+.navLinks {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.navLinks li {
+  margin: 0 10px;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #4a4a4a;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 20px;
+}
+
+.home {
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
+  padding: 28px 23px;
+  text-decoration: none;
+}
+
+.suggestions {
+  border-radius: 15px;
+  background-color: rgba(85, 155, 198, 1);
+  box-shadow: -10px -10px 20px rgba(255, 255, 255, 1);
+  padding: 28px 67px;
+  color: rgba(255, 255, 255, 1);
+  text-decoration: none;
+}
+
+.floorPlans {
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
+  padding: 28px 31px;
+  text-decoration: none;
+}
+
+.rightIcons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 20px;
+}
+
+
+.img {
+  aspect-ratio: 1.00;
+  object-fit: contain;
+  object-position: center;
+  gap: 10px;
+  width: 58px;
+  margin-top: 0px;
+  cursor: pointer;
+}
+
+.iconWrapper {
+  border-radius: 43px;
+  background-color: rgba(249, 249, 249, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.08);
+  width: 80px;
+  height: 75px;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+.projectHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures even spacing */
+  padding: 20px 50px;
+  max-width: 1400px; /* Limit max width */
+  margin: 0 auto;
+}
+
+/* ✅ Flexbox for side-by-side alignment */
+.heroSection {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Spread image and text evenly */
+  gap: 20px; /* Maintain a consistent gap */
+  width: 100%;
+  max-width: 1100px; /* Reduce max-width */
+  margin: 0 auto;
+  padding: 0px 20px;
+}
+
+/* ✅ Ensure image does not take up too little space */
+.heroImage {
+  object-fit: cover;
+  object-position: center;
+  width: 35%; /* Increased slightly */
+  height: auto;
+  max-height: 250px;
+  border-radius: 10px;
+  margin-left: 0px;
+}
+
+/* ✅ Ensure text takes proper space and does not move right */
+.projectInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1; /* Increase width */
+  max-width: 60%; /* Prevents text from shifting too far right */
+}
+
+/* ✅ Adjust font sizes */
+.projectName {
+  font-size: 32px; /* Proper balance */
+  font-weight: bold;
+  color: #559bc6;
+  margin-bottom: 10px;
+}
+
+.specifications {
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+  gap: 5px;
+}
+
+/* ✅ Ensure text aligns properly */
+.bhkSpec,
+.constructionStatus,
+.areaSpec {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.propertyContainer {
+  width: 100%;
+  background-color: #f9f9f9; /* Light background */
+  padding: 30px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* ✅ Responsive adjustments */
+@media (max-width: 991px) {
+  .heroSection {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .heroImage {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .projectInfo {
+    max-width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+
+  .projectName {
+    font-size: 24px;
+  }
+
+  .specifications {
+    font-size: 14px;
+  }
+}
+
+.suggestionsContainer {
+  width: 100%;
+  background-color: #f9f9f9; /* Light background */
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers horizontally */
+  justify-content: center; /* Ensures vertical alignment */
+  text-align: center;
+}
+
+.ongoingProjects {
+  color: rgba(85, 155, 198, 1);
+  font-size: 48px;
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.24px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  align-items: center;
+  text-align: center;
+}
+
+  .Container {
+    background-color: #f9f9f9; /* Light background */
+    border-radius: 12px;
+    padding: 0px;
+    margin-bottom: 0px; /* Adds spacing between comments */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow effect */
+  }
+
+  .suggestionCard {
+    display: flex;
+    gap: 40px;
+    width: 100%;
+    margin-bottom: 20px;
+    align-items: center; /* Ensures vertical alignment */
+  }
+
+  .userInitial {
+    color: #fff;
+    background-color: #559bc6;
+    border: 4px solid #eaeff7;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .content {
+    flex: 1;
+    color: #559bc6;
+    font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  }
+
+  .headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .submitter {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .date {
+    font-size: 28px;
+    font-weight: 500;
+    text-align: right;
+    margin-right: 20px;
+  }
+
+  .suggestionContent {
+    margin: 15px 0;
+  }
+
+  .suggestionText {
+    font-size: 32px;
+    line-height: 48px;
+    margin-top: 10px;
+  }
+
+  .interactions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .likes,
+  .comments {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+    color: #559bc6;
+    font-weight: 600;
+  }
+
+  .likesCommentsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .icon {
+    width: 40px; /* ✅ Reduced arrow size */
+    height: 40px; /* ✅ Reduced arrow size */
+    margin-bottom: 2px;
+    margin-top: 15px;
+  }
+
+  @media (width <= 991px) {
+    .date {
+      font-size: 28px;
+    }
+
+    .suggestionText {
+      font-size: 28px;
+      line-height: 42px;
+    }
+
+    .submitter {
+      font-size: 28px;
+    }
+  }
+
+  .suggestionsList {
+    padding: 0 20px;
+    margin-top: 25px;
+  }
+
+  .divider {
+    background-color: #559bc6;
+    width: 1200px;
+    max-width: 100%;
+    height: 2px;
+    margin: 60px auto;
+  }
+
+  @media (width <= 991px) {
+    .divider {
+      margin: 30px auto;
+    }
+  }
