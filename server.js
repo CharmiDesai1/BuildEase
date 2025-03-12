@@ -38,7 +38,6 @@ passport.use(
         const email = profile.emails[0].value;
         const displayName = profile.displayName;
 
-        // Fetch existing users
         const developers = await dbOperation.getDevelopers();
         const users = await dbOperation.getUsers();
 
@@ -55,9 +54,8 @@ passport.use(
         } 
         else {
           console.log("🆕 New User - Registering as Regular User");
-          await dbOperation.googleLoginUser(displayName, email); // Insert new user
+          await dbOperation.googleLoginUser(displayName, email); 
 
-          // Fetch the newly inserted user's ID
           const newUser = await dbOperation.getUserByEmail(email);
           if (newUser && newUser.user_id) {
             return done(null, { email, user_id: newUser.user_id, role: "user" });
@@ -335,10 +333,31 @@ app.get("/api/suggestions", async (req, res) => {
   }
 });
 
+app.get("/api/get-user/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .query("SELECT full_name FROM Users WHERE user_id = @userId");
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(result.recordset[0]);
+  } catch (error) {
+    console.error("❌ Error fetching user:", error);
+    res.status(500).json({ message: "Database error" });
+  }
+});
+
 app.post("/api/vote", async (req, res) => {
   const { userId, suggestionId, voteType } = req.body;
 
-  console.log("📩 Received Vote API Request:", req.body); // Debugging
+  console.log("📩 Received Vote API Request:", req.body);
 
   if (!userId || !suggestionId || !voteType) {
     console.error("❌ Missing required fields:", { userId, suggestionId, voteType });
@@ -354,5 +373,20 @@ app.post("/api/vote", async (req, res) => {
   }
 });
 
+app.post("/api/add-suggestion", async (req, res) => {
+  const { property_id, user_id, suggestion_text } = req.body;
+
+  if (!property_id || !user_id || !suggestion_text) {
+    return res.status(400).json({ message: "Missing required fields." });
+  }
+
+  const result = await dbOperation.insertSuggestion(property_id, user_id, suggestion_text);
+
+  if (result.success) {
+    res.status(200).json({ message: result.message });
+  } else {
+    res.status(500).json({ message: result.message });
+  }
+});
 
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));

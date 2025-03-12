@@ -331,8 +331,28 @@ const voteOnSuggestion = async (userId, suggestionId, voteType) => {
   }
 };
 
+const insertSuggestion = async (property_id, user_id, suggestion_text) => {
+  try {
+    const pool = await sql.connect(dbConfig);
+    await pool
+      .request()
+      .input("property_id", sql.Int, property_id)
+      .input("user_id", sql.Int, user_id)
+      .input("suggestion_text", sql.NVarChar(sql.MAX), suggestion_text)
+      .query(`
+        INSERT INTO PropertySuggestions (property_id, user_id, suggestion_text) 
+        VALUES (@property_id, @user_id, @suggestion_text)
+      `);
+
+    return { success: true, message: "Suggestion added successfully." };
+  } catch (error) {
+    console.error("❌ Error inserting suggestion:", error);
+    return { success: false, message: "Database error." };
+  }
+};
+
 module.exports = {
     getDevelopers, insertDeveloper, googleLogin, loginDeveloper, getProjects, getUsers, insertUser,
     googleLoginUser, loginUser, fetchProjects, getPdfById, getUserProperties, getPropertyFile, getSuggestions,
-    voteOnSuggestion
+    voteOnSuggestion, insertSuggestion
 };

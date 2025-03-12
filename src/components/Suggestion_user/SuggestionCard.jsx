@@ -10,39 +10,45 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
   const [userVote, setUserVote] = useState(null); 
 
   const handleVote = async (voteType) => {
-    if (userVote === voteType) return; 
-  
-    const payload = {
-      userId,         
-      suggestionId,   
-      voteType,      
-    };
-  
+    if (!userId || !suggestionId) {
+      alert("❌ User ID or Suggestion ID missing.");
+      return;
+    }
+    
+    if (userVote === voteType) return; // Prevent duplicate votes
+
+    const payload = { userId, suggestionId, voteType };
     console.log("📡 Sending vote request:", payload);
-  
+
     try {
       const response = await fetch("http://localhost:5000/api/vote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-  
+
       const data = await response.json();
       console.log("✅ Vote API Response:", data);
-  
+
       if (data.success) {
         if (voteType === "up") {
-          setLikeCount(userVote === "down" ? likeCount + 1 : likeCount + 1);
-          setDislikeCount(userVote === "down" ? dislikeCount - 1 : dislikeCount);
+          setLikeCount((prev) => (userVote === "down" ? prev + 1 : prev + 1));
+          setDislikeCount((prev) => (userVote === "down" ? prev - 1 : prev));
         } else {
-          setDislikeCount(userVote === "up" ? dislikeCount + 1 : dislikeCount + 1);
-          setLikeCount(userVote === "up" ? likeCount - 1 : likeCount);
+          setDislikeCount((prev) => (userVote === "up" ? prev + 1 : prev + 1));
+          setLikeCount((prev) => (userVote === "up" ? prev - 1 : prev));
         }
-  
+
         setUserVote(voteType);
+
+        // 🔄 Auto-reload to sync the latest votes from backend
+        setTimeout(() => window.location.reload(), 500);
+      } else {
+        alert("❌ Error: " + data.message);
       }
     } catch (error) {
       console.error("❌ Error voting:", error);
+      alert("❌ Error submitting vote. Try again.");
     }
   };  
 
