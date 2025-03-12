@@ -2,18 +2,24 @@ import React, { useState } from "react";
 import styles from "./Home.module.css";
 import icon3 from "./search.png";
 
-export function SearchBar({ projects, setFilteredProjects }) {
+export function SearchBar({ projects = [], setFilteredProjects }) {
   const [selectedProject, setSelectedProject] = useState("");
+
+  // 🔍 Ensure `projects` is always an array
+  if (!Array.isArray(projects)) {
+    console.error("❌ Error: projects is not an array", projects);
+    return <p className={styles.error}>Error loading projects.</p>;
+  }
 
   const handleSelection = (event) => {
     const query = event.target.value;
     setSelectedProject(query);
 
-    if (query === "" || query === "all") {  // ✅ Show all projects when no search
-      setFilteredProjects(projects);
+    if (query === "" || query === "all") {
+      setFilteredProjects(projects); // ✅ Show all projects when no search
     } else {
       const filtered = projects.filter((project) =>
-        project.project_name.toLowerCase().includes(query.toLowerCase()) // ✅ Fix: Use `project_name`
+        project.project_name.toLowerCase().includes(query.toLowerCase()) // ✅ Use correct key
       );
       setFilteredProjects(filtered);
     }
@@ -30,12 +36,16 @@ export function SearchBar({ projects, setFilteredProjects }) {
           value={selectedProject}
           onChange={handleSelection}
         >
-          <option value="all">Select a project (Show all)</option> {/* ✅ Default to show all */}
-          {projects.map((project, index) => (
-            <option key={index} value={project.project_name}>
-              {project.project_name}
-            </option>
-          ))}
+          <option value="all">Select a project (Show all)</option>
+          {projects.length > 0 ? (
+            projects.map((project) => (
+              <option key={project.id} value={project.project_name}>
+                {project.project_name}
+              </option>
+            ))
+          ) : (
+            <option disabled>No projects available</option>
+          )}
         </select>
       </div>
       <h2 className={styles.ongoingProjects}>YOUR PROPERTY</h2>

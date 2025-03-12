@@ -15,25 +15,36 @@ const SuggestionsList = () => {
       return;
     }
 
-    const fetchPropertyId = async () => {
+    const fetchUserProperties = async () => {
       try {
-        console.log("📡 Fetching user properties for userId:", userId);
+        console.log("📡 Fetching property for userId:", userId);
         const response = await fetch(`http://localhost:5000/user-properties/${userId}`);
-        if (!response.ok) throw new Error("Failed to fetch user properties.");
+        
+        if (response.status === 404) {
+          console.warn(`⚠️ No properties found for user ${userId}`);
+          setLoading(false);
+          return;
+        }
+
+        if (!response.ok) throw new Error("Failed to fetch properties.");
 
         const data = await response.json();
+        console.log("🟢 Properties received:", data);
+
         if (data.length > 0) {
           console.log("✅ Property ID retrieved:", data[0].id);
           setPropertyId(data[0].id);
         } else {
           console.warn("⚠️ No property found for this user.");
+          setLoading(false);
         }
       } catch (error) {
-        console.error("❌ Error fetching property ID:", error);
+        console.error("❌ Error fetching user properties:", error);
+        setLoading(false);
       }
     };
 
-    fetchPropertyId();
+    fetchUserProperties();
   }, [userId]);
 
   useEffect(() => {
@@ -47,6 +58,14 @@ const SuggestionsList = () => {
       try {
         console.log(`📡 Fetching suggestions for propertyId: ${propertyId}`);
         const response = await fetch(`http://localhost:5000/api/suggestions?propertyId=${propertyId}`);
+
+        if (response.status === 404) {
+          console.warn("⚠️ No suggestions found for this property.");
+          setSuggestions([]);
+          setLoading(false);
+          return;
+        }
+
         if (!response.ok) throw new Error("Failed to fetch suggestions.");
 
         const data = await response.json();

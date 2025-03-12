@@ -38,21 +38,35 @@ passport.use(
         const email = profile.emails[0].value;
         const displayName = profile.displayName;
 
-        const isDeveloper = await dbOperation.getDevelopers().then(devs => devs.some(dev => dev.email === email));
-        const isUser = await dbOperation.getUsers().then(users => users.some(user => user.email === email));
+        // Fetch existing users
+        const developers = await dbOperation.getDevelopers();
+        const users = await dbOperation.getUsers();
 
-        if (isDeveloper) {
-          console.log("Developer Login Successful");
-          return done(null, { email, role: "developer" });
-        } else if (isUser) {
-          console.log("User Login Successful");
-          return done(null, { email, role: "user" });
-        } else {
-          console.log("New User - Registering as Regular User");
-          await dbOperation.googleLoginUser(displayName, email);
-          return done(null, { email, role: "user" });
+        const developer = developers.find(dev => dev.email === email);
+        const user = users.find(u => u.email === email);
+
+        if (developer) {
+          console.log("✅ Developer Login Successful");
+          return done(null, { email, user_id: developer.user_id, role: "developer" });
+        } 
+        else if (user) {
+          console.log("✅ User Login Successful");
+          return done(null, { email, user_id: user.user_id, role: "user" });
+        } 
+        else {
+          console.log("🆕 New User - Registering as Regular User");
+          await dbOperation.googleLoginUser(displayName, email); // Insert new user
+
+          // Fetch the newly inserted user's ID
+          const newUser = await dbOperation.getUserByEmail(email);
+          if (newUser && newUser.user_id) {
+            return done(null, { email, user_id: newUser.user_id, role: "user" });
+          } else {
+            return done(new Error("❌ Failed to retrieve new user ID"), null);
+          }
         }
       } catch (error) {
+        console.error("❌ Google Authentication Error:", error);
         return done(error, null);
       }
     }
@@ -68,12 +82,17 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
-    console.log("User after login:", req.user);
+    console.log("✅ User after login:", req.user);
+
+    if (!req.user || !req.user.user_id) {
+      console.error("❌ Google Login Failed: Missing user ID");
+      return res.redirect("http://localhost:3000/login?error=user_id_missing");
+    }
 
     if (req.user.role === "developer") {
-      res.redirect("http://localhost:3000/developers-landing-page");
+      res.redirect(`http://localhost:3000/developers-landing-page?userId=${req.user.user_id}`);
     } else {
-      res.redirect("http://localhost:3000/home-user-page");
+      res.redirect(`http://localhost:3000/home-user-page?userId=${req.user.user_id}`);
     }
   }
 );
@@ -148,7 +167,6 @@ app.post('/login-user', async (req, res) => {
   }
 });
 
-
 app.get("/api/projects", async (req, res) => {
   try {
     const projects = await dbOperation.getProjects();
@@ -188,67 +206,103 @@ app.get("/download/:id", async (req, res) => {
   }
 });
 
+app.get("/properties/:id", async (req, res) => {
+  let { id } = req.params;
+  id = parseInt(id, 10);
+
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "Invalid Property ID format" });
+  }
+
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("id", sql.Int, id)
+      .query("SELECT property_id AS id, project_name, apartment_type, carpet_area, development_stage, image_url FROM Properties WHERE property_id = @id");
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ error: "Property not found" });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (error) {
+    console.error("Database error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.get("/user-properties/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     const pool = await sql.connect(dbConfig);
-    const result = await pool
-      .request()
+    
+    const result = await pool.request()
       .input("userId", sql.Int, userId)
-      .query("SELECT id, project_name, apartment_type, carpet_area, development_stage, image_url FROM UserPropertyDocuments WHERE user_id = @userId");
+      .query(`
+        SELECT 
+          p.property_id AS id, 
+          p.project_name, 
+          p.apartment_type, 
+          p.carpet_area, 
+          p.development_stage, 
+          p.image_url
+        FROM Properties p
+        INNER JOIN UserPropertyMapping upm ON p.property_id = upm.property_id
+        WHERE upm.user_id = @userId
+      `);
 
     if (result.recordset.length === 0) {
+      console.warn(`⚠️ No properties found for user ${userId}`);
       return res.status(404).json({ message: "No properties found for this user." });
     }
 
     res.json(result.recordset);
   } catch (error) {
     console.error("❌ Error fetching user properties:", error);
-    res.status(500).send("Internal Server Error: " + error.message);
+    res.status(500).json({ message: "Internal Server Error: " + error.message });
   }
-});  
+});
 
 app.get("/download-property/:userId/:propertyId/:fileType", async (req, res) => {
   const { userId, propertyId, fileType } = req.params;
   console.log(`📡 Open request received for user: ${userId}, property: ${propertyId}, fileType: ${fileType}`);
 
   try {
-      const pool = await sql.connect(dbConfig);
-      const result = await pool
-          .request()
-          .input("userId", sql.Int, userId)
-          .input("propertyId", sql.Int, propertyId)
-          .query(`
-              SELECT 
-                  ${fileType === "floorplan" ? "floor_plan_file_name, floor_plan_file_data" : "brochure_file_name, brochure_file_data"}
-              FROM UserPropertyDocuments 
-              WHERE user_id = @userId AND id = @propertyId
-          `);
+    const pool = await sql.connect(dbConfig);
+    const result = await pool.request()
+      .input("propertyId", sql.Int, propertyId)
+      .query(`
+        SELECT 
+          ${fileType === "floorplan" ? "floor_plan_file_name, floor_plan_file_data" : "brochure_file_name, brochure_file_data"}
+        FROM Properties 
+        WHERE property_id = @propertyId
+      `);
 
-      if (result.recordset.length === 0) {
-          console.error("❌ No file found for this property.");
-          return res.status(404).json({ message: "File not found." });
-      }
+    if (result.recordset.length === 0) {
+      console.error("❌ No file found for this property.");
+      return res.status(404).json({ message: "File not found." });
+    }
 
-      const file = result.recordset[0];
+    const file = result.recordset[0];
+    const fileName = fileType === "floorplan" ? file.floor_plan_file_name : file.brochure_file_name;
+    const fileData = fileType === "floorplan" ? file.floor_plan_file_data : file.brochure_file_data;
 
-      const fileName = fileType === "floorplan" ? file.floor_plan_file_name : file.brochure_file_name;
-      const fileData = fileType === "floorplan" ? file.floor_plan_file_data : file.brochure_file_data;
+    if (!fileData) {
+      console.error("❌ File data is missing or corrupted.");
+      return res.status(400).json({ message: "File data is missing or corrupted." });
+    }
 
-      if (!fileData) {
-          console.error("❌ File data is missing or corrupted.");
-          return res.status(400).json({ message: "File data is missing or corrupted." });
-      }
-
-      res.setHeader("Content-Disposition", `inline; filename=${fileName}`);
-      res.setHeader("Content-Type", "application/pdf");
-      res.send(fileData);
+    res.setHeader("Content-Disposition", `inline; filename=${fileName}`);
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(fileData);
   } catch (error) {
-      console.error("❌ Error retrieving file:", error);
-      res.status(500).json({ message: "Server error while retrieving file." });
+    console.error("❌ Error retrieving file:", error);
+    res.status(500).json({ message: "Server error while retrieving file." });
   }
 });
 
+// ✅ Fetch Suggestions for a Property
 app.get("/api/suggestions", async (req, res) => {
   const { propertyId } = req.query;
 
@@ -257,22 +311,40 @@ app.get("/api/suggestions", async (req, res) => {
   }
 
   try {
-    const suggestions = await getSuggestions(parseInt(propertyId, 10));
-    res.status(200).json(suggestions);
+    const pool = await sql.connect(dbConfig);
+    const result = await pool.request()
+      .input("propertyId", sql.Int, propertyId)
+      .query(`
+        SELECT 
+          ps.id,
+          ps.suggestion_text AS suggestion,
+          ps.likes,
+          ps.dislikes,
+          u.full_name AS submitter
+        FROM PropertySuggestions ps
+        LEFT JOIN Users u ON ps.user_id = u.user_id
+        WHERE ps.property_id = @propertyId
+        ORDER BY ps.id DESC
+      `);
+
+    console.log("✅ Suggestions fetched:", result.recordset);
+    res.status(200).json(result.recordset);
   } catch (error) {
-    console.error("Error fetching suggestions:", error);
+    console.error("❌ Error fetching suggestions:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 app.post("/api/vote", async (req, res) => {
   const { userId, suggestionId, voteType } = req.body;
-  console.log("📩 Received Vote API Request:", req.body);
+
+  console.log("📩 Received Vote API Request:", req.body); // Debugging
 
   if (!userId || !suggestionId || !voteType) {
     console.error("❌ Missing required fields:", { userId, suggestionId, voteType });
     return res.status(400).json({ message: "Missing required fields." });
   }
+
   try {
     const result = await dbOperation.voteOnSuggestion(userId, suggestionId, voteType);
     res.json(result);
@@ -281,5 +353,6 @@ app.post("/api/vote", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));

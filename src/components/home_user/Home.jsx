@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // ✅ Import Axios
-import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
+import axios from "axios"; 
+import { useNavigate } from "react-router-dom"; 
 import styles from "./Home.module.css";
 import { Header } from "./Header";
 import { PropertyCard } from "./PropertyCard"; 
@@ -9,7 +9,7 @@ import { SearchBar } from "./SearchBar";
 import { ScrollToTop } from "./BackToTopButton";
 
 function Home() { 
-  const navigate = useNavigate(); // ✅ Define navigate
+  const navigate = useNavigate(); 
   const [userId, setUserId] = useState(null);
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
@@ -18,32 +18,76 @@ function Home() {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
+    let storedUserId = localStorage.getItem("userId");
+  
+    // Extract userId from URL (for Google login)
+    const urlParams = new URLSearchParams(window.location.search);
+    const googleUserId = urlParams.get("userId");
+  
+    if (googleUserId) {
+      console.log("🔍 Google login detected, saving userId:", googleUserId);
+      localStorage.setItem("userId", googleUserId);
+      storedUserId = googleUserId;
+      window.history.replaceState(null, "", "/home-user-page");
+    }
+  
     if (storedUserId) {
-      console.log("✅ User ID retrieved from storage:", storedUserId);
+      console.log("✅ User ID found:", storedUserId);
       setUserId(storedUserId);
-      fetchUserProperties(storedUserId);
+      fetchPropertyId(storedUserId);
     } else {
       console.error("❌ User ID is missing.");
       setLoading(false);
     }
   }, []);
 
-  const fetchUserProperties = async (userId) => {
+  const fetchPropertyId = async (userId) => {
     try {
-      console.log("📡 Fetching properties from:", `http://localhost:5000/user-properties/${userId}`);
+      console.log("📡 Fetching property ID for userId:", userId);
       const response = await axios.get(`http://localhost:5000/user-properties/${userId}`);
-      console.log("✅ Properties received:", response.data);
+      console.log("🟢 API Response:", response.data);
 
-      setProjects(response.data);
-      setFilteredProjects(response.data);
-      setLoading(false);
+      if (response.data.length > 0) {
+        const propertyId = response.data[0].id;
+        console.log("✅ Property ID retrieved:", propertyId);
+        fetchProjects(propertyId);
+      } else {
+        console.warn("⚠️ No property found for this user.");
+        setLoading(false);
+      }
     } catch (error) {
-      console.error("❌ Error fetching user properties:", error);
-      setError("Failed to fetch user properties.");
+      console.error("❌ Error fetching property ID:", error);
+      setError("Failed to fetch property ID.");
       setLoading(false);
     }
   };
+
+  const fetchProjects = async (propertyId) => {
+    try {
+      console.log("📡 Fetching project details for propertyId:", propertyId);
+      const response = await axios.get(`http://localhost:5000/properties/${propertyId}`);
+      console.log("✅ Project Data Type:", typeof response.data);
+      console.log("✅ Project Data:", response.data);
+  
+      // Ensure projects is always an array
+      if (Array.isArray(response.data)) {
+        setProjects(response.data);
+        setFilteredProjects(response.data);
+      } else if (response.data && typeof response.data === "object") {
+        setProjects([response.data]); // Convert single object to array
+        setFilteredProjects([response.data]);
+      } else {
+        console.error("❌ API response is invalid:", response.data);
+        setProjects([]); // Prevent errors in SearchBar
+      }
+  
+      setLoading(false);
+    } catch (error) {
+      console.error("❌ Error fetching projects:", error);
+      setError("Failed to fetch project details.");
+      setLoading(false);
+    }
+  };  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,7 +96,7 @@ function Home() {
       console.log("✅ User Login Successful:", response.data);
       localStorage.setItem("userId", response.data.user.user_id);
       setUserId(response.data.user.user_id);
-      fetchUserProperties(response.data.user.user_id);
+      fetchPropertyId(response.data.user.user_id);
       navigate("/home-user-page");
     } catch (error) {
       console.error("❌ User Login Failed:", error);
