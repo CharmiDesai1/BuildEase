@@ -140,15 +140,6 @@
   margin-right: 10px;
 }
 
-.floorPlanImage {
-  max-width: 90vw;  /* Limits image width to 90% of the viewport */
-  max-height: 80vh; /* Prevents image from overflowing vertically */
-  width: auto;      /* Ensures proper scaling */
-  height: auto;    
-  display: block;    /* Removes unnecessary spacing */
-  margin: 0 auto;
-}
-
 .viewerControls {
   flex-direction: column;
   align-items: start;
@@ -219,7 +210,7 @@
   aspect-ratio: 1.11;
   object-fit: contain;
   object-position: center;
-  width: 31px;
+  width: 10px;
   margin: auto 0;
 }
 
@@ -227,7 +218,7 @@
   flex-wrap: wrap;
   flex: 1;
   align-items: flex-start;
-  gap: 21px;
+  gap: 15px;
   display: flex;
 }
 
@@ -252,7 +243,7 @@
 .iconContainer {
   flex-direction: column;
   align-items: start;
-  margin-left: -250px;
+  margin-left: -350px;
   display: flex;
 }
 
@@ -260,8 +251,8 @@
   aspect-ratio: 1;
   object-fit: contain;
   object-position: center;
-  width: 82px;
-  margin-top: 67px;
+  width: 50px;
+  margin-top: 20px;
 }
 
 .featureIcon:first-child {
@@ -273,7 +264,7 @@
   object-fit: contain;
   object-position: center;
   width: 31px;
-  margin-top: 101px;
+  margin-top: 50px;
 }
 
 .commentIcon {

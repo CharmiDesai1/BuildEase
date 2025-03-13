@@ -1,14 +1,90 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import styles from "./FloorPlanUser.module.css";
 
 export const FloorPlanViewer = () => {
+  const [userId, setUserId] = useState(null);
+  const [propertyId, setPropertyId] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let storedUserId = localStorage.getItem("userId");
+
+    // Extract userId from URL (for Google login)
+    const urlParams = new URLSearchParams(window.location.search);
+    const googleUserId = urlParams.get("userId");
+
+    if (googleUserId) {
+      console.log("🔍 Google login detected, saving userId:", googleUserId);
+      localStorage.setItem("userId", googleUserId);
+      storedUserId = googleUserId;
+      window.history.replaceState(null, "", "/floor-plans");
+    }
+
+    if (storedUserId) {
+      console.log("✅ User ID found:", storedUserId);
+      setUserId(storedUserId);
+      fetchPropertyId(storedUserId);
+    } else {
+      console.error("❌ User ID is missing.");
+      setLoading(false);
+      setError("User ID not found.");
+    }
+  }, []);
+
+  const fetchPropertyId = async (userId) => {
+    try {
+      console.log("📡 Fetching property ID for userId:", userId);
+      const response = await axios.get(`http://localhost:5000/user-properties/${userId}`);
+      console.log("🟢 API Response:", response.data);
+
+      if (response.data.length > 0) {
+        const propertyId = response.data[0].id;
+        console.log("✅ Property ID retrieved:", propertyId);
+        setPropertyId(propertyId);
+      } else {
+        console.warn("⚠️ No property found for this user.");
+        setLoading(false);
+        setError("No property associated with this user.");
+      }
+    } catch (error) {
+      console.error("❌ Error fetching property ID:", error);
+      setError("Failed to fetch property ID.");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (propertyId) {
+      console.log("📡 Fetching floor plan for propertyId:", propertyId);
+      fetchImage(propertyId);
+    }
+  }, [propertyId]);
+
+  const fetchImage = async (propertyId) => {
+    if (!propertyId) {
+      console.warn("⚠️ Skipping API call: propertyId is null");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/floorplan/${propertyId}`);
+      if (!response.ok) throw new Error("Failed to load floor plan");
+      const data = await response.json();
+      setImageUrl(data.imageUrl);
+    } catch (err) {
+      console.error("❌ Error loading floor plan:", err);
+      setError("Failed to load floor plan.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className={styles.floorPlanViewer}>
-      <img
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/e141cbda78ccd0fa8fa3f2181c4e7ef8970b4e920ffe31cf025bf59e3d86a6b1?placeholderIfAbsent=true&apiKey=91e3b54116b2400fa8bdb6a04bd22a0c"
-        alt="Floor plan"
-        className={styles.floorPlanImage}
-      />
       <div className={styles.viewerControls}>
         <article className={styles.floorPlanCard}>
           <h2 className={styles.floorplanTitle}>
@@ -16,11 +92,7 @@ export const FloorPlanViewer = () => {
           </h2>
           <div className={styles.planContent}>
             <div className={styles.planDetails}>
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/68db150dd77d6481d11f2195beb10f35d5fe040a1e2b5363dc3acd7005a08696?placeholderIfAbsent=true&apiKey=91e3b54116b2400fa8bdb6a04bd22a0c"
-                alt="Floor plan details"
-                className={styles.planDetailImage}
-              />
+            {imageUrl ? <img src={imageUrl} alt="Floor Plan" className={styles.planDetailImage} /> : <p>Loading floor plan...</p>}
               <div className={styles.iconGroup}>
                 <div className={styles.iconContainer}>
                   <img

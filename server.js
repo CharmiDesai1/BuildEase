@@ -9,6 +9,13 @@ const session = require('express-session');
 const sql = require("mssql");
 const { fetchProjects, getPdfById, getSuggestions } = require("./dbFiles/dbOperation");
 const dbConfig = require("./dbFiles/dbConfig");
+const fs = require("fs-extra");
+const path = require("path");
+const poppler = require("pdf-poppler");
+
+const TEMP_IMAGE_DIR = path.join(__dirname, "temp_images");
+// Ensure the temp directory exists
+fs.ensureDirSync(TEMP_IMAGE_DIR);
 
 const API_PORT = process.env.PORT || 5000;
 const app = express();
@@ -388,5 +395,45 @@ app.post("/api/add-suggestion", async (req, res) => {
     res.status(500).json({ message: result.message });
   }
 });
+
+app.get("/api/floorplan/:propertyId", async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    const pool = await sql.connect(dbConfig);
+
+    // Fetch floor plan data from the database
+    const result = await pool.request()
+      .input("propertyId", sql.Int, propertyId)
+      .query(`
+        SELECT floor_plan_file_name, floor_plan_file_data 
+        FROM Properties 
+        WHERE property_id = @propertyId
+      `);
+
+    if (result.recordset.length === 0 || !result.recordset[0].floor_plan_file_data) {
+      return res.status(404).json({ message: "Floor plan not found" });
+    }
+
+    const { floor_plan_file_name, floor_plan_file_data } = result.recordset[0];
+
+    // Save the PDF to a temporary file
+    const pdfPath = path.join(TEMP_IMAGE_DIR, `${propertyId}.pdf`);
+    fs.writeFileSync(pdfPath, floor_plan_file_data);
+
+    // Convert PDF to image
+    const opts = { format: "jpeg", out_dir: TEMP_IMAGE_DIR, out_prefix: propertyId, page: 1 };
+    await poppler.convert(pdfPath, opts);
+
+    // Return the image URL
+    res.json({ imageUrl: `/temp_images/${propertyId}-1.jpg` });
+
+  } catch (error) {
+    console.error("❌ Error fetching floor plan:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Serve the temp images statically
+app.use("/temp_images", express.static(TEMP_IMAGE_DIR));
 
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));

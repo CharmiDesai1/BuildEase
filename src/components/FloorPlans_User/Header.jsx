@@ -15,9 +15,9 @@ export function Header() {
 
         {/* Centered navigation links */}
         <ul className={styles.navLinks}>
-          <li><Link to="/developers-landing-page" className={styles.home}>Home</Link></li>
-          <li><Link to="/suggestion-page" className={styles.suggestions}>Suggestions</Link></li>
-          <li><a href="#" className={styles.floorPlans}>Floor plans</a></li>
+        <li><Link to="/home-user-page" className={styles.home}>Home</Link></li>
+          <li><Link to="/suggestion-user-page" className={styles.suggestions}>Suggestions</Link></li>
+          <li><Link to="/floor-plan-user-page" className={styles.floorPlans}>Floor plans</Link></li>
         </ul>
 
         {/* Right-aligned notification & profile icons */}

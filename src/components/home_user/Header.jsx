@@ -14,7 +14,7 @@ export function Header() {
         <ul className={styles.navLinks}>
           <li><Link to="/home-user-page" className={styles.home}>Home</Link></li>
           <li><Link to="/suggestion-user-page" className={styles.suggestions}>Suggestions</Link></li>
-          <li><a href="#" className={styles.FloorPlan}>Floor plans</a></li>
+          <li><Link to="/floor-plan-user-page" className={styles.FloorPlan}>Floor plans</Link></li>
         </ul>
 
         <div className={styles.rightIcons}>
