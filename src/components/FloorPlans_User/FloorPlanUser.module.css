@@ -1,0 +1,407 @@
+.floorPlanUser {
+  background-color: rgba(255, 255, 255, 1);
+  display: flex;
+  padding-top: 0px;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  align-items: stretch;
+  white-space: nowrap;
+}
+
+.header {
+  width: 100%;
+  padding: 0; /* Remove extra padding   */
+  margin: 0; /* Remove extra margin */
+  display: flex;
+  justify-content: space-between; /* Pushes content to the edges */
+  align-items: center;
+  padding: 10px 20px;
+  background-color: white; /* Match background */
+}
+
+.logoIcon {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  margin: 0 auto; /* Center the image */
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.profileIcon {
+  display: block;
+  width: 80px; /* Increase size */
+  height: auto;
+  margin: 0 auto; /* Center the image */
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.buildEase {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center text and image */
+  font-size: 24px;
+  font-weight: bold;
+  color: rgba(85, 155, 198, 1);
+}
+
+.nav {
+  display: flex;
+  margin-left: 25px;
+  width: 100%;
+  max-width: 1796px;
+  align-items: center; /* Ensures all elements align horizontally */
+  justify-content: space-around; 
+  padding: 10px 20px;
+  gap: 40px 62px;
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 22px;
+  color: rgba(85, 155, 198, 1);
+  font-weight: 700;
+  letter-spacing: 0.11px;
+  line-height: 1;
+  margin-bottom: 0;
+  justify-content: space-evenly;
+}
+
+.navLinks {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.navLinks li {
+  margin: 0 10px;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #4a4a4a;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 20px;
+}
+
+.home {
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
+  padding: 28px 23px;
+  text-decoration: none;
+}
+
+.suggestions {
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
+  padding: 28px 67px;
+  color: rgba(255, 255, 255, 1);
+  text-decoration: none;
+}
+
+.floorPlans {
+  border-radius: 15px;
+  background-color: rgba(85, 155, 198, 1);
+  box-shadow: -10px -10px 20px rgba(255, 255, 255, 1);
+  padding: 28px 31px;
+  text-decoration: none;
+}
+
+.rightIcons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 20px;
+}
+
+
+.img {
+  aspect-ratio: 1.00;
+  object-fit: contain;
+  object-position: center;
+  gap: 10px;
+  width: 58px;
+  margin-top: 0px;
+  cursor: pointer;
+}
+
+.iconWrapper {
+  border-radius: 43px;
+  background-color: rgba(249, 249, 249, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.08);
+  width: 80px;
+  height: 75px;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+.floorPlanImage {
+  max-width: 90vw;  /* Limits image width to 90% of the viewport */
+  max-height: 80vh; /* Prevents image from overflowing vertically */
+  width: auto;      /* Ensures proper scaling */
+  height: auto;    
+  display: block;    /* Removes unnecessary spacing */
+  margin: 0 auto;
+}
+
+.viewerControls {
+  flex-direction: column;
+  align-items: start;
+  width: 100%;
+  margin-top: 46px;
+  padding: 0 68px;
+  display: flex;
+}
+
+.sortingSection {
+  color: #559bc6;
+  align-items: start;
+  gap: 19px;
+  display: flex;
+}
+
+.menuButton {
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.sortby {
+  margin-top: 15px;
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.floorPlanCard {
+  background-color: #f3f3f3;
+  border-radius: 20px; /* Reduce excessive rounding */
+  width: 100%; /* Prevent full-width stretching */
+  max-width: 1400px; /* Set a reasonable max width */
+  box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Ensures content stays centered */
+  justify-content: center; /* Centers vertically */
+  text-align: center;
+  overflow: hidden;
+}
+
+.floorplanTitle {
+  color: #559bc6;
+  letter-spacing: 0.2px;
+  justify-content: center;
+  text-align: center;
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.planContent {
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 40px 52px;
+  width: 100%;
+  display: flex;
+}
+
+.controlIcon {
+  aspect-ratio: 1.11;
+  object-fit: contain;
+  object-position: center;
+  width: 31px;
+  margin: auto 0;
+}
+
+.planDetails {
+  flex-wrap: wrap;
+  flex: 1;
+  align-items: flex-start;
+  gap: 21px;
+  display: flex;
+}
+
+.planDetailImage {
+  max-width: 1200px; /* Set a maximum width */
+  max-height: 500px; /* Set a maximum height */
+  display: block;
+  margin: 0 auto; /* Centers the image horizontally */
+  max-width: 90%; /* Ensures the image doesn't exceed the card width */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: contain; /* Prevents distortion */
+  border-radius: 10px; /* Optional: for rounded corners */
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.iconGroup {
+  align-self: start;
+  margin-top: 50px;
+}
+
+.iconContainer {
+  flex-direction: column;
+  align-items: start;
+  margin-left: -250px;
+  display: flex;
+}
+
+.featureIcon {
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: center;
+  width: 82px;
+  margin-top: 67px;
+}
+
+.featureIcon:first-child {
+  margin-top: 0;
+}
+
+.additionalIcon {
+  aspect-ratio: 1.07;
+  object-fit: contain;
+  object-position: center;
+  width: 31px;
+  margin-top: 101px;
+}
+
+.commentIcon {
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: center;
+  align-self: start;
+  width: 100px;
+  max-width: 100%;
+}
+
+.commentContainer {
+  display: flex;
+  align-items: center; /* Aligns items vertically */
+  justify-content: space-between; /* Ensures spacing is equal */
+  width: 100%; /* Ensures full width */
+  gap: 15px; /* Reduce gap for proper alignment */
+  margin-bottom: 20px;
+}
+
+.commentInput {
+  color: #b0b0b0;
+  background-color: #559bc621;
+  border-radius: 43px;
+  flex-wrap: wrap;
+  flex: 1;
+  align-items: stretch;
+  gap: 20px;
+  padding: 15px 30px;
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 31px;
+  display: flex;
+}
+
+.inputIcon {
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: center;
+  width: 57px;
+}
+
+.commentTextarea {
+  flex: 1;
+  align-self: start;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  resize: none;
+}
+
+.sendButton {
+  aspect-ratio: 2.536;
+  position: relative;
+  width: 150px;
+  margin-right: 20px;
+  border: none;
+  cursor: pointer;
+  background-color: #559bc6;
+  border-radius: 20px;
+}
+
+.sendBackground {
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.sendText {
+  color: #fff;
+  position: relative;
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.sendIcon {
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: center;
+  width: 30px;
+  margin-left: 10px;
+}
+
+@media (width <= 991px) {
+  .floorPlanUser {
+    padding-top: 100px;
+  }
+
+  .floorPlanImage {
+    max-width: 100%;
+  }
+
+  .viewerControls {
+    max-width: 100%;
+    margin-top: 40px;
+    padding: 0 20px;
+  }
+
+  .floorPlanCard {
+    max-width: 100%;
+    margin-top: 40px;
+  }
+
+  .floorplanTitle {
+    max-width: 100%;
+  }
+
+  .featureIcon {
+    margin-left: 9px;
+    margin-top: 40px;
+  }
+
+  .additionalIcon {
+    margin-top: 40px;
+  }
+
+  .commentInput {
+    padding: 20px;
+  }
+
+  .sendButton {
+    white-space: initial;
+    padding: 20px;
+  }
+}

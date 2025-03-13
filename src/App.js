@@ -11,6 +11,7 @@ import { LoginStartPage } from './components/Login/LoginStartPage';
 import { SignupStartPage } from './components/Signup/SignupStartPage';
 import { LoginUser } from './components/Login/LoginUser';
 import { SignupUser } from './components/Signup/SignupUser';
+import FloorplanUser from './components/FloorPlans_User/FloorPlanUser';
 
 function App() {
   const [returnedData, setReturnedData] = useState(['hello']);
@@ -43,6 +44,7 @@ function App() {
         <Route path="/floor-plan-page" element={<FloorPlanPage />} />
         <Route path="/home-user-page" element={<HomeUserPage />} />
         <Route path="/suggestion-user-page" element={<SuggestionUserPage />} />
+        <Route path="/floor-plan-user-page" element={<FloorplanUser />} />
       </Routes>
       </div>
     </Router>
