@@ -14,6 +14,7 @@ const path = require("path");
 const poppler = require("pdf-poppler");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
+const PDFDocument = require("pdfkit");
 
 const TEMP_IMAGE_DIR = path.join(__dirname, "temp_images");
 // Ensure the temp directory exists
@@ -55,7 +56,7 @@ passport.use(
 
         if (developer) {
           console.log("✅ Developer Login Successful");
-          return done(null, { email, user_id: developer.user_id, role: "developer" });
+          return done(null, { email, user_id: developer.developer_id, role: "developer" });
         } 
         else if (user) {
           console.log("✅ User Login Successful");
@@ -93,11 +94,11 @@ app.get(
 
     if (!req.user || !req.user.user_id) {
       console.error("❌ Google Login Failed: Missing user ID");
-      return res.redirect("http://localhost:3000/login?error=user_id_missing");
+      return res.redirect("http://localhost:3000/login?error=id_missing");
     }
 
     if (req.user.role === "developer") {
-      res.redirect(`http://localhost:3000/developers-landing-page?userId=${req.user.user_id}`);
+      res.redirect(`http://localhost:3000/developers-landing-page?developerId=${req.user.developer_id}`);
     } else {
       res.redirect(`http://localhost:3000/home-user-page?userId=${req.user.user_id}`);
     }
@@ -191,6 +192,63 @@ app.get("/projects", async (req, res) => {
   } catch (error) {
     console.error("❌ Error fetching projects:", error);
     res.status(500).send("Internal Server Error: " + error.message);
+  }
+});
+
+app.get("/annotated/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pool = await sql.connect(dbConfig);
+    
+    const result = await pool.request()
+      .input("id", sql.Int, id)
+      .query(`
+        SELECT annotated_floor_plan_file_name, annotated_floor_plan_file_data 
+        FROM Properties 
+        WHERE property_id = @id
+      `);
+
+    if (result.recordset.length === 0 || !result.recordset[0].annotated_floor_plan_file_data) {
+      return res.status(404).json({ message: "Annotated file not found" });
+    }
+
+    const { annotated_floor_plan_file_name, annotated_floor_plan_file_data } = result.recordset[0];
+
+    if (!annotated_floor_plan_file_data) {
+      return res.status(400).json({ message: "No annotated image available" });
+    }
+    const imageBuffer = Buffer.from(annotated_floor_plan_file_data);
+    const tempDir = path.join(__dirname, "temp");
+    fs.ensureDirSync(tempDir);
+    const imagePath = path.join(tempDir, `annotated_${id}.png`);
+    const pdfPath = path.join(tempDir, `annotated_${id}.pdf`);
+    fs.writeFileSync(imagePath, imageBuffer);
+    const doc = new PDFDocument({ autoFirstPage: false });
+    const stream = fs.createWriteStream(pdfPath);
+
+    doc.pipe(stream);
+    doc.addPage({ size: "A4" });
+    doc.image(imagePath, {
+      fit: [500, 700], 
+      align: "center",
+      valign: "center",
+    });
+    doc.end();
+    stream.on("finish", () => {
+      res.setHeader("Content-Disposition", `inline; filename="annotated_${id}.pdf"`);
+      res.setHeader("Content-Type", "application/pdf");
+      console.log(`✅ Sending PDF: ${annotated_floor_plan_file_name} (ID: ${id})`);
+
+      const fileStream = fs.createReadStream(pdfPath);
+      fileStream.pipe(res);
+      fileStream.on("close", () => {
+        fs.unlinkSync(imagePath);
+        fs.unlinkSync(pdfPath);
+      });
+    });
+  } catch (error) {
+    console.error(`❌ Error fetching annotated image (ID: ${id}):`, error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -309,7 +367,6 @@ app.get("/download-property/:userId/:propertyId/:fileType", async (req, res) => 
   }
 });
 
-// ✅ Fetch Suggestions for a Property
 app.get("/api/suggestions", async (req, res) => {
   const { propertyId } = req.query;
 
@@ -433,7 +490,6 @@ app.post("/save-annotation", upload.single("file"), async (req, res) => {
 
     let pool = await sql.connect(dbConfig);
 
-    // 1️⃣ Insert the annotation into the Annotations table
     const annotationQuery = `
       INSERT INTO Annotations (user_id, property_id, annotated_file_name, annotated_file_data) 
       VALUES (@userId, @propertyId, @fileName, @fileData);
@@ -447,7 +503,6 @@ app.post("/save-annotation", upload.single("file"), async (req, res) => {
       .input("fileData", sql.VarBinary, fileBuffer)
       .query(annotationQuery);
 
-    // 2️⃣ Update the Properties table with the annotated floor plan
     const updatePropertyQuery = `
       UPDATE Properties 
       SET annotated_floor_plan_file_name = @fileName, 

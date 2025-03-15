@@ -181,12 +181,23 @@ const getProjects = async () => {
 };
 
 async function fetchProjects() {
-    const pool = await sql.connect(dbConfig);
-    const result = await pool
-      .request()
-      .query("SELECT id, project_name, apartment_type, carpet_area, development_stage, rating, image_url FROM PdfDocuments");
-    return result.recordset;
-  }
+  const pool = await sql.connect(dbConfig);
+  const result = await pool
+    .request()
+    .query(`
+      SELECT 
+        p.property_id AS id,
+        p.project_name,
+        p.apartment_type,
+        p.carpet_area,
+        p.development_stage,
+        p.image_url,
+        a.annotated_file_name
+      FROM Properties p
+      LEFT JOIN Annotations a ON p.property_id = a.property_id
+    `);
+  return result.recordset;
+}
   
   async function getPdfById(id) {
     if (!id || isNaN(id)) {
@@ -204,7 +215,6 @@ async function fetchProjects() {
     return result.recordset[0];
   }
 
-  // Fetch user properties (linked from UserProperties table)
 async function getUserProperties(userId) {
   if (!userId || isNaN(userId)) {
     throw new Error("Invalid User ID.");

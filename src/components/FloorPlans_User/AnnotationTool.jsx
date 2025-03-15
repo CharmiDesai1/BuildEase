@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import styles from "./AnnotationTool.module.css";
 
-export const AnnotationTool = ({ imageUrl, propertyId, userId }) => {
+export const AnnotationTool = ({ imageUrl, propertyId }) => {
+  const [userId, setUserId] = useState(null);
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
   const [annotations, setAnnotations] = useState([]);
@@ -14,6 +15,25 @@ export const AnnotationTool = ({ imageUrl, propertyId, userId }) => {
   const [text, setText] = useState("");
 
   useEffect(() => {
+    let storedUserId = localStorage.getItem("userId");
+    const urlParams = new URLSearchParams(window.location.search);
+    const googleUserId = urlParams.get("userId");
+
+    if (googleUserId) {
+      localStorage.setItem("userId", googleUserId);
+      storedUserId = googleUserId;
+      window.history.replaceState(null, "", "/floor-plans");
+    }
+
+    if (storedUserId) {
+      setUserId(storedUserId);
+    } else {
+      console.error("User ID not found.");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!userId || !propertyId) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
@@ -116,9 +136,12 @@ export const AnnotationTool = ({ imageUrl, propertyId, userId }) => {
   };
 
   const findAnnotationAt = (x, y) => {
+    const ctx = canvasRef.current.getContext("2d");
+
     return annotations.find((annotation) => {
       if (annotation.type === "text") {
-        return Math.abs(annotation.x - x) < 20 && Math.abs(annotation.y - y) < 20;
+        const textWidth = ctx.measureText(annotation.text).width;
+        return x >= annotation.x && x <= annotation.x + textWidth && Math.abs(annotation.y - y) < 10;
       } else if (annotation.type === "circle") {
         return Math.sqrt((annotation.x - x) ** 2 + (annotation.y - y) ** 2) < annotation.radius;
       } else if (annotation.type === "square") {
@@ -146,12 +169,19 @@ export const AnnotationTool = ({ imageUrl, propertyId, userId }) => {
 
   const saveAnnotations = async () => {
     const canvas = canvasRef.current;
+    console.log("User ID before sending request:", userId);
+  
+    if (!userId || isNaN(userId)) {
+      alert("Invalid userId: " + userId);
+      return;
+    }
+  
     canvas.toBlob(async (blob) => {
       const formData = new FormData();
       formData.append("file", blob, "annotated-floorplan.png");
       formData.append("propertyId", propertyId);
       formData.append("userId", userId);
-
+  
       try {
         const response = await axios.post("http://localhost:5000/save-annotation", formData);
         alert(response.data.message);
@@ -174,18 +204,19 @@ export const AnnotationTool = ({ imageUrl, propertyId, userId }) => {
         <button onClick={() => setTool("eraser")}>🗑 Eraser</button>
         <button onClick={() => setTool("move")}>✋ Move</button>
       </div>
-      {tool === "text" && (
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Enter text"
-        />
-      )}
-
-      <div className={styles.canvasWrapper} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
-        <img ref={imageRef} src={imageUrl} alt="Floor Plan" className={styles.hiddenImage} />
-        <canvas ref={canvasRef} className={styles.annotationCanvas} />
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        {tool === "text" && (
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Enter text"
+          />
+        )}
+        <div className={styles.canvasWrapper} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
+          <img ref={imageRef} src={imageUrl} alt="Floor Plan" className={styles.hiddenImage} />
+          <canvas ref={canvasRef} className={styles.annotationCanvas} />
+        </div>
       </div>
 
       <button onClick={saveAnnotations}>Save Annotations</button>

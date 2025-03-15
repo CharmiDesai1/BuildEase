@@ -26,7 +26,7 @@ const ProjectList = () => {
             area={project.carpet_area}
             status={project.development_stage}
             imageSrc={project.image_url}
-            hasViewAnnotated={true}
+            annotatedFile={project.annotated_file_name} 
           />
         ))
       ) : (
@@ -44,10 +44,14 @@ export const ProjectCard = ({
   area,
   status,
   imageSrc,
-  hasViewAnnotated
+  annotatedFile
 }) => {
   const handleDownload = () => {
     window.open(`http://localhost:5000/download/${id}`, "_blank");
+  };
+
+  const handleViewAnnotated = () => {
+    window.open(`http://localhost:5000/annotated/${id}`, "_blank");
   };
 
   return (
@@ -80,14 +84,12 @@ export const ProjectCard = ({
           </div>
         </div>
         <div className={styles.actionsColumn}>
-          {hasViewAnnotated && (
-            <button className={styles.viewAnnotatedButton}>
+        <button className={styles.viewAnnotatedButton} onClick={handleViewAnnotated}>
               VIEW ANNOTATED PLANS
-              <span className={styles.viewIconContainer}>
-                <img src={viewIcon} alt="View Icon" className={styles.viewIcon} />
-              </span>
-            </button>
-          )}
+            <span className={styles.viewIconContainer}>
+              <img src={viewIcon} alt="View Icon" className={styles.viewIcon} />
+            </span>
+          </button>
           <button className={styles.downloadButton} onClick={handleDownload}>
             DOWNLOAD
             <span className={styles.downloadIconContainer}>
