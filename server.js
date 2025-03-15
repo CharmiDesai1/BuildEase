@@ -12,6 +12,8 @@ const dbConfig = require("./dbFiles/dbConfig");
 const fs = require("fs-extra");
 const path = require("path");
 const poppler = require("pdf-poppler");
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
 
 const TEMP_IMAGE_DIR = path.join(__dirname, "temp_images");
 // Ensure the temp directory exists
@@ -382,13 +384,10 @@ app.post("/api/vote", async (req, res) => {
 
 app.post("/api/add-suggestion", async (req, res) => {
   const { property_id, user_id, suggestion_text } = req.body;
-
   if (!property_id || !user_id || !suggestion_text) {
     return res.status(400).json({ message: "Missing required fields." });
   }
-
   const result = await dbOperation.insertSuggestion(property_id, user_id, suggestion_text);
-
   if (result.success) {
     res.status(200).json({ message: result.message });
   } else {
@@ -400,8 +399,6 @@ app.get("/api/floorplan/:propertyId", async (req, res) => {
   try {
     const { propertyId } = req.params;
     const pool = await sql.connect(dbConfig);
-
-    // Fetch floor plan data from the database
     const result = await pool.request()
       .input("propertyId", sql.Int, propertyId)
       .query(`
@@ -413,18 +410,11 @@ app.get("/api/floorplan/:propertyId", async (req, res) => {
     if (result.recordset.length === 0 || !result.recordset[0].floor_plan_file_data) {
       return res.status(404).json({ message: "Floor plan not found" });
     }
-
     const { floor_plan_file_name, floor_plan_file_data } = result.recordset[0];
-
-    // Save the PDF to a temporary file
     const pdfPath = path.join(TEMP_IMAGE_DIR, `${propertyId}.pdf`);
     fs.writeFileSync(pdfPath, floor_plan_file_data);
-
-    // Convert PDF to image
     const opts = { format: "jpeg", out_dir: TEMP_IMAGE_DIR, out_prefix: propertyId, page: 1 };
     await poppler.convert(pdfPath, opts);
-
-    // Return the image URL
     res.json({ imageUrl: `/temp_images/${propertyId}-1.jpg` });
 
   } catch (error) {
@@ -433,7 +423,50 @@ app.get("/api/floorplan/:propertyId", async (req, res) => {
   }
 });
 
-// Serve the temp images statically
 app.use("/temp_images", express.static(TEMP_IMAGE_DIR));
+
+app.post("/save-annotation", upload.single("file"), async (req, res) => {
+  try {
+    const { propertyId, userId } = req.body;
+    const fileBuffer = req.file.buffer;
+    const fileName = req.file.originalname;
+
+    let pool = await sql.connect(dbConfig);
+
+    // 1️⃣ Insert the annotation into the Annotations table
+    const annotationQuery = `
+      INSERT INTO Annotations (user_id, property_id, annotated_file_name, annotated_file_data) 
+      VALUES (@userId, @propertyId, @fileName, @fileData);
+    `;
+
+    await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .input("propertyId", sql.Int, propertyId)
+      .input("fileName", sql.VarChar, fileName)
+      .input("fileData", sql.VarBinary, fileBuffer)
+      .query(annotationQuery);
+
+    // 2️⃣ Update the Properties table with the annotated floor plan
+    const updatePropertyQuery = `
+      UPDATE Properties 
+      SET annotated_floor_plan_file_name = @fileName, 
+          annotated_floor_plan_file_data = @fileData
+      WHERE property_id = @propertyId;
+    `;
+
+    await pool
+      .request()
+      .input("fileName", sql.VarChar, fileName)
+      .input("fileData", sql.VarBinary, fileBuffer)
+      .input("propertyId", sql.Int, propertyId)
+      .query(updatePropertyQuery);
+
+    res.status(200).json({ message: "Annotation saved and Properties table updated successfully!" });
+  } catch (error) {
+    console.error("Error saving annotation and updating properties table:", error);
+    res.status(500).json({ message: "Error saving annotation and updating properties table" });
+  }
+});
 
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));
