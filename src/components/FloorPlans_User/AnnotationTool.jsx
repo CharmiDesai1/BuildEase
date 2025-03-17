@@ -8,6 +8,7 @@ export const AnnotationTool = ({ imageUrl, propertyId }) => {
   const imageRef = useRef(null);
   const [annotations, setAnnotations] = useState([]);
   const [tool, setTool] = useState("freehand");
+  const [penColor, setPenColor] = useState("#ff0000");
   const [drawing, setDrawing] = useState(false);
   const [freehandPath, setFreehandPath] = useState([]);
   const [startPoint, setStartPoint] = useState(null);
@@ -57,8 +58,8 @@ export const AnnotationTool = ({ imageUrl, propertyId }) => {
     ctx.drawImage(imageRef.current, 0, 0);
 
     annotations.forEach((annotation) => {
-      ctx.strokeStyle = "red";
-      ctx.fillStyle = "red";
+      ctx.strokeStyle = annotation.color || "#ff0000";
+      ctx.fillStyle = annotation.color || "#ff0000";
       ctx.lineWidth = 2;
 
       if (annotation.type === "text") {
@@ -85,7 +86,7 @@ export const AnnotationTool = ({ imageUrl, propertyId }) => {
     const y = event.clientY - rect.top;
 
     if (tool === "text") {
-        setAnnotations([...annotations, { type: "text", text, x, y }]);
+        setAnnotations([...annotations, { type: "text", text, x, y, color: penColor  }]);
         setText("");
     } else if (tool === "move") {
       const foundAnnotation = findAnnotationAt(x, y);
@@ -117,15 +118,15 @@ export const AnnotationTool = ({ imageUrl, propertyId }) => {
     const y = event.clientY - rect.top;
 
     if (drawing && tool === "freehand") {
-      setAnnotations([...annotations, { type: "freehand", path: freehandPath }]);
+      setAnnotations([...annotations, { type: "freehand", path: freehandPath, color: penColor  }]);
       setFreehandPath([]);
     } else if (tool === "circle" && startPoint) {
       const radius = Math.sqrt((x - startPoint.x) ** 2 + (y - startPoint.y) ** 2);
-      setAnnotations([...annotations, { type: "circle", x: startPoint.x, y: startPoint.y, radius }]);
+      setAnnotations([...annotations, { type: "circle", x: startPoint.x, y: startPoint.y, radius, color: penColor  }]);
     } else if (tool === "square" && startPoint) {
       const width = x - startPoint.x;
       const height = y - startPoint.y;
-      setAnnotations([...annotations, { type: "square", x: startPoint.x, y: startPoint.y, width, height }]);
+      setAnnotations([...annotations, { type: "square", x: startPoint.x, y: startPoint.y, width, height, color: penColor  }]);
     } else if (selectedAnnotation && tool === "move") {
       moveAnnotation(selectedAnnotation, x, y);
       setSelectedAnnotation(null);
@@ -195,7 +196,6 @@ export const AnnotationTool = ({ imageUrl, propertyId }) => {
   return (
     <div className={styles.annotationContainer}>
       <h2>Annotating Floor Plan</h2>
-
       <div className={styles.toolbar}>
         <button onClick={() => setTool("freehand")}>🖍 Freehand</button>
         <button onClick={() => setTool("text")}>🔤 Text</button>
@@ -203,6 +203,15 @@ export const AnnotationTool = ({ imageUrl, propertyId }) => {
         <button onClick={() => setTool("square")}>⬛ Square</button>
         <button onClick={() => setTool("eraser")}>🗑 Eraser</button>
         <button onClick={() => setTool("move")}>✋ Move</button>
+        <button className={styles.colorPickerButton}>
+          🎨 Color
+          <input 
+            type="color" 
+            value={penColor} 
+            onChange={(e) => setPenColor(e.target.value)} 
+            className={styles.colorPicker}
+          />
+        </button>
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         {tool === "text" && (

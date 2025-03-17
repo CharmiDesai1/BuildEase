@@ -185,7 +185,7 @@ async function fetchProjects() {
   const result = await pool
     .request()
     .query(`
-      SELECT 
+      SELECT DISTINCT
         p.property_id AS id,
         p.project_name,
         p.apartment_type,

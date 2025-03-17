@@ -11,7 +11,7 @@ export const FloorPlanViewer = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showAnnotation, setShowAnnotation] = useState(false); // ✅ Toggle for annotation tool
+  const [showAnnotation, setShowAnnotation] = useState(false);
 
   useEffect(() => {
     let storedUserId = localStorage.getItem("userId");
