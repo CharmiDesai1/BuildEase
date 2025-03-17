@@ -543,7 +543,7 @@ app.get("/api/floorplan/:propertyId", async (req, res) => {
     const result = await pool.request()
       .input("propertyId", sql.Int, propertyId)
       .query(`
-        SELECT floor_plan_file_name, floor_plan_file_data 
+        SELECT project_name, floor_plan_file_name, floor_plan_file_data 
         FROM Properties 
         WHERE property_id = @propertyId
       `);
@@ -551,14 +551,17 @@ app.get("/api/floorplan/:propertyId", async (req, res) => {
     if (result.recordset.length === 0 || !result.recordset[0].floor_plan_file_data) {
       return res.status(404).json({ message: "Floor plan not found" });
     }
-    const { floor_plan_file_name, floor_plan_file_data } = result.recordset[0];
+    const { project_name, floor_plan_file_name, floor_plan_file_data } = result.recordset[0];
     const pdfPath = path.join(TEMP_IMAGE_DIR, `${propertyId}.pdf`);
     fs.writeFileSync(pdfPath, floor_plan_file_data);
     const opts = { format: "jpeg", out_dir: TEMP_IMAGE_DIR, out_prefix: propertyId, page: 1 };
     await poppler.convert(pdfPath, opts);
-    res.json({ imageUrl: `/temp_images/${propertyId}-1.jpg` });
+    res.json({ 
+      propertyName: project_name,
+      imageUrl: `/temp_images/${propertyId}-1.jpg` 
+    });
 
-  } catch (error) {
+  } catch (error){
     console.error("❌ Error fetching floor plan:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }

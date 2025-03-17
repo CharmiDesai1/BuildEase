@@ -12,6 +12,7 @@ export const FloorPlanViewer = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAnnotation, setShowAnnotation] = useState(false);
+  const [propertyName, setPropertyName] = useState("");
 
   useEffect(() => {
     let storedUserId = localStorage.getItem("userId");
@@ -60,6 +61,7 @@ export const FloorPlanViewer = () => {
       if (!response.ok) throw new Error("Failed to load floor plan");
       const data = await response.json();
       setImageUrl(data.imageUrl);
+      setPropertyName(data.propertyName);
     } catch (err) {
       setError("Failed to load floor plan.");
     } finally {
@@ -75,9 +77,10 @@ export const FloorPlanViewer = () => {
     <section className={styles.floorPlanViewer}>
       <div className={styles.viewerControls}>
         <article className={styles.floorPlanCard}>
-          <h2 className={styles.floorplanTitle}>Floor plan for Shridhar Athens</h2>
-
-          {!showAnnotation ? ( // ✅ Show either floor plan or annotation tool
+        <h2 className={styles.floorplanTitle}>
+          Floor plan for {propertyName} {/* ✅ Dynamically fetch property name */}
+        </h2>
+          {!showAnnotation ? ( 
             <div className={styles.planContent}>
               <div className={styles.planDetails}>
                 {imageUrl ? (
