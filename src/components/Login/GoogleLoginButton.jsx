@@ -12,7 +12,6 @@ const GoogleLoginButton = () => {
         alt="Google Logo"
         style={logoStyle}
       />
-      Login with Google
     </button>
   );
 };
@@ -21,7 +20,6 @@ const buttonStyle = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  padding: "10px 20px",
   backgroundColor: "#fff",
   border: "1px solid #ddd",
   borderRadius: "5px",
@@ -32,7 +30,6 @@ const buttonStyle = {
 const logoStyle = {
   width: "20px",
   height: "20px",
-  marginRight: "10px",
 };
 
 export default GoogleLoginButton;
