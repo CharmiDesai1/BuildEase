@@ -186,6 +186,7 @@ export const AnnotationTool = ({ imageUrl, propertyId }) => {
       try {
         const response = await axios.post("http://localhost:5000/save-annotation", formData);
         alert(response.data.message);
+        window.location.reload();
       } catch (error) {
         console.error("Error saving annotation:", error);
         alert("Failed to save annotation.");

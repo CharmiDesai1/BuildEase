@@ -17,8 +17,9 @@ const upload = multer({ storage: multer.memoryStorage() });
 const PDFDocument = require("pdfkit");
 
 const TEMP_IMAGE_DIR = path.join(__dirname, "temp_images");
-// Ensure the temp directory exists
 fs.ensureDirSync(TEMP_IMAGE_DIR);
+const UPLOADS_DIR = path.join(__dirname, "uploads", "annotated");
+fs.ensureDirSync(UPLOADS_DIR);
 
 const API_PORT = process.env.PORT || 5000;
 const app = express();
@@ -192,6 +193,89 @@ app.get("/projects", async (req, res) => {
   } catch (error) {
     console.error("❌ Error fetching projects:", error);
     res.status(500).send("Internal Server Error: " + error.message);
+  }
+});
+
+app.get("/annotations/:property_id", async (req, res) => {
+  try {
+    const { property_id } = req.params;
+
+    if (!property_id) {
+      return res.status(400).json({ error: "Property ID is required" });
+    }
+
+    console.log(`📌 Fetching annotations for property_id: ${property_id}`);
+
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("property_id", sql.Int, property_id)
+      .query(`
+        SELECT DISTINCT
+            a.user_id, 
+            u.full_name AS username, 
+            a.annotated_file_name
+        FROM Annotations a
+        JOIN Users u ON a.user_id = u.user_id
+        WHERE a.property_id = @property_id
+      `);
+
+    if (result.recordset.length === 0) {
+      console.log(`❌ No annotations found for property_id: ${property_id}`);
+      return res.status(404).json({ message: "No annotations found for this property" });
+    }
+
+    res.json(result.recordset);
+  } catch (error) {
+    console.error(`❌ Error fetching annotations for property ID: ${req.params.property_id}`, error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/annotated/:property_id/:user_id/:file_name", async (req, res) => {
+  try {
+    const { property_id, user_id, file_name } = req.params;
+    const imagePath = path.join(UPLOADS_DIR, property_id, user_id, file_name);
+
+    console.log(`🔍 Checking file at path: ${imagePath}`);
+
+    if (!fs.existsSync(imagePath)) {
+      console.warn(`⚠️ File not found locally. Attempting to fetch from database...`);
+      const pool = await sql.connect(dbConfig);
+      const result = await pool
+        .request()
+        .input("property_id", sql.Int, property_id)
+        .input("user_id", sql.Int, user_id)
+        .input("file_name", sql.NVarChar, file_name)
+        .query(`
+          SELECT annotated_file_data 
+          FROM Annotations 
+          WHERE property_id = @property_id 
+          AND user_id = @user_id 
+          AND annotated_file_name = @file_name
+        `);
+
+      if (result.recordset.length === 0 || !result.recordset[0].annotated_file_data) {
+        console.error(`❌ File not found in database.`);
+        return res.status(404).json({ error: "File not found" });
+      }
+
+      const fileData = result.recordset[0].annotated_file_data;
+      fs.ensureDirSync(path.dirname(imagePath));
+      fs.writeFileSync(imagePath, fileData);
+      console.log(`✅ File successfully retrieved from database and saved: ${imagePath}`);
+    }
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `inline; filename="${file_name}.pdf"`);
+    const doc = new PDFDocument();
+    doc.pipe(res);
+    doc.image(imagePath, { fit: [500, 700], align: "center", valign: "center" });
+    doc.end();
+
+  } catch (error) {
+    console.error("❌ Error processing request:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -491,8 +575,17 @@ app.post("/save-annotation", upload.single("file"), async (req, res) => {
     let pool = await sql.connect(dbConfig);
 
     const annotationQuery = `
-      INSERT INTO Annotations (user_id, property_id, annotated_file_name, annotated_file_data) 
-      VALUES (@userId, @propertyId, @fileName, @fileData);
+      MERGE INTO Annotations AS target
+      USING (SELECT @userId AS user_id, @propertyId AS property_id) AS source
+      ON target.user_id = source.user_id AND target.property_id = source.property_id
+      WHEN MATCHED THEN
+          UPDATE SET 
+              annotated_file_name = @fileName, 
+              annotated_file_data = @fileData,
+              annotation_timestamp = GETDATE()  -- Updates timestamp
+      WHEN NOT MATCHED THEN
+          INSERT (user_id, property_id, annotated_file_name, annotated_file_data, annotation_timestamp)
+          VALUES (@userId, @propertyId, @fileName, @fileData, GETDATE());
     `;
 
     await pool
@@ -503,21 +596,7 @@ app.post("/save-annotation", upload.single("file"), async (req, res) => {
       .input("fileData", sql.VarBinary, fileBuffer)
       .query(annotationQuery);
 
-    const updatePropertyQuery = `
-      UPDATE Properties 
-      SET annotated_floor_plan_file_name = @fileName, 
-          annotated_floor_plan_file_data = @fileData
-      WHERE property_id = @propertyId;
-    `;
-
-    await pool
-      .request()
-      .input("fileName", sql.VarChar, fileName)
-      .input("fileData", sql.VarBinary, fileBuffer)
-      .input("propertyId", sql.Int, propertyId)
-      .query(updatePropertyQuery);
-
-    res.status(200).json({ message: "Annotation saved and Properties table updated successfully!" });
+    res.status(200).json({ message: "Annotation saved updated successfully!" });
   } catch (error) {
     console.error("Error saving annotation and updating properties table:", error);
     res.status(500).json({ message: "Error saving annotation and updating properties table" });
