@@ -70,8 +70,10 @@ export const ProjectCard = ({
   };
 
   const handleViewAnnotated = (userId, annotatedFile) => {
-    window.open(`http://localhost:5000/annotated/${id}/${userId}/${annotatedFile}`, "_blank");
+    const timestamp = new Date().getTime();
+    window.open(`http://localhost:5000/annotated/${id}/${userId}/${annotatedFile}?t=${timestamp}`, "_blank");
   };
+  
 
   useEffect(() => {
     const handleClickOutside = (event) => {

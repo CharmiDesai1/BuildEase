@@ -237,37 +237,41 @@ app.get("/annotated/:property_id/:user_id/:file_name", async (req, res) => {
     const { property_id, user_id, file_name } = req.params;
     const imagePath = path.join(UPLOADS_DIR, property_id, user_id, file_name);
 
-    console.log(`🔍 Checking file at path: ${imagePath}`);
+    console.log(`🔍 Fetching file from database for: ${property_id}, ${user_id}, ${file_name}`);
 
-    if (!fs.existsSync(imagePath)) {
-      console.warn(`⚠️ File not found locally. Attempting to fetch from database...`);
-      const pool = await sql.connect(dbConfig);
-      const result = await pool
-        .request()
-        .input("property_id", sql.Int, property_id)
-        .input("user_id", sql.Int, user_id)
-        .input("file_name", sql.NVarChar, file_name)
-        .query(`
-          SELECT annotated_file_data 
-          FROM Annotations 
-          WHERE property_id = @property_id 
-          AND user_id = @user_id 
-          AND annotated_file_name = @file_name
-        `);
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("property_id", sql.Int, property_id)
+      .input("user_id", sql.Int, user_id)
+      .input("file_name", sql.NVarChar, file_name)
+      .query(`
+        SELECT annotated_file_data 
+        FROM Annotations 
+        WHERE property_id = @property_id 
+        AND user_id = @user_id 
+        AND annotated_file_name = @file_name
+      `);
 
-      if (result.recordset.length === 0 || !result.recordset[0].annotated_file_data) {
-        console.error(`❌ File not found in database.`);
-        return res.status(404).json({ error: "File not found" });
-      }
-
-      const fileData = result.recordset[0].annotated_file_data;
-      fs.ensureDirSync(path.dirname(imagePath));
-      fs.writeFileSync(imagePath, fileData);
-      console.log(`✅ File successfully retrieved from database and saved: ${imagePath}`);
+    if (result.recordset.length === 0 || !result.recordset[0].annotated_file_data) {
+      console.error(`❌ File not found in database.`);
+      return res.status(404).json({ error: "File not found" });
     }
+
+    const fileData = result.recordset[0].annotated_file_data;
+
+    // 🔥 Force update: Delete old file before writing the new one
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
+
+    fs.ensureDirSync(path.dirname(imagePath));
+    fs.writeFileSync(imagePath, fileData);
+    console.log(`✅ Updated file saved at: ${imagePath}`);
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `inline; filename="${file_name}.pdf"`);
+
     const doc = new PDFDocument();
     doc.pipe(res);
     doc.image(imagePath, { fit: [500, 700], align: "center", valign: "center" });
