@@ -5,6 +5,8 @@ import downloadIcon from "./download.png";
 import suggestionIcon from "./suggestion.png";
 import progressIcon from "./progress.png"; 
 import calendarIcon from "./calendar.png";
+import TimeLineIcon from "./timeline.jpg";
+import { useNavigate } from "react-router-dom";
 
 export const PropertyCard = ({
   id,
@@ -20,6 +22,7 @@ export const PropertyCard = ({
   const handleDownload = (fileType) => {
     window.open(`http://localhost:5000/download-property/${userId}/${id}/${fileType}`, "_blank");
   };
+  const navigate = useNavigate();
 
   return (
     <article className={styles.projectCard}>
@@ -74,6 +77,12 @@ export const PropertyCard = ({
             DOWNLOAD BROCHURE
             <span className={styles.downloadIconContainer}>
               <img src={downloadIcon} alt="Download Icon" className={styles.downloadIcon} />
+            </span>
+          </button>
+          <button className={styles.downloadButton} onClick={() => navigate("/timeline-user-page")}>
+            TIMELINE
+            <span className={styles.downloadIconContainer}>
+              <img src={TimeLineIcon} alt="TimeLine Icon" className={styles.downloadIcon} />
             </span>
           </button>
         </div>

@@ -12,6 +12,7 @@ import { SignupStartPage } from './components/Signup/SignupStartPage';
 import { LoginUser } from './components/Login/LoginUser';
 import { SignupUser } from './components/Signup/SignupUser';
 import FloorplanUser from './components/FloorPlans_User/FloorPlanUser';
+import Timelineuser from './components/Timeline_user/TimeLineUser';
 
 function App() {
   const [returnedData, setReturnedData] = useState(['hello']);
@@ -45,6 +46,7 @@ function App() {
         <Route path="/home-user-page" element={<HomeUserPage />} />
         <Route path="/suggestion-user-page" element={<SuggestionUserPage />} />
         <Route path="/floor-plan-user-page" element={<FloorplanUser />} />
+        <Route path="/timeline-user-page" element={<Timelineuser />} />
       </Routes>
       </div>
     </Router>
