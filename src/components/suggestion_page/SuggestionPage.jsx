@@ -25,14 +25,14 @@ function SuggestionPage() {
 
       <section className={styles.projectsSection}>
         {projects.length > 0 ? (
-          projects.map((project) => (
+          projects.map((project, index) => (
             <ProjectCard
-              key={project.project_id}
-              title={project.title}
+            key={project.project_id || index} // Ensure a unique key
+            title={project.project_name}
               type={project.type}
               carpetArea={project.carpet_area}
-              status={project.status}
-              bhk={project.bhk}
+              status={project.development_stage}
+              bhk={project.apartment_type}
               image={project.image_url}
             />
           ))

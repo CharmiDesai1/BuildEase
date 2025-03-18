@@ -610,4 +610,47 @@ app.post("/save-annotation", upload.single("file"), async (req, res) => {
   }
 });
 
+app.get("/api/dev/property-suggestions", async (req, res) => {
+  try {
+      const query = `
+          SELECT 
+              ps.id AS suggestion_id,
+              ps.user_id,
+              u.full_name,
+              ps.property_id,
+              ps.suggestion_text,
+              ps.likes,
+              ps.dislikes,
+              ps.suggestion_timestamp
+          FROM PropertySuggestions ps
+          JOIN Users u ON ps.user_id = u.user_id;
+      `;
+      const [rows] = await db.execute(query);
+      res.json(rows);
+  } catch (error) {
+      console.error("Error fetching property suggestions:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/api/dev/add-suggestion", async (req, res) => {
+  const { property_id, user_id, suggestion_text } = req.body;
+
+  if (!property_id || !user_id || !suggestion_text.trim()) {
+      return res.status(400).json({ error: "Missing required fields." });
+  }
+
+  try {
+      const query = `
+          INSERT INTO PropertySuggestions (property_id, user_id, suggestion_text)
+          VALUES (?, ?, ?);
+      `;
+      await db.execute(query, [property_id, user_id, suggestion_text]);
+      res.status(200).json({ message: "Suggestion added successfully!" });
+  } catch (error) {
+      console.error("❌ Error adding suggestion:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));

@@ -1,0 +1,699 @@
+.suggestions_main {
+  background-color: rgba(255, 255, 255, 1);
+  display: flex;
+  padding-top: 0px;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  align-items: stretch;
+  white-space: nowrap;
+}
+
+.header {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: white;
+}
+
+.logoIcon {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  margin: 0 auto;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.profileIcon {
+  display: block;
+  width: 80px;
+  height: auto;
+  margin: 0 auto;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.buildEase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: rgba(85, 155, 198, 1);
+}
+
+.nav {
+  display: flex;
+  margin-left: 25px;
+  width: 100%;
+  max-width: 1796px;
+  align-items: center;
+  justify-content: space-around; 
+  padding: 10px 20px;
+  gap: 40px 62px;
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 22px;
+  color: rgba(85, 155, 198, 1);
+  font-weight: 700;
+  letter-spacing: 0.11px;
+  line-height: 1;
+  margin-bottom: 0;
+  justify-content: space-evenly;
+}
+
+.navLinks {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.navLinks li {
+  margin: 0 10px;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #4a4a4a;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 20px;
+}
+
+.home {
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
+  padding: 28px 23px;
+  text-decoration: none;
+}
+
+.suggestions {
+  border-radius: 15px;
+  background-color: rgba(85, 155, 198, 1);
+  box-shadow: -10px -10px 20px rgba(255, 255, 255, 1);
+  padding: 28px 67px;
+  color: rgba(255, 255, 255, 1);
+  text-decoration: none;
+}
+
+.floorPlans {
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.09);
+  padding: 28px 23px;
+  text-decoration: none;
+}
+
+.rightIcons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 20px;
+}
+
+
+.img {
+  aspect-ratio: 1.00;
+  object-fit: contain;
+  object-position: center;
+  gap: 10px;
+  width: 58px;
+  margin-top: 0px;
+  cursor: pointer;
+}
+
+.iconWrapper {
+  border-radius: 43px;
+  background-color: rgba(249, 249, 249, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.08);
+  width: 80px;
+  height: 75px;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+.projectHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 50px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.heroSection {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; 
+  gap: 20px; 
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0px 20px;
+}
+
+.heroImage {
+  object-fit: cover;
+  object-position: center;
+  width: 35%;
+  height: auto;
+  max-height: 250px;
+  border-radius: 10px;
+  margin-left: 0px;
+}
+
+.projectInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1; 
+  max-width: 60%;
+}
+
+.projectName {
+  font-size: 32px;
+  font-weight: bold;
+  color: #559bc6;
+  margin-bottom: 10px;
+}
+
+.specifications {
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+  gap: 5px;
+  color: #559bc6;
+}
+
+.bhkSpec,
+.constructionStatus,
+.areaSpec {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #559bc6;
+}
+
+.propertyContainer {
+  width: 100%;
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+@media (max-width: 991px) {
+  .heroSection {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .heroImage {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .projectInfo {
+    max-width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+
+  .projectName {
+    font-size: 24px;
+  }
+
+  .specifications {
+    font-size: 14px;
+  }
+}
+
+.suggestionsContainer {
+  width: 100%;
+  background-color: #f9f9f9; /* Light background */
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Centers horizontally */
+  justify-content: center; /* Ensures vertical alignment */
+  text-align: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.ongoingProjects {
+  color: rgba(85, 155, 198, 1);
+  font-size: 48px;
+  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.24px;
+  margin: 0;
+  align-items: center;
+  text-align: center;
+  display: inline-block;
+  gap: 20px;
+}
+
+  .Container {
+    background-color: #f9f9f9; /* Light background */
+    border-radius: 12px;
+    padding: 0px;
+    margin-bottom: 0px; /* Adds spacing between comments */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow effect */
+  }
+
+  .suggestionCard {
+    display: flex;
+    gap: 40px;
+    width: 100%;
+    margin-bottom: 20px;
+    align-items: center; /* Ensures vertical alignment */
+  }
+
+  .userInitial {
+    color: #fff;
+    background-color: #559bc6;
+    border: 4px solid #eaeff7;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .content {
+    flex: 1;
+    color: #559bc6;
+    font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
+  }
+
+  .plusIcon {
+    width: 40px; /* Adjust size */
+    height: 40px;
+    cursor: pointer; /* ✅ Make it clickable */
+    display: inline-block; /* Forces it to stay inline */
+    vertical-align: middle; /* Aligns it properly */
+  }  
+
+  .headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .submitter {
+    font-size: 25px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .date {
+    font-size: 20px;
+    font-weight: 500;
+    text-align: right;
+    margin-right: 20px;
+  }
+
+  .suggestionContent {
+    margin: 15px 0;
+  }
+
+  .suggestionText {
+    font-size: 25px;
+    line-height: 28px;
+    margin-top: 10px;
+  }
+
+  .interactions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .likes,
+  .comments {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+    color: #559bc6;
+    font-weight: 600;
+  }
+
+  .likesCommentsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .voteSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 2px;
+    margin-top: 15px;
+  }
+
+  .voteCount {
+    font-size: 14px;
+    font-weight: bold;
+    color: #559bc6;
+  }
+
+  .voteButton {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .voteButton img {
+    width: 40px;
+    height: 40px;
+  }
+
+  @media (width <= 991px) {
+    .date {
+      font-size: 28px;
+    }
+
+    .suggestionText {
+      font-size: 28px;
+      line-height: 42px;
+    }
+
+    .submitter {
+      font-size: 28px;
+    }
+  }
+
+  .suggestionsList {
+    padding: 0 20px;
+    margin-top: 25px;
+  }
+
+  .divider {
+    background-color: #559bc6;
+    width: 1200px;
+    max-width: 100%;
+    height: 2px;
+    margin: 60px auto;
+  }
+
+  @media (width <= 991px) {
+    .divider {
+      margin: 30px auto;
+    }
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+  }
+  
+  .suggestion-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+  }
+  
+  .header_box {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .icon_box {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  
+  .title_box {
+    margin-left: 10px;
+    color: #3498db;
+    font-weight: bold;
+  }
+  
+  .textarea {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+    resize: none;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  .button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .clear {
+    background-color: #3498db;
+  }
+  
+  .clear:hover {
+    background-color: #2980b9;
+  }
+  
+  .submit {
+    background-color: #3498db;
+  }
+  
+  .submit:hover {
+    background-color: #2980b9;
+  }
+  
+  .submit:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+  }
+  
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: hidden;
+}
+
+.suggestionBoxModal {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  width: 90%;
+  max-width: 450px;
+  max-height: 90vh;
+  overflow-y: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.header_box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.icon_box {
+  width: 32px;
+  height: 32px;
+  background-color: #559BC6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.title_box {
+  color: #559BC6;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.closeButton {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 100px;
+  max-height: 200px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.characterCount {
+  text-align: right;
+  color: #666;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clear {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.clear:hover {
+  background-color: #e0e0e0;
+}
+
+.submit {
+  background-color: #559BC6;
+  color: white;
+}
+
+.submit:hover {
+  background-color: #4589b4;
+}
+
+.submit:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.plusIcon {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.plusIcon:hover {
+  transform: scale(1.1);
+}
+
+@media (max-width: 480px) {
+  .suggestionBoxModal {
+    width: 95%;
+    padding: 16px;
+  }
+  
+  .buttonContainer {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .button {
+    width: 100%;
+  }
+}
+
+.errorMessage {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.textarea:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+  

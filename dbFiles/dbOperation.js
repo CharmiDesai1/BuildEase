@@ -170,14 +170,24 @@ const loginUser = async (email, password) => {
 };
 
 const getProjects = async () => {
-    try {
-        await poolConnect;
-        let result = await pool.request().query("SELECT * FROM Projects");
-        return result.recordset;
-    } catch (error) {
-        console.error("Error fetching projects:", error);
-        throw error;
-    }
+  try {
+      await poolConnect;
+      let result = await pool.request().query(`
+          SELECT 
+              property_id, 
+              project_name, 
+              apartment_type, 
+              carpet_area, 
+              development_stage, 
+              image_url, 
+              developer_id 
+          FROM Properties
+      `);
+      return result.recordset;
+  } catch (error) {
+      console.error("Error fetching projects:", error);
+      throw error;
+  }
 };
 
 async function fetchProjects() {

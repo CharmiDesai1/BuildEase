@@ -1,7 +1,9 @@
 import React from "react";
 import styles from "./SuggestionPage.module.css";
+import { useNavigate } from "react-router-dom";
 
 export function ProjectCard({ title, type, carpetArea, status, bhk, image }) {
+  const navigate = useNavigate();
   return (
     <article className={styles.projectCard}>
       <div className={styles.projectContent}>
@@ -33,7 +35,8 @@ export function ProjectCard({ title, type, carpetArea, status, bhk, image }) {
         </div>
         <div className={styles.actionsColumn}>
           <div className={styles.suggestionCount}>4</div>
-          <button className={styles.suggestionsButton}>SUGGESTIONS</button>
+          <button className={styles.suggestionsButton} onClick={() => navigate("/approve-page")}>
+            SUGGESTIONS</button>
           <div className={styles.commentCount}>4</div>
           <button className={styles.commentsButton}>ADDITIONAL COMMENTS</button>
         </div>
