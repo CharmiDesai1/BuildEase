@@ -3,8 +3,6 @@
   display: flex;
   padding-top: 0px;
   flex-direction: column;
-  overflow-x: hidden;
-  overflow-y: hidden;
   align-items: stretch;
   white-space: nowrap;
 }

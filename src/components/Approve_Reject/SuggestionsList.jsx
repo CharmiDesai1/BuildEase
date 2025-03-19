@@ -7,98 +7,66 @@ const SuggestionsList = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [propertyId, setPropertyId] = useState(null);
-  const userId = localStorage.getItem("userId");
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    if (!userId) {
-      console.warn("⚠️ No user ID found in local storage.");
-      return;
-    }
-
-    const fetchUserProperties = async () => {
-      try {
-        console.log("📡 Fetching property for userId:", userId);
-        const response = await fetch(`http://localhost:5000/user-properties/${userId}`);
-        
-        if (response.status === 404) {
-          console.warn(`⚠️ No properties found for user ${userId}`);
-          setLoading(false);
-          return;
-        }
-
-        if (!response.ok) throw new Error("Failed to fetch properties.");
-
-        const data = await response.json();
-        console.log("🟢 Properties received:", data);
-
-        if (data.length > 0) {
-          console.log("✅ Property ID retrieved:", data[0].id);
-          setPropertyId(data[0].id);
-        } else {
-          console.warn("⚠️ No property found for this user.");
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("❌ Error fetching user properties:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchUserProperties();
-  }, [userId]);
-
-  useEffect(() => {
-    if (!propertyId) {
-      console.warn("⚠️ No propertyId available, skipping API call.");
+    const storedPropertyId = localStorage.getItem("propertyId");
+    if (storedPropertyId) {
+      const parsedPropertyId = parseInt(storedPropertyId, 10);
+      setPropertyId(parsedPropertyId);
+      fetchUsersAndSuggestions(parsedPropertyId);
+    } else {
       setLoading(false);
-      return;
     }
+  }, []);
 
-    const fetchSuggestions = async () => {
-      try {
-        console.log(`📡 Fetching suggestions for propertyId: ${propertyId}`);
-        const response = await fetch(`http://localhost:5000/api/suggestions?propertyId=${propertyId}`);
+  const fetchUsersAndSuggestions = async (propertyId) => {
+    try {
+      const userResponse = await fetch(`http://localhost:5000/api/dev/get-user/${propertyId}`);
+      if (!userResponse.ok) throw new Error(`Failed to fetch users.`);
+      const userData = await userResponse.json();
+      setUsers(userData.users || []);
 
-        if (response.status === 404) {
-          console.warn("⚠️ No suggestions found for this property.");
-          setSuggestions([]);
-          setLoading(false);
-          return;
-        }
+      const suggestionResponse = await fetch(`http://localhost:5000/api/dev/suggestions/${propertyId}`);
+      if (!suggestionResponse.ok) throw new Error(`Failed to fetch suggestions.`);
+      const suggestionData = await suggestionResponse.json();
 
-        if (!response.ok) throw new Error("Failed to fetch suggestions.");
+      const uniqueSuggestions = Array.from(new Map(suggestionData.map(item => [item.id, item])).values());
+      setSuggestions(uniqueSuggestions);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        const data = await response.json();
-        console.log("✅ Suggestions fetched:", data);
-        setSuggestions(data);
-      } catch (error) {
-        console.error("❌ Error fetching suggestions:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSuggestions();
-  }, [propertyId]);
+  const processedSuggestions = suggestions.map((suggestion) => ({
+    ...suggestion,
+    submitter: suggestion.full_name || "Unknown User", // Use full_name directly
+}));
 
   if (loading) return <p>Loading suggestions...</p>;
   if (!propertyId) return <p className={styles.error}>No property selected.</p>;
 
   return (
     <section className={styles.suggestionsList}>
-      {suggestions.length > 0 ? (
-        suggestions.map((suggestion) => (
+      {processedSuggestions.length > 0 ? (
+        processedSuggestions.map((suggestion) => (
           <React.Fragment key={suggestion.id}>
             <SuggestionCard 
-              initial={suggestion.submitter?.charAt(0).toUpperCase() || "?"}
-              date={suggestion.date ? new Date(suggestion.date).toLocaleDateString() : new Date().toLocaleDateString()}              
-              suggestion={suggestion.suggestion}
+              initial={suggestion.submitter ? suggestion.submitter.charAt(0).toUpperCase() : "?"}
+              date={
+                suggestion.created_at 
+                  ? new Date(suggestion.created_at).toLocaleDateString() 
+                  : new Date().toLocaleDateString()
+              }              
+              suggestion={suggestion.suggestion_text}
               submitter={suggestion.submitter}
               likes={suggestion.likes}
               dislikes={suggestion.dislikes}
               suggestionId={suggestion.id} 
-              userId={userId}
-              isPending={suggestion.isPending || false} 
+              userId={suggestion.user_id}
+              isPending={suggestion.isPending || false}
             />
             <div className={styles.divider} />
           </React.Fragment>

@@ -4,38 +4,57 @@ import styles from "./Suggestions.module.css";
 import axios from "axios";
 
 const ProjectHeader = () => {
-  const [userId, setUserId] = useState(null);
+  const [propertyId, setPropertyId] = useState(null);
   const [propertyData, setPropertyData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    if (storedUserId) {
-      console.log("✅ User ID retrieved from storage:", storedUserId);
-      setUserId(storedUserId);
-      fetchUserProperties(storedUserId);
+    const storedPropertyId = localStorage.getItem("propertyId"); // Retrieve propertyId from localStorage
+    console.log("🔍 Retrieved propertyId from localStorage:", storedPropertyId);
+
+    if (storedPropertyId) {
+      setPropertyId(storedPropertyId);
+      fetchPropertyDetails(storedPropertyId);
     } else {
-      console.error("❌ User ID is missing.");
-      setError("User not logged in");
-      setLoading(false);
+      console.warn("⚠️ No propertyId found in localStorage. Fetching first available project.");
+      fetchProjects(); // Fallback to fetching the first project if no ID is found
     }
   }, []);
 
-  const fetchUserProperties = async (userId) => {
+  const fetchProjects = async () => {
     try {
-      console.log("📡 Fetching properties from:", `http://localhost:5000/user-properties/${userId}`);
-      const response = await axios.get(`http://localhost:5000/user-properties/${userId}`);
-      console.log("✅ Properties received:", response.data);
+      console.log("📡 Fetching projects from: http://localhost:5000/api/projects");
+      const response = await axios.get("http://localhost:5000/api/projects");
 
       if (response.data.length > 0) {
-        setPropertyData(response.data[0]);
+        const firstPropertyId = response.data[0].property_id; // Get first project's ID as fallback
+        console.log("✅ Property ID obtained:", firstPropertyId);
+
+        setPropertyId(firstPropertyId);
+        localStorage.setItem("propertyId", firstPropertyId); // Store it for future use
+        fetchPropertyDetails(firstPropertyId);
       } else {
-        setError("No property found for this user.");
+        setError("No projects found.");
+        setLoading(false);
       }
     } catch (error) {
-      console.error("❌ Error fetching user properties:", error);
-      setError("Failed to fetch user properties.");
+      console.error("❌ Error fetching projects:", error);
+      setError("Failed to fetch projects.");
+      setLoading(false);
+    }
+  };
+
+  const fetchPropertyDetails = async (id) => {
+    try {
+      console.log("📡 Fetching property details from:", `http://localhost:5000/properties/${id}`);
+      const response = await axios.get(`http://localhost:5000/properties/${id}`);
+      console.log("✅ Property details received:", response.data);
+
+      setPropertyData(response.data);
+    } catch (error) {
+      console.error("❌ Error fetching property details:", error);
+      setError("Failed to fetch property details.");
     } finally {
       setLoading(false);
     }
@@ -59,14 +78,14 @@ const ProjectHeader = () => {
               <section className={styles.projectInfo}>
                 <div className={styles.projectDetails}>
                   <h2 className={styles.projectName}>
-                    {propertyData?.project_name || "No Project Found"}
+                    {propertyData.project_name || "No Project Found"}
                   </h2>
                   <div className={styles.specifications}>
-                    <p className={styles.bhkSpec}>{propertyData?.apartment_type || "N/A"}</p>
+                    <p className={styles.bhkSpec}>{propertyData.apartment_type || "N/A"}</p>
                     <p className={styles.constructionStatus}>
-                      {propertyData?.development_stage || "N/A"}
+                      {propertyData.development_stage || "N/A"}
                     </p>
-                    <p className={styles.areaSpec}>{propertyData?.carpet_area || "N/A"}</p>
+                    <p className={styles.areaSpec}>{propertyData.carpet_area || "N/A"}</p>
                   </div>
                 </div>
               </section>

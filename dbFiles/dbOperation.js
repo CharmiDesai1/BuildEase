@@ -277,6 +277,7 @@ async function getSuggestions(propertyId) {
           ps.suggestion_text AS suggestion,
           ps.likes,
           ps.dislikes,
+          ps.created_at,
           u.full_name AS submitter
         FROM PropertySuggestions ps
         LEFT JOIN Users u ON ps.user_id = u.user_id

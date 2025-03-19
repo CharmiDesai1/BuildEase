@@ -472,6 +472,7 @@ app.get("/api/suggestions", async (req, res) => {
           ps.suggestion_text AS suggestion,
           ps.likes,
           ps.dislikes,
+          COALESCE(ps.created_at, GETDATE()) AS created_at,
           u.full_name AS submitter
         FROM PropertySuggestions ps
         LEFT JOIN Users u ON ps.user_id = u.user_id
@@ -610,46 +611,69 @@ app.post("/save-annotation", upload.single("file"), async (req, res) => {
   }
 });
 
-app.get("/api/dev/property-suggestions", async (req, res) => {
+app.get("/api/dev/get-user/:propertyId", async (req, res) => {
   try {
-      const query = `
-          SELECT 
-              ps.id AS suggestion_id,
-              ps.user_id,
-              u.full_name,
-              ps.property_id,
-              ps.suggestion_text,
-              ps.likes,
-              ps.dislikes,
-              ps.suggestion_timestamp
-          FROM PropertySuggestions ps
-          JOIN Users u ON ps.user_id = u.user_id;
-      `;
-      const [rows] = await db.execute(query);
-      res.json(rows);
+    const { propertyId } = req.params;
+    let pool = await sql.connect(dbConfig);
+
+    const query = "SELECT user_id FROM UserPropertyMapping WHERE property_id = @propertyId";
+    const result = await pool.request().input("propertyId", sql.Int, propertyId).query(query);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "No users found for this property" });
+    }
+
+    res.json({ users: result.recordset });
   } catch (error) {
-      console.error("Error fetching property suggestions:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+    console.error("❌ Error fetching users:", error);
+    res.status(500).json({ error: "Database error" });
   }
 });
 
-app.post("/api/dev/add-suggestion", async (req, res) => {
-  const { property_id, user_id, suggestion_text } = req.body;
-
-  if (!property_id || !user_id || !suggestion_text.trim()) {
-      return res.status(400).json({ error: "Missing required fields." });
-  }
-
+app.get("/api/dev/user-details/:userId", async (req, res) => {
   try {
-      const query = `
-          INSERT INTO PropertySuggestions (property_id, user_id, suggestion_text)
-          VALUES (?, ?, ?);
-      `;
-      await db.execute(query, [property_id, user_id, suggestion_text]);
-      res.status(200).json({ message: "Suggestion added successfully!" });
+    const { userId } = req.params;
+    let pool = await sql.connect(dbConfig);
+
+    const query = "SELECT full_name FROM Users WHERE user_id = @userId";
+    const result = await pool.request().input("userId", sql.Int, userId).query(query);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "User details not found" });
+    }
+    res.json({ full_name: result.recordset[0].full_name });
   } catch (error) {
-      console.error("❌ Error adding suggestion:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+    console.error("❌ Error fetching user details:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.get("/api/dev/suggestions/:propertyId", async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    let pool = await sql.connect(dbConfig);
+
+    const query = `
+      SELECT DISTINCT 
+        ps.id, 
+        ps.suggestion_text, 
+        ps.likes, 
+        ps.dislikes, 
+        ps.created_at, 
+        ps.user_id,
+        u.full_name
+      FROM PropertySuggestions ps
+      JOIN Users u ON ps.user_id = u.user_id
+      WHERE ps.property_id = @propertyId
+      ORDER BY ps.created_at DESC
+    `;
+
+    const result = await pool.request().input("propertyId", sql.Int, propertyId).query(query);
+    
+    res.json(result.recordset);
+  } catch (error) {
+    console.error("❌ Error fetching suggestions:", error);
+    res.status(500).json({ error: "Database error" });
   }
 });
 

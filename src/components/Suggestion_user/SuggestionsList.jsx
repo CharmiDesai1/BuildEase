@@ -19,7 +19,7 @@ const SuggestionsList = () => {
       try {
         console.log("📡 Fetching property for userId:", userId);
         const response = await fetch(`http://localhost:5000/user-properties/${userId}`);
-        
+
         if (response.status === 404) {
           console.warn(`⚠️ No properties found for user ${userId}`);
           setLoading(false);
@@ -87,22 +87,30 @@ const SuggestionsList = () => {
   return (
     <section className={styles.suggestionsList}>
       {suggestions.length > 0 ? (
-        suggestions.map((suggestion) => (
-          <React.Fragment key={suggestion.id}>
-            <SuggestionCard 
-              initial={suggestion.submitter?.charAt(0).toUpperCase() || "?"}
-              date={suggestion.date ? new Date(suggestion.date).toLocaleDateString() : new Date().toLocaleDateString()}              
-              suggestion={suggestion.suggestion}
-              submitter={suggestion.submitter}
-              likes={suggestion.likes}
-              dislikes={suggestion.dislikes}
-              suggestionId={suggestion.id} 
-              userId={userId}
-              isPending={suggestion.isPending || false} 
-            />
-            <div className={styles.divider} />
-          </React.Fragment>
-        ))
+        suggestions.map((suggestion) => {
+          console.log("Debug: Created At Value ->", suggestion.created_at); // Debugging line
+
+          const formattedDate = suggestion.created_at
+            ? new Date(suggestion.created_at).toLocaleDateString()
+            : new Date().toLocaleDateString();
+
+          return (
+            <React.Fragment key={suggestion.id}>
+              <SuggestionCard 
+                initial={suggestion.submitter?.charAt(0).toUpperCase() || "?"}
+                date={formattedDate}            
+                suggestion={suggestion.suggestion} // Changed from suggestion to suggestion_text
+                submitter={suggestion.submitter} // Changed from submitter to full_name
+                likes={suggestion.likes}
+                dislikes={suggestion.dislikes}
+                suggestionId={suggestion.id} 
+                userId={userId}
+                isPending={suggestion.isPending || false} 
+              />
+              <div className={styles.divider} />
+            </React.Fragment>
+          );
+        })
       ) : (
         <p>No suggestions available.</p>
       )}

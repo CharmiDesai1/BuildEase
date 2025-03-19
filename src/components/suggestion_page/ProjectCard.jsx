@@ -2,8 +2,22 @@ import React from "react";
 import styles from "./SuggestionPage.module.css";
 import { useNavigate } from "react-router-dom";
 
-export function ProjectCard({ title, type, carpetArea, status, bhk, image }) {
+export function ProjectCard({ title, type, carpetArea, status, bhk, image, propertyId }) {
   const navigate = useNavigate();
+
+  const handleSuggestionClick = () => {
+    console.log("🚀 Button clicked for propertyId:", propertyId);
+  
+    if (propertyId) {
+      localStorage.setItem("propertyId", propertyId);
+      console.log("✅ Stored propertyId in localStorage:", propertyId);
+    } else {
+      console.warn("⚠️ propertyId is missing!");
+    }
+  
+    navigate("/approve-page");
+  };  
+
   return (
     <article className={styles.projectCard}>
       <div className={styles.projectContent}>
@@ -35,8 +49,9 @@ export function ProjectCard({ title, type, carpetArea, status, bhk, image }) {
         </div>
         <div className={styles.actionsColumn}>
           <div className={styles.suggestionCount}>4</div>
-          <button className={styles.suggestionsButton} onClick={() => navigate("/approve-page")}>
-            SUGGESTIONS</button>
+          <button className={styles.suggestionsButton} onClick={handleSuggestionClick}>
+            SUGGESTIONS
+          </button>
           <div className={styles.commentCount}>4</div>
           <button className={styles.commentsButton}>ADDITIONAL COMMENTS</button>
         </div>

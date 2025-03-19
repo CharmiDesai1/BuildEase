@@ -34,6 +34,7 @@ function SuggestionPage() {
               status={project.development_stage}
               bhk={project.apartment_type}
               image={project.image_url}
+              propertyId={project.property_id}
             />
           ))
         ) : (
