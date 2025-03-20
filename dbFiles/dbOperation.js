@@ -265,34 +265,6 @@ async function getPropertyFile(userId, propertyId) {
   return result.recordset[0];
 }
 
-async function getSuggestions(propertyId) {
-  try {
-    let pool = await sql.connect(dbConfig);
-    let result = await pool
-      .request()
-      .input("propertyId", sql.Int, propertyId)
-      .query(`
-        SELECT 
-          ps.id,
-          ps.suggestion_text AS suggestion,
-          ps.likes,
-          ps.dislikes,
-          ps.created_at,
-          u.full_name AS submitter
-        FROM PropertySuggestions ps
-        LEFT JOIN Users u ON ps.user_id = u.user_id
-        WHERE ps.property_id = @propertyId
-      `);
-    
-    console.log("Fetched Suggestions from DB:", result.recordset); // Debugging
-
-    return result.recordset;
-  } catch (error) {
-    console.error("Database Error in getSuggestions:", error);
-    return [];
-  }
-}
-
 const voteOnSuggestion = async (userId, suggestionId, voteType) => {
   try {
     const pool = await sql.connect(config);
@@ -374,6 +346,6 @@ const insertSuggestion = async (property_id, user_id, suggestion_text) => {
 
 module.exports = {
     getDevelopers, insertDeveloper, googleLogin, loginDeveloper, getProjects, getUsers, insertUser,
-    googleLoginUser, loginUser, fetchProjects, getPdfById, getUserProperties, getPropertyFile, getSuggestions,
+    googleLoginUser, loginUser, fetchProjects, getPdfById, getUserProperties, getPropertyFile,
     voteOnSuggestion, insertSuggestion
 };

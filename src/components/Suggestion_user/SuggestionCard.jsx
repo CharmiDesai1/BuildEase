@@ -4,7 +4,7 @@ import styles from "./Suggestions.module.css";
 import upIcon from "./up.png";
 import downIcon from "./down.png";
 
-const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes, suggestionId, userId }) => {
+const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes, suggestionId, userId, status }) => {
   const [likeCount, setLikeCount] = useState(likes);
   const [dislikeCount, setDislikeCount] = useState(dislikes);
   const [userVote, setUserVote] = useState(null); 
@@ -15,7 +15,7 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
       return;
     }
     
-    if (userVote === voteType) return; // Prevent duplicate votes
+    if (userVote === voteType) return;
 
     const payload = { userId, suggestionId, voteType };
     console.log("📡 Sending vote request:", payload);
@@ -41,7 +41,6 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
 
         setUserVote(voteType);
 
-        // 🔄 Auto-reload to sync the latest votes from backend
         setTimeout(() => window.location.reload(), 500);
       } else {
         alert("❌ Error: " + data.message);
@@ -65,6 +64,9 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
                 </p>
               )}
               <p className={styles.suggestionText}>Suggestion: {suggestion}</p>
+              <p className={styles.statusText}>
+                Status: {status || "No action taken"}
+              </p>
             </div>
             <div className={styles.rightContent}>
               <span className={styles.date}>{date}</span>

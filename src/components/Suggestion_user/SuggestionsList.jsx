@@ -88,8 +88,6 @@ const SuggestionsList = () => {
     <section className={styles.suggestionsList}>
       {suggestions.length > 0 ? (
         suggestions.map((suggestion) => {
-          console.log("Debug: Created At Value ->", suggestion.created_at); // Debugging line
-
           const formattedDate = suggestion.created_at
             ? new Date(suggestion.created_at).toLocaleDateString()
             : new Date().toLocaleDateString();
@@ -99,13 +97,14 @@ const SuggestionsList = () => {
               <SuggestionCard 
                 initial={suggestion.submitter?.charAt(0).toUpperCase() || "?"}
                 date={formattedDate}            
-                suggestion={suggestion.suggestion} // Changed from suggestion to suggestion_text
-                submitter={suggestion.submitter} // Changed from submitter to full_name
+                suggestion={suggestion.suggestion}
+                submitter={suggestion.submitter}
                 likes={suggestion.likes}
                 dislikes={suggestion.dislikes}
                 suggestionId={suggestion.id} 
                 userId={userId}
                 isPending={suggestion.isPending || false} 
+                status={suggestion.status || "No action taken"}
               />
               <div className={styles.divider} />
             </React.Fragment>

@@ -331,6 +331,12 @@
     margin: 0;
   }
 
+  .statusText {
+    font-size: 25px;
+    font-weight: bold;
+    margin: 0;
+  }
+
   .date {
     font-size: 20px;
     font-weight: 500;
@@ -418,6 +424,10 @@
     }
 
     .submitter {
+      font-size: 28px;
+    }
+
+    .statusText {
       font-size: 28px;
     }
   }

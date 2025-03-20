@@ -7,7 +7,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
 const sql = require("mssql");
-const { fetchProjects, getPdfById, getSuggestions } = require("./dbFiles/dbOperation");
+const { fetchProjects, getPdfById} = require("./dbFiles/dbOperation");
 const dbConfig = require("./dbFiles/dbConfig");
 const fs = require("fs-extra");
 const path = require("path");
@@ -473,6 +473,7 @@ app.get("/api/suggestions", async (req, res) => {
           ps.likes,
           ps.dislikes,
           COALESCE(ps.created_at, GETDATE()) AS created_at,
+          COALESCE(ps.status, 'No action taken') AS status,
           u.full_name AS submitter
         FROM PropertySuggestions ps
         LEFT JOIN Users u ON ps.user_id = u.user_id
@@ -674,6 +675,32 @@ app.get("/api/dev/suggestions/:propertyId", async (req, res) => {
   } catch (error) {
     console.error("❌ Error fetching suggestions:", error);
     res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.post("/api/update-status", async (req, res) => {
+  const { suggestionId, status } = req.body;
+
+  if (!suggestionId || !status) {
+    return res.status(400).json({ message: "Missing suggestionId or status" });
+  }
+
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool.request()
+      .input("suggestionId", sql.Int, suggestionId)
+      .input("status", sql.NVarChar(50), status)
+      .query(`
+        UPDATE PropertySuggestions
+        SET status = @status
+        WHERE id = @suggestionId
+      `);
+
+    console.log(`✅ Status updated for suggestion ID: ${suggestionId} → ${status}`);
+    res.status(200).json({ success: true, message: "Status updated successfully." });
+  } catch (error) {
+    console.error("❌ Error updating status:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
