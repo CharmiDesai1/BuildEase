@@ -785,4 +785,58 @@ app.get("/api/timeline/:propertyId", async (req, res) => {
   }
 });
 
+app.get("/api/get-project-name", async (req, res) => {
+  const { propertyId } = req.query;
+
+  if (!propertyId) {
+    return res.status(400).json({ message: "Missing property ID" });
+  }
+
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool.request()
+      .input("propertyId", sql.Int, propertyId)
+      .query(`SELECT project_name FROM Properties WHERE property_id = @propertyId`);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    res.status(200).json({ project_name: result.recordset[0].project_name });
+  } catch (error) {
+    console.error("❌ Error fetching project name:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.post("/api/update-timeline", async (req, res) => {
+  const { propertyId, ...updates } = req.body;
+  if (!propertyId) {
+    return res.status(400).json({ message: "Missing property ID" });
+  }
+  try {
+    const pool = await sql.connect(dbConfig);
+    const updateFields = Object.keys(updates)
+      .map((key) => `${key} = @${key}`)
+      .join(", ");
+    if (updateFields.length === 0) {
+      return res.status(400).json({ message: "No fields to update" });
+    }
+    const request = pool.request().input("propertyId", sql.Int, propertyId);
+    Object.entries(updates).forEach(([key, value]) => {
+      request.input(key, sql.NVarChar, value);
+    });
+    const query = `
+      UPDATE PropertyConstructionStatus 
+      SET ${updateFields}
+      WHERE property_id = @propertyId
+    `;
+    await request.query(query);
+    res.status(200).json({ message: "Timeline updated successfully!" });
+  } catch (error) {
+    console.error("❌ Database update error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));

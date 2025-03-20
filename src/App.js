@@ -14,6 +14,7 @@ import { SignupUser } from './components/Signup/SignupUser';
 import FloorplanUser from './components/FloorPlans_User/FloorPlanUser';
 import Timelineuser from './components/Timeline_user/TimeLineUser';
 import Approve from './components/Approve_Reject/Suggestions';
+import UpdateForm from './components/TimeLine_Update/DeveloperUpdateFrom';
 
 function App() {
   const [returnedData, setReturnedData] = useState(['hello']);
@@ -49,6 +50,7 @@ function App() {
         <Route path="/floor-plan-user-page" element={<FloorplanUser />} />
         <Route path="/timeline-user-page" element={<Timelineuser />} />
         <Route path="/approve-page" element={<Approve />} />
+        <Route path="/update-timeline-page" element={<UpdateForm />} />
       </Routes>
       </div>
     </Router>
