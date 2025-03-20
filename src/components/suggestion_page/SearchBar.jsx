@@ -11,7 +11,7 @@ export function SearchBar({ projects, setFilteredProjects }) {
 
     if (query) {
       const filtered = projects.filter((project) =>
-        project.title.toLowerCase().includes(query.toLowerCase())
+        project.project_name.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredProjects(filtered);
     } else {
@@ -38,8 +38,8 @@ export function SearchBar({ projects, setFilteredProjects }) {
         >
           <option value="">Select a project</option>
           {projects.map((project, index) => (
-            <option key={index} value={project.title}>
-              {project.title}
+            <option key={index} value={project.project_name}>
+              {project.project_name}
             </option>
           ))}
         </select>

@@ -22,12 +22,11 @@ function SuggestionPage() {
       <div>
         <SearchBar projects={projects} setFilteredProjects={setFilteredProjects} />
       </div>
-
       <section className={styles.projectsSection}>
         {projects.length > 0 ? (
           projects.map((project, index) => (
             <ProjectCard
-            key={project.project_id || index} // Ensure a unique key
+            key={project.project_id || index}
             title={project.project_name}
               type={project.type}
               carpetArea={project.carpet_area}
