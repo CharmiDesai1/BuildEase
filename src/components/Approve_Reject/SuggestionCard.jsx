@@ -3,6 +3,9 @@ import React from "react";
 import styles from "./Suggestions.module.css";
 import upIcon from "./up.png";
 import downIcon from "./down.png";
+import approveIcon from "./Approve.png";
+import rejectIcon from "./Reject.png";
+import onholdIcon from "./Onhold.png";
 
 const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes, suggestionId, userId }) => {
   const handleVote = async (voteType, currentLikes, currentDislikes) => {
@@ -16,7 +19,6 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
 
       const data = await response.json();
       if (data.success) {
-        // Update the votes locally (would be fetched from backend ideally)
       } else {
         alert("Error: " + data.message);
       }
@@ -37,6 +39,26 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
               <strong>Submitted By:</strong> {submitter}
             </p>
             <p className={styles.suggestionText}>Suggestion: {suggestion}</p>
+            <div className={styles.buttonContainer}>
+            <button className={styles.Button}>
+              Approve
+              <span className={styles.IconContainer}>
+                <img src={approveIcon} alt="Approve Icon" className={styles.ButtonIcon} />
+              </span>
+            </button>
+            <button className={styles.Button}>
+              Reject
+              <span className={styles.IconContainer}>
+                <img src={rejectIcon} alt="Reject Icon" className={styles.ButtonIcon} />
+              </span>
+            </button>
+            <button className={styles.Button}>
+              Approve
+              <span className={styles.IconContainer}>
+                <img src={onholdIcon} alt="Onhold Icon" className={styles.ButtonIcon} />
+              </span>
+            </button>
+            </div>
           </div>
           <div className={styles.rightContent}>
             <span className={styles.date}>{date}</span>
