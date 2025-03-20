@@ -12,7 +12,7 @@ export function Header() {
           <img src={icon} alt="icon" className={styles.logoIcon} /> Build-ease
         </h1>
         <ul className={styles.navLinks}>
-          <li><a href="#" className={styles.home}>Home</a></li>
+          <li><Link to="/developers-landing-page" className={styles.home}>Home</Link></li>
           <li><Link to="/suggestion-page" className={styles.suggestions}>Suggestions</Link></li>
           <li><Link to="/floor-plan-page" className={styles.floorPlans}>Floor Plans</Link></li>
         </ul>
