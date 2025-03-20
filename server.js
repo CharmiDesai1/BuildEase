@@ -472,7 +472,7 @@ app.get("/api/suggestions", async (req, res) => {
           ps.suggestion_text AS suggestion,
           ps.likes,
           ps.dislikes,
-          COALESCE(ps.created_at, GETDATE()) AS created_at,
+          FORMAT(COALESCE(ps.created_at, GETDATE()), 'dd/MM/yyyy') AS created_at,
           COALESCE(ps.status, 'No action taken') AS status,
           u.full_name AS submitter
         FROM PropertySuggestions ps
@@ -655,18 +655,21 @@ app.get("/api/dev/suggestions/:propertyId", async (req, res) => {
     let pool = await sql.connect(dbConfig);
 
     const query = `
-      SELECT DISTINCT 
-        ps.id, 
-        ps.suggestion_text, 
-        ps.likes, 
-        ps.dislikes, 
-        ps.created_at, 
-        ps.user_id,
-        u.full_name
-      FROM PropertySuggestions ps
-      JOIN Users u ON ps.user_id = u.user_id
-      WHERE ps.property_id = @propertyId
-      ORDER BY ps.created_at DESC
+        WITH UniqueSuggestions AS (
+          SELECT DISTINCT 
+              ps.id, 
+              ps.suggestion_text, 
+              ps.likes, 
+              ps.dislikes, 
+              FORMAT(COALESCE(ps.created_at, GETDATE()), 'dd/MM/yyyy') AS created_at, 
+              ps.user_id,
+              COALESCE(u.full_name, 'Anonymous') AS full_name
+          FROM PropertySuggestions ps
+          LEFT JOIN Users u ON ps.user_id = u.user_id
+          WHERE ps.property_id = @propertyId
+      )
+      SELECT * FROM UniqueSuggestions
+      ORDER BY TRY_CONVERT(DATE, created_at, 103) DESC;
     `;
 
     const result = await pool.request().input("propertyId", sql.Int, propertyId).query(query);
@@ -700,6 +703,84 @@ app.post("/api/update-status", async (req, res) => {
     res.status(200).json({ success: true, message: "Status updated successfully." });
   } catch (error) {
     console.error("❌ Error updating status:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.get("/api/timeline/:propertyId", async (req, res) => {
+  const { propertyId } = req.params;
+
+  if (!propertyId) {
+    return res.status(400).json({ message: "Missing propertyId" });
+  }
+
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool.request()
+      .input("propertyId", sql.Int, propertyId)
+      .query(`
+          SELECT property_name, date, task, completed 
+          FROM (
+              SELECT 
+                  p.project_name AS property_name,
+                  COALESCE(FORMAT(planning_permit_date, 'dd/MM/yyyy'), 'Date Not Available') AS date, 
+                  'Planning and Permit' AS task, 
+                  planning_permit_status AS completed
+              FROM PropertyConstructionStatus pcs 
+              JOIN Properties p ON pcs.property_id = p.property_id
+              WHERE pcs.property_id = @propertyId
+          
+              UNION ALL
+          
+              SELECT 
+                  p.project_name,
+                  COALESCE(FORMAT(site_preparation_date, 'dd/MM/yyyy'), 'Date Not Available'), 
+                  'Site Preparation and Foundational Work', 
+                  site_preparation_status
+              FROM PropertyConstructionStatus pcs 
+              JOIN Properties p ON pcs.property_id = p.property_id
+              WHERE pcs.property_id = @propertyId
+          
+              UNION ALL
+          
+              SELECT 
+                  p.project_name,
+                  COALESCE(FORMAT(structural_utility_date, 'dd/MM/yyyy'), 'Date Not Available'), 
+                  'Structural and Utility Installation', 
+                  structural_utility_status
+              FROM PropertyConstructionStatus pcs 
+              JOIN Properties p ON pcs.property_id = p.property_id
+              WHERE pcs.property_id = @propertyId
+          
+              UNION ALL
+          
+              SELECT 
+                  p.project_name,
+                  COALESCE(FORMAT(interior_exterior_date, 'dd/MM/yyyy'), 'Date Not Available'), 
+                  'Interior and Exterior Finishing', 
+                  interior_exterior_status
+              FROM PropertyConstructionStatus pcs 
+              JOIN Properties p ON pcs.property_id = p.property_id
+              WHERE pcs.property_id = @propertyId
+          
+              UNION ALL
+          
+              SELECT 
+                  p.project_name,
+                  COALESCE(FORMAT(possession_handover_date, 'dd/MM/yyyy'), 'Date Not Available'), 
+                  'Possession and Handover', 
+                  possession_handover_status
+              FROM PropertyConstructionStatus pcs 
+              JOIN Properties p ON pcs.property_id = p.property_id
+              WHERE pcs.property_id = @propertyId
+          
+          ) AS TimelineData
+          ORDER BY TRY_CONVERT(DATE, date, 103) ASC;
+      `);
+
+      res.json(result.recordset);
+  } catch (error) {
+    console.error("❌ Error fetching timeline data:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

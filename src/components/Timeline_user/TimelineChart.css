@@ -80,14 +80,14 @@ body {
 
 /* Adjust date position for left-side tasks (odd items) */
 .timeline-item:nth-child(odd) .timeline-date {
-  left: calc(50% - 80px); /* Adjust distance from the timeline */
+  left: calc(50% - 90px); /* Adjust distance from the timeline */
   text-align: right;
   top: 30%;
 }
 
 /* Dates on the right side */
 .timeline-item:nth-child(even) .timeline-date {
-  right: calc(50% - 80px);
+  right: calc(50% - 90px);
   text-align: left;
   top: 30%;
 }

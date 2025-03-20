@@ -6,9 +6,7 @@ const TimelineItem = ({ date, task, completed, isLast }) => {
     <div className={`timeline-item ${isLast ? "timeline-item-last" : ""}`}>
       {date && <p className="timeline-date">{date}</p>}
       <div
-        className={`timeline-node ${
-          completed ? "timeline-node-completed" : "timeline-node-pending"
-        }`}
+        className={`timeline-node ${completed ? "timeline-node-completed" : "timeline-node-pending"}`}
       />
       <div className="timeline-task-container">
         <p className="timeline-task-text">{task}</p>

@@ -45,6 +45,17 @@ const SuggestionsList = () => {
     submitter: suggestion.full_name || "Unknown User", // Use full_name directly
 }));
 
+const formatDate = (dateString) => {
+  if (!dateString) return "Date Not Available";
+
+  const parts = dateString.split("/");
+  if (parts.length === 3) {
+    return `${parts[0].padStart(2, "0")}/${parts[1].padStart(2, "0")}/${parts[2]}`;
+  }
+
+  return "Invalid Date";
+};
+
   if (loading) return <p>Loading suggestions...</p>;
   if (!propertyId) return <p className={styles.error}>No property selected.</p>;
 
@@ -55,11 +66,7 @@ const SuggestionsList = () => {
           <React.Fragment key={suggestion.id}>
             <SuggestionCard 
               initial={suggestion.submitter ? suggestion.submitter.charAt(0).toUpperCase() : "?"}
-              date={
-                suggestion.created_at 
-                  ? new Date(suggestion.created_at).toLocaleDateString() 
-                  : new Date().toLocaleDateString()
-              }              
+              date={formatDate(suggestion.created_at)}       
               suggestion={suggestion.suggestion_text}
               submitter={suggestion.submitter}
               likes={suggestion.likes}
