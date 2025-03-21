@@ -4,12 +4,15 @@ import styles from "./InputDesign.module.css";
 import EditIcon from "./Edit.png";
 
 const ProfileHeader = ({ name, email, onClose }) => {
+  const initial = name ? name.charAt(0).toUpperCase() : "";
   return (
     <header className={styles.profileHeader}>
       <div className={styles.headerContent}>
         <div className={styles.userInfo}>
           <div className={styles.avatarContainer}>
-            <div className={styles.avatar} />
+          <div className={styles.avatar}>
+              {initial}
+            </div>
             <button
               className={styles.editButton}>
                 <img src={EditIcon} alt="Edit Icon" className={styles.downloadIcon} />

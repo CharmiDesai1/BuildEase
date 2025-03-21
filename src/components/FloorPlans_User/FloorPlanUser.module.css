@@ -137,7 +137,17 @@
   width: 80px;
   height: 75px;
   gap: 10px;
-  margin-right: 10px;
+  position: relative;
+}
+
+.profileCardWrapper {
+  position: absolute;
+  top: 50px; /* below the icon */
+  right: 140px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  width: 250px;
+  border-radius: 4px;
 }
 
 .viewerControls {
