@@ -55,7 +55,7 @@ export function OngoingProjects() {
           {filteredProjects.map((project) => (
             <article key={project.property_id} className={styles.projectCard}>
               <div className={styles.projectImageWrapper}>
-                <img
+                <img  
                   loading="lazy"
                   src={project.image_url}
                   className={styles.projectImage}
