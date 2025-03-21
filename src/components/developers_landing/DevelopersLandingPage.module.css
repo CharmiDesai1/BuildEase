@@ -7,7 +7,7 @@
   overflow-y: hidden;
   align-items: stretch;
   white-space: nowrap;
-  margin: 0;
+  margin-bottom: 50px;
   padding: 0;
 }
 
@@ -152,9 +152,17 @@
   margin-right: 10px;
 }
 
+.searchSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .searchContainer {
   display: flex;
-  align-items: center; /* Ensure vertical alignment */
+  align-items: center;
+  justify-content: center;
   background: white; /* Full white background */
   border-radius: 30px;
   padding: 10px 20px;
@@ -289,7 +297,7 @@
 
 .checkSuggestions {
   border-radius: 30px; /* Reduced from 43px */
-  background-color: rgba(249, 249, 249, 1);
+  background-color: rgb(69, 130, 204);
   box-shadow: -15px -15px 15px rgba(255, 255, 255, 1);
   padding: 20px 15px; /* Reduced padding */
   font-size: 16px; /* Reduced from 20px */
@@ -301,199 +309,6 @@
   margin-top: 40px; /* Reduced from 75px */
   width: 100%;
   max-width: 250px; /* Reduced max width */
-}
-
-.suggestedFloorPlansSection {
-  background-color: rgba(201, 220, 227, 0.85);
-  padding: 22px 73px;
-  margin-top: 54px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;/* Center the container */
-  align-items: center;
-  flex-direction: column; /* Stack the title and cards vertically */
-}
-
-.suggestedFloorPlans {
-  color: rgba(85, 155, 198, 1);
-  font-size: 48px;
-  font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.24px;
-  text-align: center;
-}
-
-.floorPlansGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  justify-content: center; /* Center the cards horizontally */
-  gap: 90px; /* Add space between cards */
-  flex-wrap: wrap;
-  margin-top: 30px;
-}
-
-.floorPlanCard {
-  border-radius: 20px; /* Reduced from 43px */
-  background-color: rgba(243, 243, 243, 1);
-  padding: 10px; /* Further reduced padding */
-  flex-direction: column;
-  align-items: center; /* Centers content inside the card */
-  justify-content: center; /* Centers content vertically */
-  width: 300px; /* Adjust card width */
-}
-
-.floorPlanImageWrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 2;
-}
-
-.floorPlanImage {
-  width: 100%;
-  height: auto;
-  max-width: 280px; /* Reduced image width */
-  border-radius: 20px;
-}
-
-.floorPlanControls {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  gap: 10px;
-}
-
-.controlIcon {
-  width: 24px;
-  height: 24px;
-}
-
-.floorPlanInfo {
-  margin-top: 10px;
-}
-
-.submitter,
-.carpetSize {
-  font-size: 16px; /* Reduced font size */
-  color: rgba(85, 155, 198, 1);
-  font-weight: 700;
-  letter-spacing: 0.1px;
-  line-height: 1;
-  margin-bottom: 6px;
-}
-
-.projectName {
-  font-size: 18px;
-  color: rgba(85, 155, 198, 1);
-  font-weight: 700;
-  line-height: 24px;
-  letter-spacing: 0.1px;
-}
-
-.unitType {
-  font-size: 40px;
-  color: rgba(85, 155, 198, 1);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.2px;
-  margin-top: 30px;
-}
-
-.actionButtons {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 15px;
-}
-
-.approveButton, .rejectButton, .requestChangeButton {
-  border-radius: 15px; /* Reduced from 25px */
-  padding: 6px; /* Reduced from 12px */
-  font-size: 16px; /* Reduced from 32px */
-  color: rgba(255, 255, 255, 1);
-  font-weight: 700;
-  letter-spacing: 0.1px;
-  line-height: 1;
-  border: none;
-  cursor: pointer;
-}
-
-.approveButton {
-  background-color: rgba(134, 188, 223, 1);
-}
-
-.rejectButton {
-  background-color: rgba(85, 155, 198, 1);
-}
-
-.requestChangeButton {
-  background-color: rgba(85, 155, 198, 1);
-  width: 100%;
-  max-width: 200px;
-  margin: 0 auto;
-}
-
-.pagination {
-  display: flex;
-  gap: 19px;
-  justify-content: center;
-  margin-top: 41px;
-}
-
-.paginationDot {
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  width: 20px;
-  height: 19px;
-}
-
-@media (max-width: 991px) {
-  .developersLandingPage {
-    padding-top: 100px;
-  }
-
-  .nav {
-    max-width: 100%;
-  }
-
-  .buildEase {
-    margin-top: 40px;
-  }
-
-  .home,
-  .suggestions,
-  .floorPlans {
-    padding: 28px 20px;
-  }
-
-  .img2 {
-    max-width: 100%;
-    margin-top: 40px;
-  }
-
-  .searchOngoingProject {
-    padding: 31px 20px;
-  }
-
-  .ongoingProjects {
-    max-width: 100%;
-    font-size: 40px;
-  }
-
-  .suggestedFloorPlansSection {
-    padding: 22px 20px;
-  }
-
-  .suggestedFloorPlans {
-    font-size: 40px;
-  }
-
-  .unitType {
-    font-size: 40px;
-    margin-top: 40px;
-  }
 }
 
 @media (max-width: 991px) {
@@ -548,11 +363,6 @@
     align-items: stretch;
   }
 
-  .suggestionsButton,
-  .commentsButton {
-    padding: 29px 20px;
-    text-align: center;
-  }
 }
 
 .DevelopersLandingPage {
@@ -606,18 +416,6 @@
   font-size: 20px;
 }
 
-.suggestionCount,
-.commentCount {
-  width: 40px;
-  height: 40px;
-}
-
-.suggestionsButton,
-.commentsButton {
-  padding: 12px 30px;
-  font-size: 14px;
-}
-
 @media (max-width: 991px) {
   .DevelopersLandingPage {
     font-size: 12px;
@@ -642,11 +440,42 @@
     padding: 0 10px;
     margin-top: 20px;
   }
-
-  .suggestionsButton,
-  .commentsButton {
-    padding: 10px 16px;
-    font-size: 12px;
-  }
 }
 
+.downloadButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #559bc6;
+  border-radius: 30px;
+  width: 280px;
+  padding: 12px 20px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  box-shadow: -3px -3px 6px rgba(255, 255, 255, 1), 3px 3px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+.downloadButton:hover {
+  background-color: #3e7ea8;
+}
+
+.downloadIconContainer {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.downloadIcon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}

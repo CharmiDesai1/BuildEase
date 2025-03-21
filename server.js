@@ -7,7 +7,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
 const sql = require("mssql");
-const { fetchProjects, getPdfById} = require("./dbFiles/dbOperation");
+const { fetchProjects, getPdfById, getBrochureById} = require("./dbFiles/dbOperation");
 const dbConfig = require("./dbFiles/dbConfig");
 const fs = require("fs-extra");
 const path = require("path");
@@ -57,7 +57,7 @@ passport.use(
 
         if (developer) {
           console.log("✅ Developer Login Successful");
-          return done(null, { email, user_id: developer.developer_id, role: "developer" });
+          return done(null, { email, developer_id: developer.developer_id, role: "developer" });
         } 
         else if (user) {
           console.log("✅ User Login Successful");
@@ -93,7 +93,7 @@ app.get(
   (req, res) => {
     console.log("✅ User after login:", req.user);
 
-    if (!req.user || !req.user.user_id) {
+    if (!req.user || (!req.user.user_id && !req.user.developer_id)) {
       console.error("❌ Google Login Failed: Missing user ID");
       return res.redirect("http://localhost:3000/login?error=id_missing");
     }
@@ -260,7 +260,6 @@ app.get("/annotated/:property_id/:user_id/:file_name", async (req, res) => {
 
     const fileData = result.recordset[0].annotated_file_data;
 
-    // 🔥 Force update: Delete old file before writing the new one
     if (fs.existsSync(imagePath)) {
       fs.unlinkSync(imagePath);
     }
@@ -340,19 +339,66 @@ app.get("/annotated/:id", async (req, res) => {
   }
 });
 
+app.get("/api/properties/:developerId", async (req, res) => {
+  const { developerId } = req.params;
+
+  if (!developerId || isNaN(developerId)) {
+    return res.status(400).json({ error: "Invalid developer ID." });
+  }
+
+  try {
+    const pool = await sql.connect(dbConfig);
+    const query = `
+      SELECT 
+        property_id, project_name, apartment_type, carpet_area, development_stage, image_url
+      FROM Properties
+      WHERE developer_id = @developerId
+    `;
+    const result = await pool.request().input("developerId", sql.Int, developerId).query(query);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ error: "No properties found." });
+    }
+
+    res.json(result.recordset);
+  } catch (error) {
+    console.error("Database error:", error);
+    res.status(500).json({ error: "Internal Server Error." });
+  }
+});
+
 app.get("/download/:id", async (req, res) => {
   try {
-    const { id, file_name, file_data } = await getPdfById(req.params.id);
-    if (!file_data) {
+    const { id, floor_plan_file_name, floor_plan_file_data} = await getPdfById(req.params.id);
+    if (!floor_plan_file_data) {
       return res.status(404).send("File not found.");
     }
 
-    res.setHeader("Content-Disposition", `inline; filename="${file_name}"`);
+    res.setHeader("Content-Disposition", `inline; filename="${floor_plan_file_name}"`);
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Length", file_data.length);
+    res.setHeader("Content-Length", floor_plan_file_data.length);
 
-    console.log(`✅ Sending PDF: ${file_name} (ID: ${id})`);
-    res.send(file_data);
+    console.log(`✅ Sending PDF: ${floor_plan_file_name} (ID: ${id})`);
+    res.send(floor_plan_file_data);
+  } catch (error) {
+    console.error(`❌ Error fetching PDF (ID: ${req.params.id}):`, error);
+    res.status(500).send("Internal Server Error: " + error.message);
+  }
+});
+
+app.get("/brochure/:id", async (req, res) => {
+  try {
+    const { id, brochure_file_name, brochure_file_data} = await getBrochureById(req.params.id);
+    if (!brochure_file_data) {
+      return res.status(404).send("File not found.");
+    }
+
+    res.setHeader("Content-Disposition", `inline; filename="${brochure_file_name}"`);
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Length", brochure_file_data.length);
+
+    console.log(`✅ Sending PDF: ${brochure_file_name} (ID: ${id})`);
+    res.send(brochure_file_data);
   } catch (error) {
     console.error(`❌ Error fetching PDF (ID: ${req.params.id}):`, error);
     res.status(500).send("Internal Server Error: " + error.message);
@@ -811,31 +857,47 @@ app.get("/api/get-project-name", async (req, res) => {
 
 app.post("/api/update-timeline", async (req, res) => {
   const { propertyId, ...updates } = req.body;
+
   if (!propertyId) {
     return res.status(400).json({ message: "Missing property ID" });
   }
+
   try {
     const pool = await sql.connect(dbConfig);
-    const updateFields = Object.keys(updates)
-      .map((key) => `${key} = @${key}`)
-      .join(", ");
-    if (updateFields.length === 0) {
+    const checkQuery = `
+      SELECT COUNT(*) AS count FROM PropertyConstructionStatus WHERE property_id = @propertyId`;
+    const checkResult = await pool.request()
+      .input("propertyId", sql.Int, propertyId)
+      .query(checkQuery);
+
+    const exists = checkResult.recordset[0].count > 0;
+    if (Object.keys(updates).length === 0) {
       return res.status(400).json({ message: "No fields to update" });
     }
     const request = pool.request().input("propertyId", sql.Int, propertyId);
     Object.entries(updates).forEach(([key, value]) => {
-      request.input(key, sql.NVarChar, value);
+      request.input(key, typeof value === "number" ? sql.Int : sql.NVarChar, value);
     });
-    const query = `
-      UPDATE PropertyConstructionStatus 
-      SET ${updateFields}
-      WHERE property_id = @propertyId
-    `;
+    let query;
+    if (exists) {
+      const updateFields = Object.keys(updates)
+        .map((key) => `${key} = @${key}`)
+        .join(", ");
+      
+      query = `UPDATE PropertyConstructionStatus SET ${updateFields} WHERE property_id = @propertyId`;
+    } else {
+      const columns = Object.keys(updates).concat("property_id").join(", ");
+      const values = Object.keys(updates).map((key) => `@${key}`).concat("@propertyId").join(", ");
+      
+      query = `INSERT INTO PropertyConstructionStatus (${columns}) VALUES (${values})`;
+    }
+
     await request.query(query);
-    res.status(200).json({ message: "Timeline updated successfully!" });
+    res.status(200).json({ message: exists ? "Timeline updated successfully!" : "New timeline entry created!" });
+
   } catch (error) {
-    console.error("❌ Database update error:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("❌ Database error:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 

@@ -2,8 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import styles from "./FloorPlan.module.css";
 import viewIcon from "./view.png";
 import downloadIcon from "./download.png";
-import TimeLineIcon from "./timeline.jpg";
-import { useNavigate } from "react-router-dom";
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
@@ -50,7 +48,6 @@ export const ProjectCard = ({
   const [annotations, setAnnotations] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   const fetchAnnotations = () => {
     if (!annotations.length) {
@@ -152,12 +149,6 @@ export const ProjectCard = ({
             DOWNLOAD
             <span className={styles.downloadIconContainer}>
               <img src={downloadIcon} alt="Download Icon" className={styles.downloadIcon} />
-            </span>
-          </button>
-          <button className={styles.downloadButton} onClick={() => navigate("/update-timeline-page")}>
-            TIMELINE
-            <span className={styles.downloadIconContainer}>
-              <img src={TimeLineIcon} alt="TimeLine Icon" className={styles.downloadIcon} />
             </span>
           </button>
         </div>

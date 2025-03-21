@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
-import styles from "./DeveloperUpdateForm.module.css"; // Import CSS file
+import { useParams, useNavigate } from "react-router-dom";
+import styles from "./DeveloperUpdateForm.module.css";
 
 const DeveloperUpdateForm = () => {
-  const [propertyId, setPropertyId] = useState(null);
+  const { propertyId } = useParams();
+  const navigate = useNavigate();
+  const params = new URLSearchParams(window.location.search);
+  const developerId = params.get("developerId") || localStorage.getItem("developerId");
   const [projectName, setProjectName] = useState("");
   const [formData, setFormData] = useState({
     planning_permit_date: "",
@@ -13,14 +17,12 @@ const DeveloperUpdateForm = () => {
   });
 
   useEffect(() => {
-    const storedPropertyId = localStorage.getItem("propertyId");
-    if (storedPropertyId) {
-      setPropertyId(parseInt(storedPropertyId, 10));
-      fetchProjectName(parseInt(storedPropertyId, 10));
-    } else {
-      console.warn("⚠️ No property ID found in localStorage.");
+    if (!propertyId) {
+      console.warn("⚠️ No property ID found in URL.");
+      return;
     }
-  }, []);
+    fetchProjectName(propertyId);
+  }, [propertyId]);
 
   const fetchProjectName = async (propertyId) => {
     try {
@@ -66,7 +68,7 @@ const DeveloperUpdateForm = () => {
   
       if (response.ok) {
         alert("✅ Project details updated successfully!");
-        window.location.href = "/floor-plan-page";
+        navigate(`/developers-landing-page`);
       } else {
         alert("❌ Failed to update project details.");
       }

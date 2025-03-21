@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./DevelopersLandingPage.module.css";
 
-export function ProjectCard({ title, type, carpetArea, status, image }) {
+export function ProjectCard({ id, title, type, carpetArea, status, image }) {
   return (
     <article className={styles.projectCard}>
       <div className={styles.projectImageWrapper}>
@@ -16,16 +16,15 @@ export function ProjectCard({ title, type, carpetArea, status, image }) {
         <h3 className={styles.projectTitle}>{title}</h3>
         <div className={styles.projectDetails}>
           <div className={styles.projectLabels}>
-            <p>{type}</p>
+            <p>Type</p>
             <p>Carpet Area</p>
           </div>
           <div className={styles.projectValues}>
-            <p>3BHK</p>
+            <p>{type}</p>
             <p>{carpetArea}</p>
             <p>{status}</p>
           </div>
         </div>
-        <button className={styles.checkSuggestions}>Check suggestions</button>
       </div>
     </article>
   );

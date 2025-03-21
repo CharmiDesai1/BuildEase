@@ -217,7 +217,23 @@ async function fetchProjects() {
     const result = await pool
       .request()
       .input("id", sql.Int, id)
-      .query("SELECT id, file_name, file_data FROM PdfDocuments WHERE id = @id");
+      .query("SELECT property_id as id, floor_plan_file_name, floor_plan_file_data FROM Properties WHERE property_id = @id");
+  
+    if (result.recordset.length === 0) {
+      throw new Error("PDF not found.");
+    }
+    return result.recordset[0];
+  }
+
+  async function getBrochureById(id) {
+    if (!id || isNaN(id)) {
+      throw new Error("Invalid PDF ID.");
+    }
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("id", sql.Int, id)
+      .query("SELECT property_id as id, brochure_file_name, brochure_file_data FROM Properties WHERE property_id = @id");
   
     if (result.recordset.length === 0) {
       throw new Error("PDF not found.");
@@ -246,7 +262,6 @@ async function getUserProperties(userId) {
   return result.recordset;
 }
 
-// Fetch property files (brochure and floor plan)
 async function getPropertyFile(userId, propertyId) {
   const pool = await sql.connect(dbConfig);
   const result = await pool
@@ -347,5 +362,5 @@ const insertSuggestion = async (property_id, user_id, suggestion_text) => {
 module.exports = {
     getDevelopers, insertDeveloper, googleLogin, loginDeveloper, getProjects, getUsers, insertUser,
     googleLoginUser, loginUser, fetchProjects, getPdfById, getUserProperties, getPropertyFile,
-    voteOnSuggestion, insertSuggestion
+    voteOnSuggestion, insertSuggestion, getBrochureById
 };

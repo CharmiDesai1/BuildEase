@@ -50,7 +50,7 @@ function App() {
         <Route path="/floor-plan-user-page" element={<FloorplanUser />} />
         <Route path="/timeline-user-page" element={<Timelineuser />} />
         <Route path="/approve-page" element={<Approve />} />
-        <Route path="/update-timeline-page" element={<UpdateForm />} />
+        <Route path="/update-timeline-page/:propertyId" element={<UpdateForm />} />
       </Routes>
       </div>
     </Router>
