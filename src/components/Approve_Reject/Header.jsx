@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Suggestions.module.css";
 import icon from "./image 28.png";
 import icon2 from "./profile.png";
 import { Link } from "react-router-dom";
+import InputDesign from "../Profile/InputDesign";
 
 export function Header() {
+  const [showProfileCard, setShowProfileCard] = useState(false);
+
+  const toggleProfileCard = () => {
+    setShowProfileCard((prev) => !prev);
+  };
+
+  const handleClickOutside = (e) => {
+    if (!e.target.closest(`.${styles.iconWrapper}`)) {
+      setShowProfileCard(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
   return (
     <header className={styles.header}>
       <nav className={styles.nav}>
@@ -23,8 +41,13 @@ export function Header() {
             className={styles.img}
             alt="Notification"
           />
-          <div className={styles.iconWrapper}>
-          <img src={icon2} alt="Profile" className={styles.profileIcon} />
+          <div className={styles.iconWrapper} onClick={toggleProfileCard}>
+            <img src={icon2} alt="Profile" className={styles.profileIcon} />
+            {showProfileCard && (
+              <div className={styles.profileCardWrapper}>
+                <InputDesign />
+              </div>
+            )}
           </div>
         </div>
       </nav>
