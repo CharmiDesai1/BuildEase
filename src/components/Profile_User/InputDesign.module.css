@@ -1,0 +1,150 @@
+.profileCard {
+  background-color: #fff;
+  border-radius: 12px;
+  flex-direction: column;
+  width: 300px;
+  padding: 40px;
+  display: flex;
+}
+@media (width<=991px) {
+  .profileCard {
+    width: 100%;
+    padding: 32px;
+  }
+}
+@media (width<=640px) {
+  .profileCard {
+    padding: 24px;
+  }
+}
+.profileHeader {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  display: flex;
+}
+.headerContent {
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  display: flex;
+}
+.userInfo {
+  align-items: center;
+  gap: 16px;
+  display: flex;
+}
+.avatarContainer {
+  position: relative;
+}
+.avatar {
+  background-color: #d9d9d9;
+  border-radius: 9999px;
+  width: 70px;
+  height: 70px;
+}
+.editButton {
+  background-color: #fff;
+  border-radius: 9999px;
+  justify-content: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  box-shadow: 0 1px 4px #0000001f;
+}
+.userDetails {
+  flex-direction: column;
+  justify-content: center;
+  display: flex;
+}
+.userName {
+  color: #1f2937;
+  font-family: Poppins;
+  font-size: 16px;
+  line-height: 24px;
+}
+.userEmail {
+  color: #6b7280;
+  font-family: Poppins;
+  font-size: 14px;
+  line-height: 20px;
+}
+.divider {
+  background-color: #e5e7eb;
+  width: 100%;
+  height: 1px;
+}
+.profileDetailsSection {
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  display: flex;
+}
+.detailRow {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+.detailLabel {
+  color: #559bc6;
+  font-family: Poppins;
+  font-size: 16px;
+}
+.detailValue {
+  color: #559bc6;
+  font-family: Poppins;
+  font-size: 16px;
+}
+.thinDivider {
+  background-color: #f3f4f6;
+  width: 100%;
+  height: 1px;
+}
+.smallDetailValue {
+  color: #559bc6;
+  font-family: Poppins;
+  font-size: 14px;
+}
+.downloadButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #559bc6;
+  border-radius: 30px;
+  width: 280px;
+  padding: 12px 20px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  box-shadow: -3px -3px 6px rgba(255, 255, 255, 1), 3px 3px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.downloadButton:hover {
+  background-color: #3e7ea8;
+}
+
+.downloadIconContainer {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.downloadIcon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}

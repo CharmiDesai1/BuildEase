@@ -920,4 +920,23 @@ app.get("/api/developer/:id", async (req, res) => {
   }
 });
 
+app.get("/api/user/:id", async (req, res) => {
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("id", sql.Int, req.params.id)
+      .query("SELECT full_name, email, mobile_number FROM Users WHERE user_id = @id");
+
+    if (result.recordset.length > 0) {
+      res.json(result.recordset[0]);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    console.error("SQL error", err);
+    res.status(500).send("Server error");
+  }
+});
+
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));
