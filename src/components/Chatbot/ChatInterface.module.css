@@ -1,0 +1,152 @@
+.chatContainer {
+  height: 600px;
+  max-height: 90vh;
+  background-color: #f3f3f3;
+  font-family: Montserrat;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+.chatHeader {
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  display: flex;
+}
+
+.avatarWrapper {
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+
+.avatar {
+  background-color: #24485f;
+  border-width: 5px;
+  border-color: #eaeff7;
+  border-radius: 9999px;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+}
+
+.headerInfo {
+  flex-direction: column;
+  display: flex;
+}
+
+.chatbotName {
+  color: #559bc6;
+  letter-spacing: 0.005em;
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.statusContainer {
+  align-items: center;
+  gap: 8px;
+  display: flex;
+}
+
+.statusText {
+  color: #559bc6;
+  letter-spacing: 0.005em;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.statusIndicator {
+  background-color: #0f0;
+  border-radius: 9999px;
+  width: 20px;
+  height: 20px;
+}
+
+.conversationArea {
+  flex-direction: column;
+  gap: 5px;
+  padding: 20px;
+  display: flex;
+}
+
+.messageRow {
+  gap: 20px;
+  display: flex;
+}
+
+.botMessageLight {
+  color: #000000;
+  letter-spacing: 0.005em;
+  background-color: #acc8d9;
+  border-radius: 20px;
+  max-width: 200px;
+  padding: 12px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.userMessageRow {
+  justify-content: flex-end;
+  display: flex;
+  gap: 20px;
+}
+
+.userMessage {
+  color: #fff;
+  letter-spacing: 0.005em;
+  background-color: #0c76b8;
+  border-radius: 20px;
+  max-width: 200px;
+  padding: 12px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.userAvatar {
+  color: #fff;
+  background-color: #24485f;
+  border-width: 5px;
+  border-color: #eaeff7;
+  border-radius: 9999px;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inputContainer {
+  background-color: #f3f3f3;
+  border-radius: 20px;
+  width: 100%;
+  padding: 20px;
+}
+
+.messageInput {
+  border-width: 0;
+  color: #559bc6;
+  letter-spacing: 0.005em;
+  background-color: transparent;
+  width: 100%;
+  font-size: 20px;
+  font-weight: 500;
+  font-family: Montserrat;
+}
+
+.messageInput:focus {
+  outline: none;
+}
+
+.userMessage,
+.botMessageLight {
+  word-wrap: break-word;      /* Break long words */
+  white-space: normal;        /* Allow text to wrap */
+  overflow-wrap: break-word;  /* Wrap text nicely */
+  word-break: break-word;     /* Additional support for older browsers */
+}

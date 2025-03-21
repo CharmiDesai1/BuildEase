@@ -19,8 +19,6 @@ function Home() {
 
   useEffect(() => {
     let storedUserId = localStorage.getItem("userId");
-  
-    // Extract userId from URL (for Google login)
     const urlParams = new URLSearchParams(window.location.search);
     const googleUserId = urlParams.get("userId");
   
@@ -68,17 +66,15 @@ function Home() {
       const response = await axios.get(`http://localhost:5000/properties/${propertyId}`);
       console.log("✅ Project Data Type:", typeof response.data);
       console.log("✅ Project Data:", response.data);
-  
-      // Ensure projects is always an array
       if (Array.isArray(response.data)) {
         setProjects(response.data);
         setFilteredProjects(response.data);
       } else if (response.data && typeof response.data === "object") {
-        setProjects([response.data]); // Convert single object to array
+        setProjects([response.data]);
         setFilteredProjects([response.data]);
       } else {
         console.error("❌ API response is invalid:", response.data);
-        setProjects([]); // Prevent errors in SearchBar
+        setProjects([]);
       }
   
       setLoading(false);
