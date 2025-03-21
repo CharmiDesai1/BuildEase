@@ -17,7 +17,6 @@ const ProfileHeader = ({ name, email, onClose }) => {
           </div>
           <div className={styles.userDetails}>
             <h2 className={styles.userName}>{name}</h2>
-            <p className={styles.userEmail}>{email}</p>
           </div>
         </div>
       </div>

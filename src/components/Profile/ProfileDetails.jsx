@@ -22,7 +22,6 @@ const DetailRow = ({ label, value, isSmallValue = false }) => {
 const ProfileDetails = ({ details }) => {
   return (
     <section className={styles.profileDetailsSection}>
-      <DetailRow label="Name" value={details.name} />
       <DetailRow
         label="Email account"
         value={details.email}
@@ -31,11 +30,6 @@ const ProfileDetails = ({ details }) => {
       <DetailRow
         label="Mobile number"
         value={details.mobile}
-        isSmallValue={true}
-      />
-      <DetailRow
-        label="Location"
-        value={details.location}
         isSmallValue={true}
       />
     </section>

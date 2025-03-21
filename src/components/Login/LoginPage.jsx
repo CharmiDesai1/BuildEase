@@ -19,12 +19,21 @@ export const LoginPage = () => {
     try {
       const response = await axios.post("http://localhost:5000/login", formData);
       console.log("Login Successful:", response.data);
+  
+      const developer = response?.data?.developer;
+  
+      if (developer && developer.developer_id) {
+        localStorage.setItem("developer_id", developer.developer_id);
+        console.log("✅ Stored developer_id:", localStorage.getItem("developer_id"));
+      } else {
+        console.warn("⚠️ developer_id missing in response!");
+      }
       navigate("/developers-landing-page");
     } catch (error) {
       console.error("Login Failed:", error);
       alert("Invalid user or password!");
     }
-  };
+  };  
 
   return (
     <div className="pageContainer">
