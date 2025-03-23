@@ -359,8 +359,78 @@ const insertSuggestion = async (property_id, user_id, suggestion_text) => {
   }
 };
 
+async function getUserDetails(userId) {
+  try {
+    let pool = await sql.connect(dbConfig);
+    let result = await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .query(
+        "SELECT full_name, email, mobile_number FROM Users WHERE user_id = @userId"
+      );
+
+    return result.recordset.length > 0 ? result.recordset[0] : null;
+  } catch (error) {
+    console.error("Database Error (getUserDetails):", error);
+    return null;
+  }
+}
+
+async function getAvailableProperties() {
+  try {
+    let pool = await sql.connect(dbConfig);
+    let result = await pool.query(
+      "SELECT property_id, project_name, apartment_type, carpet_area, development_stage, image_url FROM Properties"
+    );
+
+    return result.recordset;
+  } catch (error) {
+    console.error("Database Error (getAvailableProperties):", error);
+    return [];
+  }
+}
+
+async function getUserProperties(userId) {
+  try {
+    let pool = await sql.connect(dbConfig);
+    let result = await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .query(
+        `SELECT p.project_name, p.apartment_type, p.carpet_area 
+         FROM Properties p
+         INNER JOIN UserPropertyMapping upm ON p.property_id = upm.property_id
+         WHERE upm.user_id = @userId`
+      );
+
+    return result.recordset;
+  } catch (error) {
+    console.error("Database Error (getUserProperties):", error);
+    return [];
+  }
+}
+
+async function getPropertySuggestions(propertyId) {
+  try {
+    let pool = await sql.connect(dbConfig);
+    let result = await pool
+      .request()
+      .input("propertyId", sql.Int, propertyId)
+      .query(
+        `SELECT suggestion_text, status, likes, dislikes 
+         FROM Suggestions WHERE property_id = @propertyId`
+      );
+
+    return result.recordset;
+  } catch (error) {
+    console.error("Database Error (getPropertySuggestions):", error);
+    return [];
+  }
+}
+
 module.exports = {
     getDevelopers, insertDeveloper, googleLogin, loginDeveloper, getProjects, getUsers, insertUser,
     googleLoginUser, loginUser, fetchProjects, getPdfById, getUserProperties, getPropertyFile,
-    voteOnSuggestion, insertSuggestion, getBrochureById
+    voteOnSuggestion, insertSuggestion, getBrochureById, getUserDetails, getAvailableProperties, 
+    getUserProperties, getPropertySuggestions
 };

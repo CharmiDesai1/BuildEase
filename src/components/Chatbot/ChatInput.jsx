@@ -1,15 +1,35 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import styles from "./ChatInterface.module.css";
 
-function ChatInput({ placeholder }) {
+function ChatInput({ onSend }) {
+  const [message, setMessage] = useState("");
+
+  const handleSend = () => {
+    if (message.trim()) {
+      onSend(message);
+      setMessage("");
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <div className={styles.inputContainer}>
       <input
         type="text"
-        placeholder={placeholder}
+        placeholder="Type here..."
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyPress}
         className={styles.messageInput}
       />
+      <button className={styles.sendButton} onClick={handleSend}>Send</button>
     </div>
   );
 }

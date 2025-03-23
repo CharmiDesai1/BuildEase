@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const axios = require("axios");
 const bodyParser = require('body-parser');
 const dbOperation = require('./dbFiles/dbOperation');
 const passport = require('passport');
@@ -936,6 +937,66 @@ app.get("/api/user/:id", async (req, res) => {
   } catch (err) {
     console.error("SQL error", err);
     res.status(500).send("Server error");
+  }
+});
+
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent";
+
+app.post("/api/chat", async (req, res) => {
+  try {
+    const { userId, message } = req.body;
+    if (!userId) return res.status(400).json({ error: "User ID is required" });
+    if (!message) return res.status(400).json({ error: "Message is required" });
+
+    let botResponse = "";
+
+    const purchasedKeywords = ["properties bought by me", "my purchased properties", "houses I own", "my properties"];
+    const isPurchasedQuery = purchasedKeywords.some((keyword) => message.toLowerCase().includes(keyword));
+
+    if (isPurchasedQuery) {
+      const userProperties = await dbOperation.getUserProperties(userId);
+
+      if (userProperties.length > 0) {
+        const purchasedList = userProperties.map((p) => `${p.project_name} (${p.apartment_type})`).join(", ");
+        botResponse = `You have purchased the following properties: ${purchasedList}.`;
+      } else {
+        botResponse = "You have not purchased any properties yet.";
+      }
+
+      return res.json({ reply: botResponse });
+    }
+
+    const availableKeywords = ["available properties", "properties for sale", "new properties", "properties available"];
+    const isAvailableQuery = availableKeywords.some((keyword) => message.toLowerCase().includes(keyword));
+
+    if (isAvailableQuery) {
+      const allProperties = await dbOperation.getAvailableProperties();
+
+      if (allProperties.length > 0) {
+        const availableList = allProperties.map((p) => `${p.project_name} (${p.apartment_type})`).join(", ");
+        botResponse = `Available properties: ${availableList}.`;
+      } else {
+        botResponse = "No new properties available right now.";
+      }
+
+      return res.json({ reply: botResponse });
+    }
+
+    const requestPayload = {
+      contents: [{ role: "user", parts: [{ text: message }] }],
+    };
+
+    const response = await axios.post(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, requestPayload);
+    console.log("🔹 Gemini API Response:", response.data);
+
+    botResponse = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "I'm unable to respond right now.";
+    botResponse = botResponse.split(". ").slice(0, 2).join(". "); // Limit response length
+
+    res.json({ reply: botResponse });
+  } catch (error) {
+    console.error("❌ Gemini API Error:", error.response?.data || error.message);
+    res.status(500).json({ error: "AI service unavailable." });
   }
 });
 

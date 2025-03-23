@@ -1,11 +1,12 @@
 import React from "react";
 import styles from "./ChatInterface.module.css";
+import botAvatar from "./Chatbot.png";
 
 function ChatHeader() {
   return (
     <header className={styles.chatHeader}>
       <div className={styles.avatarWrapper}>
-        <div className={styles.avatar} />
+        <img src={botAvatar} alt="Bot Avatar" className={styles.avatar} />
       </div>
       <div className={styles.headerInfo}>
         <h1 className={styles.chatbotName}>Chatbot</h1>

@@ -8,6 +8,7 @@
   border-radius: 16px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .chatHeader {
@@ -21,16 +22,20 @@
   width: 50px;
   height: 50px;
   position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #24485f;
+  flex-shrink: 0;
 }
 
 .avatar {
-  background-color: #24485f;
-  border-width: 5px;
-  border-color: #eaeff7;
-  border-radius: 9999px;
-  width: 50px;
-  height: 50px;
-  position: absolute;
+  width: 70%; 
+  height: 70%; 
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .headerInfo {
@@ -86,7 +91,7 @@
   border-radius: 20px;
   max-width: 200px;
   padding: 12px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
 }
 
@@ -103,7 +108,7 @@
   border-radius: 20px;
   max-width: 200px;
   padding: 12px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
 }
 
@@ -125,17 +130,24 @@
   background-color: #f3f3f3;
   border-radius: 20px;
   width: 100%;
-  padding: 20px;
+  padding: 8px;  /* Reduced padding for better alignment */
+  display: flex;   /* Ensures input and button are in one row */
+  align-items: center;  /* ✅ Ensures input & button are aligned */
+  gap: 8px; /* ✅ Adds spacing between input and button */
+  box-sizing: border-box;
+  justify-content: space-between;
 }
 
 .messageInput {
+  flex-grow: 1;
   border-width: 0;
-  color: #559bc6;
+  color: #000000;
   letter-spacing: 0.005em;
   background-color: transparent;
   width: 100%;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
+  height: 26px;
   font-family: Montserrat;
 }
 
@@ -148,5 +160,26 @@
   word-wrap: break-word;      /* Break long words */
   white-space: normal;        /* Allow text to wrap */
   overflow-wrap: break-word;  /* Wrap text nicely */
-  word-break: break-word;     /* Additional support for older browsers */
+  word-break: break-word;
+  max-width: 80%;
+}
+
+.sendButton {
+  background-color: #0c76b8;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  height: 40px; /* ✅ Ensures button is same height as input */
+  display: flex;
+  align-items: center; /* ✅ Centers text inside button */
+  justify-content: center;
+}
+
+.sendButton:hover {
+  background-color: #085b91;
 }
