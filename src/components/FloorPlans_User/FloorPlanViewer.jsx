@@ -102,28 +102,6 @@ export const FloorPlanViewer = () => {
             ) : (
             <AnnotationTool imageUrl={imageUrl} propertyId={propertyId} />
             )}
-            <div className={styles.commentContainer}>
-            <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b5fb50b718b7d632896c7601fcd04bb4fb5f599fda9a1e687611fe47639b965?placeholderIfAbsent=true&apiKey=91e3b54116b2400fa8bdb6a04bd22a0c"
-            alt="Comment icon"
-            className={styles.commentIcon}
-            />
-          <div className={styles.commentInput}>
-            <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/c5fa0594be0fb4028ed16a53e2acea87d452e390b3c5fc3552783e0b5fb4d5a5?placeholderIfAbsent=true&apiKey=91e3b54116b2400fa8bdb6a04bd22a0c"
-            alt="Input icon"
-            className={styles.inputIcon}
-            />
-            <textarea
-              placeholder="Add a comment"
-              className={styles.commentTextarea}
-              rows={2}
-            />
-          </div>
-          <button className={styles.sendButton}>
-            <span className={styles.sendText}>SEND</span>
-          </button>
-          </div>
         </article>
       </div>
     </section>

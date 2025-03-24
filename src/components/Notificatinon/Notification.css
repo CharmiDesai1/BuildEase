@@ -1,0 +1,129 @@
+/* Container styles */
+.container {
+  padding: 10px;
+  background-color: #f3f3f3;
+  font-family: "Montserrat", sans-serif;
+  position: relative;
+  z-index: 1000;
+}
+
+/* Header styles */
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.headerIcon {
+  color: #559bc6;
+  font-size: 16px;
+}
+
+.headerTitle {
+  color: #559bc6;
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Notification Item */
+.notificationItem {
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #f3f3f3;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  word-wrap: break-word; /* Ensure words wrap properly */
+  overflow-wrap: break-word;
+}
+
+.notificationList {
+  max-height: 200px; /* Initially fits 3 notifications */
+  overflow: hidden;
+}
+
+.notificationList.expanded {
+  max-height: 350px;
+  overflow-y: auto; /* Adds scroll if too many */
+}
+
+.viewAllButton {
+  width: 100%;
+  padding: 8px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.viewAllButton:hover {
+  background: #0056b3;
+}
+
+.messageContainer {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap; /* Ensures text wraps within the container */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  color: #559bc6;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 300;
+}
+
+.messageText {
+  color: #559bc6;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 300;
+  display: inline;
+  white-space: normal; /* Allow text to wrap */
+  line-height: 1.5;
+}
+
+/* Avatar */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #559bc6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  border: 5px solid #eaeff7;
+}
+
+.avatarText {
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+/* Avatar Group */
+.avatarGroup {
+  display: flex;
+  flex-direction: row;
+  margin-right: 10px;
+}
+
+/* Special Message */
+.specialMessage {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.boldText {
+  font-weight: 600;
+  margin: 0 4px;
+}

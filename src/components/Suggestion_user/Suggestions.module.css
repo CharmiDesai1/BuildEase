@@ -142,12 +142,28 @@
 
 .profileCardWrapper {
   position: absolute;
-  top: 50px; /* below the icon */
+  top: 80px; /* below the icon */
   right: 140px;
   background-color: #ffffff;
   border-radius: 12px;
   width: 250px;
   border-radius: 4px;
+}
+
+.notificationWrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.notificationCardWrapper {
+  position: absolute;
+  top: 50px;
+  right: -50px;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  width: 540px;
 }
 
 .projectHeader {

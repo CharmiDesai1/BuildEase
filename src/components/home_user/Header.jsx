@@ -4,12 +4,20 @@ import icon from "./image 28.png";
 import icon2 from "./profile.png";
 import { Link } from "react-router-dom";
 import InputDesign from "../Profile_User/InputDesign";
+import Notification from "../Notificatinon/Notification";
 
 export function Header() {
   const [showProfileCard, setShowProfileCard] = useState(false);
+  const [showNotificationCard, setShowNotificationCard] = useState(false);
 
   const toggleProfileCard = () => {
     setShowProfileCard((prev) => !prev);
+    setShowNotificationCard(false);
+  };
+
+  const toggleNotificationCard = () => {
+    setShowNotificationCard((prev) => !prev);
+    setShowProfileCard(false);
   };
 
   const handleClickOutside = (e) => {
@@ -36,11 +44,18 @@ export function Header() {
         </ul>
 
         <div className={styles.rightIcons}>
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/d7d1a2f2635c8c72cb6dc1307682ad41e336541b71244bfce818fbb7e9780d22?apiKey=159365e216d040bfb41dcf7dfa9bbf0b"
-            className={styles.img}
-            alt="Notification"
-          />
+          <div className={styles.notificationWrapper} onClick={toggleNotificationCard}>
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/d7d1a2f2635c8c72cb6dc1307682ad41e336541b71244bfce818fbb7e9780d22?apiKey=159365e216d040bfb41dcf7dfa9bbf0b"
+              className={styles.img}
+              alt="Notification"
+            />
+            {showNotificationCard && (
+              <div className={styles.notificationCardWrapper}>
+                <Notification />
+              </div>
+            )}
+          </div>
           <div className={styles.iconWrapper} onClick={toggleProfileCard}>
             <img src={icon2} alt="Profile" className={styles.profileIcon} />
             {showProfileCard && (

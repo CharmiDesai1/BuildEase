@@ -48,12 +48,9 @@ export function ProjectCard({ title, type, carpetArea, status, bhk, image, prope
           </div>
         </div>
         <div className={styles.actionsColumn}>
-          <div className={styles.suggestionCount}>4</div>
           <button className={styles.suggestionsButton} onClick={handleSuggestionClick}>
             SUGGESTIONS
           </button>
-          <div className={styles.commentCount}>4</div>
-          <button className={styles.commentsButton}>ADDITIONAL COMMENTS</button>
         </div>
       </div>
     </article>

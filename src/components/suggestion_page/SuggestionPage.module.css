@@ -142,12 +142,28 @@
 
 .profileCardWrapper {
   position: absolute;
-  top: 50px; /* below the icon */
+  top: 80px; /* below the icon */
   right: 140px;
   background-color: #ffffff;
   border-radius: 12px;
   width: 250px;
   border-radius: 4px;
+}
+
+.notificationWrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.notificationCardWrapper {
+  position: absolute;
+  top: 50px;
+  right: -50px;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  width: 540px;
 }
 
 .iconWrapper2 {
@@ -352,11 +368,9 @@
   z-index: 10;
 }
 
-.suggestionsButton,
-.commentsButton {
+.suggestionsButton{
   border-radius: 43px;
   background-color: rgb(85, 155, 198);
-  box-shadow: -10px -10px 20px #fff;
   padding: 29px 70px;
   font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
   font-size: 20px;
@@ -445,8 +459,7 @@
     align-items: stretch;
   }
 
-  .suggestionsButton,
-  .commentsButton {
+  .suggestionsButton {
     padding: 29px 20px;
     text-align: center;
   }
@@ -521,10 +534,9 @@
   height: 40px;
 }
 
-.suggestionsButton,
-.commentsButton {
+.suggestionsButton {
   padding: 12px 30px;
-  font-size: 14px;
+  font-size: 20px;
 }
 
 .scrollToTop {
@@ -555,12 +567,6 @@
   .projectsSection {
     padding: 0 10px;
     margin-top: 20px;
-  }
-
-  .suggestionsButton,
-  .commentsButton {
-    padding: 10px 16px;
-    font-size: 12px;
   }
 
   .scrollToTop {
