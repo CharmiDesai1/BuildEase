@@ -991,7 +991,7 @@ app.post("/api/chat", async (req, res) => {
     console.log("🔹 Gemini API Response:", response.data);
 
     botResponse = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "I'm unable to respond right now.";
-    botResponse = botResponse.split(". ").slice(0, 2).join(". "); // Limit response length
+    botResponse = botResponse.split(". ").slice(0, 3).join(". ");
 
     res.json({ reply: botResponse });
   } catch (error) {
@@ -1006,7 +1006,6 @@ app.get("/api/notifications/:userId", async (req, res) => {
     const pool = await sql.connect(dbConfig);
 
     const query = `
-      -- Fetch suggestions added by other users (excluding logged-in user)
       SELECT 
         'A new suggestion "' + ps.suggestion_text + '" was added by ' + u.full_name AS message,
         u.full_name AS senderName
@@ -1016,7 +1015,6 @@ app.get("/api/notifications/:userId", async (req, res) => {
 
       UNION ALL
 
-      -- Fetch property timeline updates by developers
       SELECT 
         'Property timeline updated: ' + pcs.planning_permit_status AS message,
         d.full_name AS senderName
@@ -1025,13 +1023,21 @@ app.get("/api/notifications/:userId", async (req, res) => {
 
       UNION ALL
 
-      -- Fetch developer updates on suggestions (status change)
       SELECT 
         'Your suggestion "' + ps.suggestion_text + '" was ' + ps.status AS message,
         d.full_name AS senderName
       FROM PropertySuggestions ps
       LEFT JOIN Developer d ON ps.property_id = d.developer_id
       WHERE ps.user_id = @userId AND ps.status IS NOT NULL
+
+      UNION ALL
+
+      SELECT 
+        'A new annotation "' + a.annotated_file_name + '" was added by ' + u.full_name AS message,
+        u.full_name AS senderName
+      FROM Annotations a
+      LEFT JOIN Users u ON a.user_id = u.user_id
+      WHERE a.user_id <> @userId  -- Exclude logged-in user's own annotations
     `;
 
     const result = await pool.request()
@@ -1044,6 +1050,7 @@ app.get("/api/notifications/:userId", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch notifications" });
   }
 });
+
 
 app.get("/api/developer/:developerId", async (req, res) => {
   try {
@@ -1065,14 +1072,12 @@ app.get("/api/developer/:developerId", async (req, res) => {
   }
 });
 
-// Fetch Developer Notifications
 app.get("/api/notifications/developer/:developerId", async (req, res) => {
   try {
     const { developerId } = req.params;
     const pool = await sql.connect(dbConfig);
 
     const query = `
-      -- Notify developers when a user adds a new suggestion
       SELECT 
         'New suggestion "' + ps.suggestion_text + '" added by ' + u.full_name AS message,
         u.full_name AS senderName
@@ -1082,7 +1087,6 @@ app.get("/api/notifications/developer/:developerId", async (req, res) => {
 
       UNION ALL
 
-      -- Notify developers when another developer updates the status of a suggestion
       SELECT 
         'Suggestion "' + ps.suggestion_text + '" was ' + ps.status + ' by ' + d.full_name AS message,
         d.full_name AS senderName
@@ -1092,13 +1096,21 @@ app.get("/api/notifications/developer/:developerId", async (req, res) => {
 
       UNION ALL
 
-      -- Notify developers when another developer updates the property timeline
       SELECT 
         'Timeline updated: ' + pcs.planning_permit_status + ' by ' + d.full_name AS message,
         d.full_name AS senderName
       FROM PropertyConstructionStatus pcs
       LEFT JOIN Developer d ON pcs.property_id = d.developer_id
       WHERE d.developer_id <> @developerId
+
+      UNION ALL
+
+      SELECT 
+        'New annotation "' + a.annotated_file_name + '" added by ' + u.full_name AS message,
+        u.full_name AS senderName
+      FROM Annotations a
+      LEFT JOIN Users u ON a.user_id = u.user_id
+      WHERE a.property_id IN (SELECT property_id FROM Developer WHERE developer_id = @developerId)
     `;
 
     const result = await pool.request()
@@ -1111,5 +1123,6 @@ app.get("/api/notifications/developer/:developerId", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch notifications" });
   }
 });
+
 
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));
