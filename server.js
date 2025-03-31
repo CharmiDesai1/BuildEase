@@ -1388,4 +1388,108 @@ app.post("/api/developers/reset-password", async (req, res) => {
   }
 });
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "uploads"));
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const fileUpload = multer({ storage: storage });
+
+app.get("/api/properties/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const pool = await sql.connect(dbConfig);
+    const query = `
+      SELECT p.property_id, p.project_name, p.developer_id
+      FROM Properties p
+      JOIN UserPropertyMapping upm ON p.property_id = upm.property_id
+      WHERE upm.user_id = @userId;
+    `;
+    const result = await pool.request().input("userId", sql.Int, userId).query(query);
+
+    res.json(result.recordset);
+  } catch (error) {
+    console.error("❌ Error fetching properties:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.get("/api/property-id/:projectName", async (req, res) => {
+  const projectName = decodeURIComponent(req.params.projectName);
+  console.log("🔍 Fetching property_id for:", projectName);
+
+  try {
+    const pool = await sql.connect(dbConfig);
+    const query = "SELECT property_id FROM Properties WHERE project_name = @projectName";
+    const result = await pool.request().input("projectName", sql.NVarChar, projectName).query(query);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ error: "Property not found" });
+    }
+
+    res.json({ property_id: result.recordset[0].property_id });
+  } catch (error) {
+    console.error("❌ Error fetching property ID:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.post("/api/warranty-claim", fileUpload.single("image"), async (req, res) => {
+  const {
+    user_id,
+    property_id,
+    category,
+    name,
+    email,
+    description,
+    dateOfPossession,
+    resolutionType,
+    otherResolution,
+  } = req.body;
+
+  try {
+    const pool = await sql.connect(dbConfig);
+    const devQuery = "SELECT developer_id FROM Properties WHERE property_id = @property_id";
+    const devResult = await pool.request().input("property_id", sql.Int, property_id).query(devQuery);
+
+    if (devResult.recordset.length === 0) {
+      return res.status(400).json({ error: "Invalid property_id" });
+    }
+
+    const developer_id = devResult.recordset[0].developer_id;
+    console.log("Uploaded file details:", req.file);
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+    const insertQuery = `
+      INSERT INTO WarrantyClaim 
+      (user_id, property_id, developer_id, category, name, email, description, image_path, date_of_possession, resolution_type, other_resolution)
+      VALUES (@user_id, @property_id, @developer_id, @category, @name, @email, @description, @imagePath, @dateOfPossession, @resolutionType, @otherResolution);
+    `;
+    await pool
+      .request()
+      .input("user_id", sql.Int, user_id)
+      .input("property_id", sql.Int, property_id)
+      .input("developer_id", sql.Int, developer_id)
+      .input("category", sql.NVarChar, category)
+      .input("name", sql.NVarChar, name)
+      .input("email", sql.NVarChar, email)
+      .input("description", sql.NVarChar, description)
+      .input("imagePath", sql.NVarChar, imagePath)
+      .input("dateOfPossession", sql.Date, dateOfPossession)
+      .input("resolutionType", sql.NVarChar, resolutionType)
+      .input("otherResolution", sql.NVarChar, otherResolution || null)
+      .query(insertQuery);
+
+    res.json({ message: "✅ Warranty claim submitted successfully!" });
+  } catch (error) {
+    console.error("❌ Error inserting claim:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));

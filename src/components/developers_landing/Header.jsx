@@ -5,6 +5,7 @@ import icon2 from "./profile.png";
 import { Link } from "react-router-dom";
 import InputDesign from "../Profile/InputDesign";
 import Notification from "../Notificatinon_Developer/Notification";
+import Warranty from "./warranty.png";
 
 export function Header() {
   const [showProfileCard, setShowProfileCard] = useState(false);
@@ -44,6 +45,14 @@ export function Header() {
         </ul>
 
         <div className={styles.rightIcons}>
+        <div className={styles.notificationWrapper} onClick={toggleNotificationCard}>
+            <img src={Warranty} alt="Warranty" className={styles.Warranty} />
+            {showNotificationCard && (
+              <div className={styles.profileCardWrapper}>
+                <Notification />
+              </div>
+            )}
+          </div>
         <div className={styles.notificationWrapper} onClick={toggleNotificationCard}>
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/d7d1a2f2635c8c72cb6dc1307682ad41e336541b71244bfce818fbb7e9780d22?apiKey=159365e216d040bfb41dcf7dfa9bbf0b"

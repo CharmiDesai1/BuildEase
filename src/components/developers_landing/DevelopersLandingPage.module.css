@@ -41,6 +41,15 @@
   cursor: pointer;
 }
 
+.Warranty {
+  display: block;
+  width: 50px; /* Increase size */
+  height: auto;
+  margin: 0 auto; /* Center the image */
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
 .buildEase {
   display: flex;
   flex-direction: column;

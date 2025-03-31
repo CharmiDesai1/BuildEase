@@ -19,6 +19,7 @@ import EditProfile from './components/Profile_User/EditProfile';
 import ForgotResetPassword from './components/Profile_User/ForgotResetPassword';
 import EditProfileDeveloper from './components/Profile/EditProfile';
 import ForgotPassword from './components/Profile/ForgotResetPassword';
+import WarrantyClaim from './components/Warranty_Claim/WarrantyClaim';
 
 function App() {
   const [returnedData, setReturnedData] = useState(['hello']);
@@ -55,6 +56,7 @@ function App() {
         <Route path="/timeline-user-page" element={<Timelineuser />} />
         <Route path="/approve-page" element={<Approve />} />
         <Route path="/update-timeline-page/:propertyId" element={<UpdateForm />} />
+        <Route path="/warranty-claim-user" element={<WarrantyClaim />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/forgot-password" element={<ForgotResetPassword />} />
         <Route path="/edit-profile-developer" element={<EditProfileDeveloper />} />
