@@ -252,7 +252,25 @@ VALUES
 (1, '2025-01-15', '2025-03-01', '2025-06-10', '2025-09-20', '2025-12-05');
 
 select * from PropertyConstructionStatus;
-DROP TABLE PropertyConstructionStatus;
+SELECT * FROM UserPropertyMapping WHERE user_id = 2;
+SELECT * FROM Properties WHERE property_id = 1
+
+SELECT property_id FROM Properties WHERE LOWER(project_name) = LOWER('A Shridhar Kaveri-sangam');
+SELECT image_path FROM WarrantyClaim;
+DROP TABLE WarrantyClaim;
+
+CREATE TABLE WarrantyClaim (
+    id INT PRIMARY KEY IDENTITY(1,1), user_id INT NOT NULL, developer_id INT NOT NULL, property_id INT NOT NULL, category VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, 
+	description TEXT NOT NULL, image_path VARCHAR(500) NOT NULL, date_of_possession DATE NOT NULL, resolution_type VARCHAR(255) NOT NULL, other_resolution VARCHAR(255) DEFAULT NULL, 
+	submitted_at DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (developer_id) REFERENCES Developer(developer_id) ON DELETE CASCADE,
+    FOREIGN KEY (property_id) REFERENCES Properties(property_id) ON DELETE CASCADE
+);
+
+ALTER TABLE WarrantyClaim
+ADD approval_status VARCHAR(20) DEFAULT 'pending';
+ALTER TABLE WarrantyClaim ALTER COLUMN approval_status VARCHAR(255);
 
 USE Developers;
 SELECT * FROM Properties;
@@ -262,6 +280,7 @@ SELECT * FROM UserPropertyMapping;
 SELECT * FROM PropertySuggestions;
 SELECT * FROM PropertyConstructionStatus;
 SELECT * FROM Annotations;
+SELECT * FROM WarrantyClaim;
 
 SELECT TABLE_NAME 
 FROM INFORMATION_SCHEMA.TABLES 
