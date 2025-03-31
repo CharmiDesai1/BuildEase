@@ -48,6 +48,7 @@ function Home() {
       if (response.data.length > 0) {
         const propertyId = response.data[0].id;
         console.log("✅ Property ID retrieved:", propertyId);
+        localStorage.setItem("propertyId", propertyId);
         fetchProjects(propertyId);
       } else {
         console.warn("⚠️ No property found for this user.");

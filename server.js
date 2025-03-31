@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const axios = require("axios");
 const bodyParser = require('body-parser');
+const bcrypt = require("bcrypt");
 const dbOperation = require('./dbFiles/dbOperation');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -16,6 +17,7 @@ const poppler = require("pdf-poppler");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 const PDFDocument = require("pdfkit");
+const nodemailer = require("nodemailer");
 
 const TEMP_IMAGE_DIR = path.join(__dirname, "temp_images");
 fs.ensureDirSync(TEMP_IMAGE_DIR);
@@ -1124,5 +1126,266 @@ app.get("/api/notifications/developer/:developerId", async (req, res) => {
   }
 });
 
+app.get("/api/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("user_id", sql.Int, id)
+      .query("SELECT full_name, email, mobile_number FROM users WHERE user_id = @user_id");
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/api/users/update", async (req, res) => {
+  try {
+    let { userid, name, email, phone } = req.body;
+    if (!userid) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+    userid = parseInt(userid);
+    if (isNaN(userid)) {
+      return res.status(400).json({ message: "Invalid User ID" });
+    }
+    let updates = [];
+    let params = { user_id: userid };
+    if (name) {
+      updates.push("full_name = @full_name");
+      params["full_name"] = name;
+    }
+    if (email) {
+      updates.push("email = @email");
+      params["email"] = email;
+    }
+    if (phone) {
+      updates.push("mobile_number = @mobile_number");
+      params["mobile_number"] = phone;
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ message: "No fields to update" });
+    }
+
+    const query = `UPDATE users SET ${updates.join(", ")} WHERE user_id = @user_id`;
+    const pool = await sql.connect(dbConfig);
+    const request = pool.request();
+    request.input("user_id", sql.Int, userid);
+    if (params["full_name"]) request.input("full_name", sql.NVarChar, params["full_name"]);
+    if (params["email"]) request.input("email", sql.NVarChar, params["email"]);
+    if (params["mobile_number"]) request.input("mobile_number", sql.NVarChar, params["mobile_number"]);
+
+    const result = await request.query(query);
+    if (result.rowsAffected[0] === 0) {
+      return res.status(404).json({ message: "User not found or no changes made" });
+    }
+    res.json({ message: "User updated successfully" });
+  } catch (error) {
+    console.error("❌ Error updating user:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+const otpStore = {};
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
+
+app.post("/api/users/verify-email", async (req, res) => {
+  const { userId, email } = req.body;
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .input("email", sql.NVarChar, email)
+      .query("SELECT user_id FROM users WHERE user_id = @userId AND email = @email");
+
+    if (result.recordset.length === 0) {
+      return res.status(400).json({ message: "Email does not match user ID" });
+    }
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    otpStore[userId] = otp;
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset OTP",
+      text: `Your OTP for password reset is: ${otp}`,
+    });
+
+    res.json({ message: "OTP sent to your email" });
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/api/users/verify-otp", (req, res) => {
+  const { userId, otp } = req.body;
+
+  if (otpStore[userId] && otpStore[userId] === parseInt(otp)) {
+    delete otpStore[userId]; 
+    return res.json({ message: "OTP verified successfully" });
+  }
+  res.status(400).json({ message: "Invalid OTP" });
+});
+
+app.post("/api/users/reset-password", async (req, res) => {
+  const { userId, newPassword } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const pool = await sql.connect(dbConfig);
+    await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .input("password_hash", sql.NVarChar, hashedPassword)
+      .query("UPDATE users SET password_hash = @password_hash WHERE user_id = @userId");
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.get("/api/developers/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("developer_id", sql.Int, id)
+      .query("SELECT full_name, email, mobile_number FROM Developer WHERE developer_id = @developer_id");
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "Developer not found" });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (error) {
+    console.error("Error fetching developer:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/api/developers/update", async (req, res) => {
+  try {
+    let { developerid, name, email, phone } = req.body;
+    if (!developerid) {
+      return res.status(400).json({ message: "Developer ID is required" });
+    }
+    developerid = parseInt(developerid);
+    if (isNaN(developerid)) {
+      return res.status(400).json({ message: "Invalid Developer ID" });
+    }
+    let updates = [];
+    let params = { developer_id: developerid };
+    if (name) {
+      updates.push("full_name = @full_name");
+      params["full_name"] = name;
+    }
+    if (email) {
+      updates.push("email = @email");
+      params["email"] = email;
+    }
+    if (phone) {
+      updates.push("mobile_number = @mobile_number");
+      params["mobile_number"] = phone;
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ message: "No fields to update" });
+    }
+
+    const query = `UPDATE Developer SET ${updates.join(", ")} WHERE developer_id = @developer_id`;
+    const pool = await sql.connect(dbConfig);
+    const request = pool.request();
+    request.input("developer_id", sql.Int, developerid);
+    if (params["full_name"]) request.input("full_name", sql.NVarChar, params["full_name"]);
+    if (params["email"]) request.input("email", sql.NVarChar, params["email"]);
+    if (params["mobile_number"]) request.input("mobile_number", sql.NVarChar, params["mobile_number"]);
+
+    const result = await request.query(query);
+    if (result.rowsAffected[0] === 0) {
+      return res.status(404).json({ message: "Developer not found or no changes made" });
+    }
+    res.json({ message: "Developer updated successfully" });
+  } catch (error) {
+    console.error("❌ Error updating developer:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+app.post("/api/developers/verify-email", async (req, res) => {
+  const { developerId, email } = req.body;
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool
+      .request()
+      .input("developerId", sql.Int, developerId)
+      .input("email", sql.NVarChar, email)
+      .query("SELECT developer_id FROM Developer WHERE developer_id = @developerId AND email = @email");
+
+    if (result.recordset.length === 0) {
+      return res.status(400).json({ message: "Email does not match developer ID" });
+    }
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    otpStore[developerId] = otp;
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset OTP",
+      text: `Your OTP for password reset is: ${otp}`,
+    });
+
+    res.json({ message: "OTP sent to your email" });
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/api/developers/verify-otp", (req, res) => {
+  const { developerId, otp } = req.body;
+
+  if (otpStore[developerId] && otpStore[developerId] === parseInt(otp)) {
+    delete otpStore[developerId]; 
+    return res.json({ message: "OTP verified successfully" });
+  }
+  res.status(400).json({ message: "Invalid OTP" });
+});
+
+app.post("/api/developers/reset-password", async (req, res) => {
+  const { developerId, newPassword } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const pool = await sql.connect(dbConfig);
+    await pool
+      .request()
+      .input("developerId", sql.Int, developerId)
+      .input("password_hash", sql.NVarChar, hashedPassword)
+      .query("UPDATE Developer SET password_hash = @password_hash WHERE developer_id = @developerId");
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 app.listen(API_PORT, () => console.log(`Listening on port ${API_PORT}`));

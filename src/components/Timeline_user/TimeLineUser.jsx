@@ -7,13 +7,15 @@ const TimeLineUser = () => {
   const [propertyName, setPropertyName] = useState("Unknown");
 
   useEffect(() => {
-    const storedPropertyId = localStorage.getItem("propertyId");
-    if (storedPropertyId) {
-      const id = parseInt(storedPropertyId, 10);
-      setPropertyId(id);
-    } else {
-      console.warn("⚠️ No property ID found in localStorage.");
-    }
+    setTimeout(() => {
+      const storedPropertyId = localStorage.getItem("propertyId");
+      console.log("🟢 Checking property ID in localStorage:", storedPropertyId);
+      if (storedPropertyId) {
+        setPropertyId(parseInt(storedPropertyId, 10));
+      } else {
+        console.warn("⚠️ No property ID found in localStorage.");
+      }
+    }, 500);
   }, []);
 
   useEffect(() => {

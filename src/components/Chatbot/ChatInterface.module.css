@@ -74,14 +74,15 @@
 
 .conversationArea {
   flex-direction: column;
-  gap: 5px;
-  padding: 20px;
+  gap: 2px;
+  padding: 10px;
   display: flex;
 }
 
 .messageRow {
-  gap: 20px;
+  gap: 10px;
   display: flex;
+  margin-top: -15px;
 }
 
 .botMessageLight {
@@ -90,15 +91,16 @@
   background-color: #acc8d9;
   border-radius: 20px;
   max-width: 200px;
-  padding: 12px;
-  font-size: 18px;
+  padding: 9px;
+  font-size: 16px;
   font-weight: 500;
 }
 
 .userMessageRow {
   justify-content: flex-end;
   display: flex;
-  gap: 20px;
+  gap: 10px;
+  margin-top: -15px;
 }
 
 .userMessage {
@@ -107,8 +109,8 @@
   background-color: #0c76b8;
   border-radius: 20px;
   max-width: 200px;
-  padding: 12px;
-  font-size: 18px;
+  padding: 9px;
+  font-size: 16px;
   font-weight: 500;
 }
 
@@ -130,10 +132,10 @@
   background-color: #f3f3f3;
   border-radius: 20px;
   width: 100%;
-  padding: 8px;  /* Reduced padding for better alignment */
-  display: flex;   /* Ensures input and button are in one row */
-  align-items: center;  /* ✅ Ensures input & button are aligned */
-  gap: 8px; /* ✅ Adds spacing between input and button */
+  padding: 8px; 
+  display: flex;
+  align-items: center; 
+  gap: 8px; 
   box-sizing: border-box;
   justify-content: space-between;
 }
@@ -145,9 +147,9 @@
   letter-spacing: 0.005em;
   background-color: transparent;
   width: 100%;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
-  height: 26px;
+  height: 35px;
   font-family: Montserrat;
 }
 
@@ -157,9 +159,9 @@
 
 .userMessage,
 .botMessageLight {
-  word-wrap: break-word;      /* Break long words */
-  white-space: normal;        /* Allow text to wrap */
-  overflow-wrap: break-word;  /* Wrap text nicely */
+  word-wrap: break-word;    
+  white-space: normal;       
+  overflow-wrap: break-word; 
   word-break: break-word;
   max-width: 80%;
 }
@@ -169,15 +171,16 @@
   color: white;
   border: none;
   padding: 10px 15px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   border-radius: 10px;
   cursor: pointer;
   white-space: nowrap;
-  height: 40px; /* ✅ Ensures button is same height as input */
+  height: 35px; 
   display: flex;
-  align-items: center; /* ✅ Centers text inside button */
+  align-items: center; 
   justify-content: center;
+  margin-bottom: 8px;
 }
 
 .sendButton:hover {

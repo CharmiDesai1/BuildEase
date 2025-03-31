@@ -15,6 +15,10 @@ import FloorplanUser from './components/FloorPlans_User/FloorPlanUser';
 import Timelineuser from './components/Timeline_user/TimeLineUser';
 import Approve from './components/Approve_Reject/Suggestions';
 import UpdateForm from './components/TimeLine_Update/DeveloperUpdateFrom';
+import EditProfile from './components/Profile_User/EditProfile';
+import ForgotResetPassword from './components/Profile_User/ForgotResetPassword';
+import EditProfileDeveloper from './components/Profile/EditProfile';
+import ForgotPassword from './components/Profile/ForgotResetPassword';
 
 function App() {
   const [returnedData, setReturnedData] = useState(['hello']);
@@ -51,6 +55,10 @@ function App() {
         <Route path="/timeline-user-page" element={<Timelineuser />} />
         <Route path="/approve-page" element={<Approve />} />
         <Route path="/update-timeline-page/:propertyId" element={<UpdateForm />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/forgot-password" element={<ForgotResetPassword />} />
+        <Route path="/edit-profile-developer" element={<EditProfileDeveloper />} />
+        <Route path="/forgot-password-developer" element={<ForgotPassword />} />
       </Routes>
       </div>
     </Router>

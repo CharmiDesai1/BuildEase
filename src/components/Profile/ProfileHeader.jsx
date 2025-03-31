@@ -1,10 +1,17 @@
 "use client";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./InputDesign.module.css";
 import EditIcon from "./Edit.png";
 
 const ProfileHeader = ({ name, email, onClose }) => {
+  const navigate = useNavigate();
   const initial = name ? name.charAt(0).toUpperCase() : "";
+
+  const handleEditClick = () => {
+    navigate("/edit-profile-developer");
+  };
+
   return (
     <header className={styles.profileHeader}>
       <div className={styles.headerContent}>
@@ -13,8 +20,7 @@ const ProfileHeader = ({ name, email, onClose }) => {
           <div className={styles.avatar}>
               {initial}
             </div>
-            <button
-              className={styles.editButton}>
+            <button className={styles.editButton} onClick={handleEditClick}>
                 <img src={EditIcon} alt="Edit Icon" className={styles.downloadIcon} />
             </button>
           </div>
