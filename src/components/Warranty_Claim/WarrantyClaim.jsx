@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./WarrantyClaim.css";
 
 const WarrantyClaim = () => {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
   const [properties, setProperties] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState("");
@@ -18,7 +20,6 @@ const WarrantyClaim = () => {
     otherResolution: "",
   });
 
-  // Fetch userId from localStorage on component mount
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
 
@@ -31,7 +32,6 @@ const WarrantyClaim = () => {
     }
   }, []);
 
-  // Fetch properties based on userId
   const fetchProperties = async (userId) => {
     try {
       console.log("📡 Fetching properties for userId:", userId);
@@ -43,7 +43,6 @@ const WarrantyClaim = () => {
     }
   };
 
-  // Fetch propertyId based on selected project_name
   const handlePropertyChange = async (e) => {
     const projectName = e.target.value;
     setSelectedProperty(projectName);
@@ -105,6 +104,7 @@ const WarrantyClaim = () => {
 
       console.log("✅ Warranty claim submitted:", response.data);
       alert("Warranty claim submitted successfully!");
+      navigate("/home-user-page");
     } catch (error) {
       console.error("❌ Error submitting warranty claim:", error);
       alert("Failed to submit warranty claim. Please try again.");

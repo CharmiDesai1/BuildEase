@@ -43,10 +43,19 @@
 
 .Warranty {
   display: block;
-  width: 50px; /* Increase size */
+  width: 45px; /* Increase size */
   height: auto;
-  margin: 0 auto; /* Center the image */
-  margin-bottom: 5px;
+  margin: 0 auto;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.notification {
+  display: block;
+  width: 66px; /* Increase size */
+  height: auto;
+  margin: 0 auto;
+  margin-top: 10px;
   cursor: pointer;
 }
 
@@ -161,8 +170,13 @@
 }
 
 .notificationWrapper {
+  border-radius: 43px;
+  background-color: rgba(249, 249, 249, 1);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.08);
+  width: 80px;
+  height: 75px;
+  gap: 10px;
   position: relative;
-  cursor: pointer;
 }
 
 .notificationCardWrapper {

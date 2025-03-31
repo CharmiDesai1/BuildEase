@@ -4,25 +4,41 @@ import icon from "./image 28.png";
 import icon2 from "./profile.png";
 import { Link } from "react-router-dom";
 import InputDesign from "../Profile/InputDesign";
-import Notification from "../Notificatinon_Developer/Notification";
+import Notification from "../Notification_Developer/Notification";
+import WarrantyClaim from "../Warranty_Developer/Warranty";
+import Warranty from "./warranty.png";
+import notification from "./notification.png"
 
 export function Header() {
   const [showProfileCard, setShowProfileCard] = useState(false);
   const [showNotificationCard, setShowNotificationCard] = useState(false);
+  const [showWarrantyCard, setWarrantyCard] = useState(false);
 
   const toggleProfileCard = () => {
     setShowProfileCard((prev) => !prev);
     setShowNotificationCard(false);
+    setWarrantyCard(false);
   };
 
   const toggleNotificationCard = () => {
     setShowNotificationCard((prev) => !prev);
     setShowProfileCard(false);
+    setWarrantyCard(false);
+  };
+
+  const toggleWarrantyCard = () => {
+    setWarrantyCard((prev) => !prev);
+    setShowProfileCard(false);
+    setShowNotificationCard(false);
   };
 
   const handleClickOutside = (e) => {
     if (!e.target.closest(`.${styles.iconWrapper}`)) {
       setShowProfileCard(false);
+    }
+    if (!e.target.closest(`.${styles.notificationWrapper}`)) {
+      setShowNotificationCard(false);
+      setWarrantyCard(false);
     }
   };
 
@@ -44,12 +60,16 @@ export function Header() {
         </ul>
 
         <div className={styles.rightIcons}>
+        <div className={styles.notificationWrapper} onClick={toggleWarrantyCard}>
+            <img src={Warranty} alt="Warranty" className={styles.Warranty} />
+            {showWarrantyCard && (
+              <div className={styles.notificationCardWrapper}>
+                <WarrantyClaim />
+              </div>
+            )}
+          </div>
         <div className={styles.notificationWrapper} onClick={toggleNotificationCard}>
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/d7d1a2f2635c8c72cb6dc1307682ad41e336541b71244bfce818fbb7e9780d22?apiKey=159365e216d040bfb41dcf7dfa9bbf0b"
-              className={styles.img}
-              alt="Notification"
-            />
+            <img src={notification} alt="Notification" className={styles.notification} />
             {showNotificationCard && (
               <div className={styles.notificationCardWrapper}>
                 <Notification />

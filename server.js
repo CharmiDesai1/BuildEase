@@ -1008,38 +1008,65 @@ app.get("/api/notifications/:userId", async (req, res) => {
     const pool = await sql.connect(dbConfig);
 
     const query = `
-      SELECT 
-        'A new suggestion "' + ps.suggestion_text + '" was added by ' + u.full_name AS message,
-        u.full_name AS senderName
-      FROM PropertySuggestions ps
-      LEFT JOIN Users u ON ps.user_id = u.user_id
-      WHERE ps.user_id <> @userId  -- Exclude logged-in user's own suggestions
+      SELECT * FROM (
+        SELECT 
+          'A new suggestion "' + CAST(ps.suggestion_text AS VARCHAR(MAX)) + '" was added by ' + u.full_name AS message,
+          u.full_name AS senderName,
+          ps.created_at AS event_time
+        FROM PropertySuggestions ps
+        LEFT JOIN Users u ON ps.user_id = u.user_id
+        WHERE ps.user_id <> @userId 
 
-      UNION ALL
+        UNION ALL
 
-      SELECT 
-        'Property timeline updated: ' + pcs.planning_permit_status AS message,
-        d.full_name AS senderName
-      FROM PropertyConstructionStatus pcs
-      LEFT JOIN Developer d ON pcs.property_id = d.developer_id
+        SELECT 
+          'Property timeline updated: ' + CAST(pcs.planning_permit_status AS VARCHAR(MAX)) AS message,
+          d.full_name AS senderName,
+          NULL AS event_time
+        FROM PropertyConstructionStatus pcs
+        LEFT JOIN Developer d ON pcs.property_id = d.developer_id
 
-      UNION ALL
+        UNION ALL
 
-      SELECT 
-        'Your suggestion "' + ps.suggestion_text + '" was ' + ps.status AS message,
-        d.full_name AS senderName
-      FROM PropertySuggestions ps
-      LEFT JOIN Developer d ON ps.property_id = d.developer_id
-      WHERE ps.user_id = @userId AND ps.status IS NOT NULL
+        SELECT 
+          'Your suggestion "' + CAST(ps.suggestion_text AS VARCHAR(MAX)) + '" was ' + ps.status AS message,
+          d.full_name AS senderName,
+          ps.created_at AS event_time
+        FROM PropertySuggestions ps
+        LEFT JOIN Developer d ON ps.property_id = d.developer_id
+        WHERE ps.user_id = @userId AND ps.status IS NOT NULL
 
-      UNION ALL
+        UNION ALL
 
-      SELECT 
-        'A new annotation "' + a.annotated_file_name + '" was added by ' + u.full_name AS message,
-        u.full_name AS senderName
-      FROM Annotations a
-      LEFT JOIN Users u ON a.user_id = u.user_id
-      WHERE a.user_id <> @userId  -- Exclude logged-in user's own annotations
+        SELECT 
+          'A new annotation "' + CAST(a.annotated_file_name AS VARCHAR(MAX)) + '" was added by ' + u.full_name AS message,
+          u.full_name AS senderName,
+          a.annotation_timestamp AS event_time
+        FROM Annotations a
+        LEFT JOIN Users u ON a.user_id = u.user_id
+        WHERE a.user_id <> @userId
+
+        UNION ALL
+
+        SELECT 
+          'A new warranty claim "' + CAST(wc.description AS VARCHAR(MAX)) + '" was submitted by ' + u.full_name AS message,
+          u.full_name AS senderName,
+          wc.submitted_at AS event_time
+        FROM WarrantyClaim wc
+        LEFT JOIN Users u ON wc.user_id = u.user_id
+        WHERE wc.user_id <> @userId
+
+        UNION ALL
+
+        SELECT 
+          'Your warranty claim "' + CAST(wc.description AS VARCHAR(MAX)) + '" status changed to ' + CAST(wc.approval_status AS VARCHAR(MAX)) AS message,
+          d.full_name AS senderName,
+          wc.submitted_at AS event_time
+        FROM WarrantyClaim wc
+        LEFT JOIN Developer d ON wc.property_id = d.developer_id
+        WHERE wc.user_id = @userId AND wc.approval_status IS NOT NULL
+      ) AS notifications
+      ORDER BY event_time DESC;  -- Show newest first
     `;
 
     const result = await pool.request()
@@ -1052,7 +1079,6 @@ app.get("/api/notifications/:userId", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch notifications" });
   }
 });
-
 
 app.get("/api/developer/:developerId", async (req, res) => {
   try {
@@ -1489,6 +1515,84 @@ app.post("/api/warranty-claim", fileUpload.single("image"), async (req, res) => 
   } catch (error) {
     console.error("❌ Error inserting claim:", error);
     res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.get("/api/warranty/developer/:developerId", async (req, res) => {
+  try {
+    const { developerId } = req.params;
+    const pool = await sql.connect(dbConfig);
+
+    const query = `
+      SELECT 
+      wc.id AS id,
+      'New warranty "' + CAST(wc.description AS VARCHAR(MAX)) + '" added by ' + wc.name AS message,
+        wc.name AS senderName
+      FROM WarrantyClaim as wc
+      LEFT JOIN Users u ON wc.user_id = u.user_id
+      WHERE wc.property_id IN (SELECT property_id FROM Developer WHERE developer_id = @developerId)`;
+
+    const result = await pool.request()
+      .input("developerId", sql.Int, developerId)
+      .query(query);
+
+    res.json(result.recordset);
+  } catch (error) {
+    console.error("❌ Error fetching developer warranty:", error);
+    res.status(500).json({ error: "Failed to fetch warranty" });
+  }
+});
+
+app.get("/api/warranty-claim/:warrantyClaimId", async (req, res) => {
+  try {
+    const { warrantyClaimId } = req.params;
+    const pool = await sql.connect(dbConfig);
+
+    const query = `
+      SELECT wc.id, wc.category, wc.name, wc.email, wc.description, 
+             wc.image_path, wc.resolution_type, wc.other_resolution,
+             p.project_name,
+             FORMAT(COALESCE(wc.date_of_possession, GETDATE()), 'dd/MM/yyyy') AS date_of_possession
+      FROM WarrantyClaim wc
+      LEFT JOIN Properties p ON wc.property_id = p.property_id
+      WHERE wc.id = @warrantyClaimId`;
+
+    const result = await pool.request()
+      .input("warrantyClaimId", sql.Int, warrantyClaimId)
+      .query(query);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ error: "Warranty claim not found" });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (error) {
+    console.error("❌ Error fetching warranty claim:", error);
+    res.status(500).json({ error: "Failed to fetch warranty claim details" });
+  }
+});
+
+app.put("/api/warranty-claim/:warrantyClaimId/status", async (req, res) => {
+  try {
+    const { warrantyClaimId } = req.params;
+    const { status } = req.body;
+
+    console.log("🛠 Received Status:", status);
+
+    if (!status || typeof status !== "string") {
+      return res.status(400).json({ error: "Invalid or missing status value" });
+    }
+
+    const pool = await sql.connect(dbConfig);
+    await pool.request()
+      .input("warrantyClaimId", sql.Int, warrantyClaimId)
+      .input("status", sql.VarChar, status)
+      .query("UPDATE WarrantyClaim SET approval_status = @status WHERE id = @warrantyClaimId");
+
+    res.json({ message: `Warranty claim ${warrantyClaimId} updated to ${status}` });
+  } catch (error) {
+    console.error("❌ Error updating warranty claim status:", error);
+    res.status(500).json({ error: "Failed to update status" });
   }
 });
 

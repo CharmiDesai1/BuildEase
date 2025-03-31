@@ -4,7 +4,7 @@ import icon from "./image 28.png";
 import icon2 from "./profile.png";
 import { Link } from "react-router-dom";
 import InputDesign from "../Profile_User/InputDesign";
-import Notification from "../Notificatinon/Notification";
+import Notification from "../Notification/Notification";
 
 export function Header() {
   const [showProfileCard, setShowProfileCard] = useState(false);
