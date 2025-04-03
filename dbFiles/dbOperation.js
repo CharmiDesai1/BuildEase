@@ -347,9 +347,10 @@ const insertSuggestion = async (property_id, user_id, suggestion_text) => {
       .input("property_id", sql.Int, property_id)
       .input("user_id", sql.Int, user_id)
       .input("suggestion_text", sql.NVarChar(sql.MAX), suggestion_text)
+      .input("created_at", sql.DateTime, new Date())
       .query(`
-        INSERT INTO PropertySuggestions (property_id, user_id, suggestion_text) 
-        VALUES (@property_id, @user_id, @suggestion_text)
+        INSERT INTO PropertySuggestions (property_id, user_id, suggestion_text, created_at) 
+        VALUES (@property_id, @user_id, @suggestion_text, @created_at)
       `);
 
     return { success: true, message: "Suggestion added successfully." };

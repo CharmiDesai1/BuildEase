@@ -128,7 +128,6 @@ function Home() {
             area={project.carpet_area}
             status={project.development_stage}
             imageSrc={project.image_url}
-            possessionDate="May-2025"
           />
         ))
       ) : (

@@ -41,7 +41,6 @@ export function Header() {
           <li><Link to="/home-user-page" className={styles.home}>Home</Link></li>
           <li><Link to="/suggestion-user-page" className={styles.suggestions}>Suggestions</Link></li>
           <li><Link to="/floor-plan-user-page" className={styles.FloorPlan}>Floor plans</Link></li>
-          <li><Link to="/warranty-claim-user" className={styles.FloorPlan}>Warranty Claim</Link></li>
         </ul>
 
         <div className={styles.rightIcons}>

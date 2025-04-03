@@ -326,6 +326,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 50px;
   gap: 10px;
   color: #fff;
   font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;

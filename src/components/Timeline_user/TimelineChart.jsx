@@ -13,10 +13,10 @@ const TimelineChart = ({ title = "Property Timeline Chart", propertyId }) => {
   
     const parts = dateString.split("/");
     if (parts.length === 3) {
-      return `${parts[0]}/${parts[1]}/${parts[2]}`; // Ensure correct DD/MM/YYYY order
+      return `${parts[0]}/${parts[1]}/${parts[2]}`;
     }
     
-    return "Invalid Date";  // Handle unexpected values
+    return "Invalid Date"; 
   };
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const TimelineChart = ({ title = "Property Timeline Chart", propertyId }) => {
         }));
 
         setTimelineItems(processedData);
-        setLastUpdated(`Last updated ${new Date().toLocaleDateString()}`);
+        setLastUpdated(`Last updated ${new Date().toLocaleDateString("en-GB")}`);
       } catch (error) {
         console.error("❌ Error fetching timeline data:", error);
       } finally {

@@ -129,6 +129,10 @@ UPDATE Properties
 SET image_url = 'https://cdn.builder.io/api/v1/image/assets/TEMP/cd168df9fc9d8e92caadcbfc8fc2741793ec03a9f995b843c5e0e8dd5d92ffd7'
 WHERE property_id = 3;
 
+UPDATE Properties 
+SET project_name = 'Ashiana Dwarka'
+WHERE property_id = 1;
+
 DECLARE @propertyId INT;
 SET @propertyId = (SELECT property_id FROM Properties WHERE project_name = 'A Shridhar Kaveri-sangam' AND apartment_type = '3BHK');
 
@@ -178,7 +182,7 @@ SELECT
     u.full_name AS submitter
 FROM PropertySuggestions ps
 LEFT JOIN Users u ON ps.user_id = u.user_id
-WHERE ps.property_id = 1;  -- Replace 1 with actual property_id you are testing
+WHERE ps.property_id = 1; 
 
 ALTER TABLE PropertySuggestions ADD voted_users NVARCHAR(MAX) DEFAULT '[]';
 
@@ -253,24 +257,7 @@ VALUES
 
 select * from PropertyConstructionStatus;
 SELECT * FROM UserPropertyMapping WHERE user_id = 2;
-SELECT * FROM Properties WHERE property_id = 1
-
-SELECT property_id FROM Properties WHERE LOWER(project_name) = LOWER('A Shridhar Kaveri-sangam');
-SELECT image_path FROM WarrantyClaim;
-DROP TABLE WarrantyClaim;
-
-CREATE TABLE WarrantyClaim (
-    id INT PRIMARY KEY IDENTITY(1,1), user_id INT NOT NULL, developer_id INT NOT NULL, property_id INT NOT NULL, category VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, 
-	description TEXT NOT NULL, image_path VARCHAR(500) NOT NULL, date_of_possession DATE NOT NULL, resolution_type VARCHAR(255) NOT NULL, other_resolution VARCHAR(255) DEFAULT NULL, 
-	submitted_at DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (developer_id) REFERENCES Developer(developer_id) ON DELETE CASCADE,
-    FOREIGN KEY (property_id) REFERENCES Properties(property_id) ON DELETE CASCADE
-);
-
-ALTER TABLE WarrantyClaim
-ADD approval_status VARCHAR(20) DEFAULT 'pending';
-ALTER TABLE WarrantyClaim ALTER COLUMN approval_status VARCHAR(255);
+SELECT * FROM Properties WHERE property_id = 1;
 
 USE Developers;
 SELECT * FROM Properties;
@@ -280,7 +267,6 @@ SELECT * FROM UserPropertyMapping;
 SELECT * FROM PropertySuggestions;
 SELECT * FROM PropertyConstructionStatus;
 SELECT * FROM Annotations;
-SELECT * FROM WarrantyClaim;
 
 SELECT TABLE_NAME 
 FROM INFORMATION_SCHEMA.TABLES 

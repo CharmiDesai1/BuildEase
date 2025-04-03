@@ -2,9 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./Home.module.css";
 import viewIcon from "./view.png";
 import downloadIcon from "./download.png";
-import suggestionIcon from "./suggestion.png";
-import progressIcon from "./progress.png"; 
-import calendarIcon from "./calendar.png";
 import TimeLineIcon from "./timeline.jpg";
 import { useNavigate } from "react-router-dom";
 import topRightIcon from "./Chatbot.png";
@@ -18,8 +15,7 @@ export const PropertyCard = ({
   bedrooms,
   area,
   status,
-  imageSrc,
-  possessionDate
+  imageSrc
 }) => {
   const handleDownload = (fileType) => {
     window.open(`http://localhost:5000/download-property/${userId}/${id}/${fileType}`, "_blank");
@@ -72,23 +68,6 @@ export const PropertyCard = ({
                 <p className={styles.bhk}>{bedrooms}</p>
                 <p className={styles.area}>{area}</p>
                 <p className={styles.status}>{status}</p>
-              </div>
-            </div>
-            
-            <div className={styles.projectMeta}>
-              <div className={styles.metaItem}>
-                <img src={calendarIcon} alt="Calendar Icon" className={styles.metaIcon} />
-                <span>Possession date <br /><strong>{possessionDate}</strong></span>
-              </div>
-              
-              <div className={styles.metaItem}>
-                <img src={suggestionIcon} alt="Suggestion Icon" className={styles.metaIcon} />
-                <span>View suggestion</span>
-              </div>
-
-              <div className={styles.metaItem}>
-                <img src={progressIcon} alt="Progress Icon" className={styles.metaIcon} />
-                <span>View current progress</span>
               </div>
             </div>
           </div>

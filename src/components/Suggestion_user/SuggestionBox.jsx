@@ -14,7 +14,7 @@ export default function SuggestionBox({ onClose }) {
     if (storedUserId) {
       setUserId(storedUserId);
       fetchUserName(storedUserId);
-      fetchUserProperty(storedUserId); // ✅ Fetch property ID directly here
+      fetchUserProperty(storedUserId);
     }
   }, []);
 
