@@ -8,7 +8,6 @@ CREATE TABLE Developer (
 INSERT INTO Developer (full_name, email, password_hash, remember_me)
 VALUES ('Charmi Desai', 'charmidesai3112@gmail.com', HASHBYTES('SHA2_256', 'charmi3112'), 1);
 
-
 DELETE FROM Developer;
 DBCC CHECKIDENT ('Developer', RESEED, 0);
 
@@ -50,8 +49,6 @@ SET mobile_number = '8200867952'
 WHERE user_id = 2;
 
 SELECT * FROM Users;
-
-DROP TABLE Users;
 
 SELECT TABLE_NAME 
 FROM INFORMATION_SCHEMA.TABLES 
@@ -133,6 +130,14 @@ UPDATE Properties
 SET project_name = 'Ashiana Dwarka'
 WHERE property_id = 1;
 
+UPDATE Properties 
+SET brochure_file_name = 'Ashiana_Brochure.pdf'
+WHERE property_id = 1;
+
+UPDATE Properties 
+SET floor_plan_file_name = 'Ashiana_FloorPlan.pdf'
+WHERE property_id = 1;
+
 DECLARE @propertyId INT;
 SET @propertyId = (SELECT property_id FROM Properties WHERE project_name = 'A Shridhar Kaveri-sangam' AND apartment_type = '3BHK');
 
@@ -163,7 +168,7 @@ UPDATE PropertySuggestions
 SET created_at = GETDATE()
 WHERE created_at IS NULL;
 
-DELETE FROM PropertySuggestions WHERE id = 3;
+DELETE FROM PropertySuggestions WHERE id = 5;
 DECLARE @maxId INT;
 SELECT @maxId = ISNULL(MAX(id), 0) FROM PropertySuggestions;
 DBCC CHECKIDENT ('PropertySuggestions', RESEED, @maxId);

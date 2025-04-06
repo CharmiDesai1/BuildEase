@@ -1,23 +1,23 @@
 .floorPlanUser {
   background-color: rgba(255, 255, 255, 1);
   display: flex;
-  padding-top: 0px;
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: hidden;
   align-items: stretch;
   white-space: nowrap;
+  justify-content: center;
 }
 
 .header {
   width: 100%;
-  padding: 0; /* Remove extra padding   */
-  margin: 0; /* Remove extra margin */
+  padding: 0; 
+  margin: 0; 
   display: flex;
-  justify-content: space-between; /* Pushes content to the edges */
+  justify-content: space-between; 
   align-items: center;
   padding: 10px 20px;
-  background-color: white; /* Match background */
+  background-color: white; 
 }
 
 .logoIcon {
@@ -25,16 +25,16 @@
   width: 40px;
   height: 40px;
   margin-right: 10px;
-  margin: 0 auto; /* Center the image */
+  margin: 0 auto; 
   margin-bottom: 5px;
   cursor: pointer;
 }
 
 .profileIcon {
   display: block;
-  width: 80px; /* Increase size */
+  width: 80px; 
   height: auto;
-  margin: 0 auto; /* Center the image */
+  margin: 0 auto; 
   margin-bottom: 5px;
   cursor: pointer;
 }
@@ -42,7 +42,7 @@
 .buildEase {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center text and image */
+  align-items: center; 
   font-size: 24px;
   font-weight: bold;
   color: rgba(85, 155, 198, 1);
@@ -53,7 +53,7 @@
   margin-left: 25px;
   width: 100%;
   max-width: 1796px;
-  align-items: center; /* Ensures all elements align horizontally */
+  align-items: center; 
   justify-content: space-around; 
   padding: 10px 20px;
   gap: 40px 62px;
@@ -142,7 +142,7 @@
 
 .profileCardWrapper {
   position: absolute;
-  top: 80px; /* below the icon */
+  top: 80px; 
   right: 140px;
   background-color: #ffffff;
   border-radius: 12px;
@@ -201,16 +201,18 @@
 
 .floorPlanCard {
   background-color: #f3f3f3;
-  border-radius: 20px; /* Reduce excessive rounding */
-  width: 100%; /* Prevent full-width stretching */
-  max-width: 1400px; /* Set a reasonable max width */
+  border-radius: 20px; 
+  width: 90%; 
+  max-width: 1200px; 
   box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  align-items: center; /* Ensures content stays centered */
-  justify-content: center; /* Centers vertically */
+  align-items: center; 
+  justify-content: center; 
   text-align: center;
   overflow: hidden;
+  margin-left: 100px;
+  margin-top: -60px;
 }
 
 .floorplanTitle {
@@ -219,7 +221,7 @@
   justify-content: center;
   text-align: center;
   font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: 40px;
+  font-size: 30px;
   font-weight: 700;
   line-height: 1;
 }
@@ -249,14 +251,14 @@
 }
 
 .planDetailImage {
-  max-width: 1200px; /* Set a maximum width */
-  max-height: 500px; /* Set a maximum height */
+  max-width: 1000px; 
+  max-height: 500px; 
   display: block;
-  margin: 0 auto; /* Centers the image horizontally */
-  max-width: 90%; /* Ensures the image doesn't exceed the card width */
-  height: auto; /* Maintain aspect ratio */
-  object-fit: contain; /* Prevents distortion */
-  border-radius: 10px; /* Optional: for rounded corners */
+  margin: 0 auto; 
+  max-width: 90%; 
+  height: auto; 
+  object-fit: contain;
+  border-radius: 10px; 
   margin-top: 10px;
   margin-bottom: 20px;
 }
@@ -269,7 +271,7 @@
 .iconContainer {
   flex-direction: column;
   align-items: start;
-  margin-left: -350px;
+  margin-left: -270px;
   display: flex;
 }
 
@@ -304,10 +306,10 @@
 
 .commentContainer {
   display: flex;
-  align-items: center; /* Aligns items vertically */
-  justify-content: space-between; /* Ensures spacing is equal */
-  width: 100%; /* Ensures full width */
-  gap: 15px; /* Reduce gap for proper alignment */
+  align-items: center; 
+  justify-content: space-between; 
+  width: 100%; 
+  gap: 15px; 
   margin-bottom: 20px;
 }
 

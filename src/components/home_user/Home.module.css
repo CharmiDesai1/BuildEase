@@ -11,13 +11,13 @@
 
 .header {
   width: 100%;
-  padding: 0; /* Remove extra padding   */
-  margin: 0; /* Remove extra margin */
+  padding: 0; 
+  margin: 0; 
   display: flex;
-  justify-content: space-between; /* Pushes content to the edges */
+  justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: white; /* Match background */
+  background-color: white; 
 }
 
 .logoIcon {
@@ -25,16 +25,16 @@
   width: 40px;
   height: 40px;
   margin-right: 10px;
-  margin: 0 auto; /* Center the image */
+  margin: 0 auto; 
   margin-bottom: 5px;
   cursor: pointer;
 }
 
 .profileIcon {
   display: block;
-  width: 80px; /* Increase size */
+  width: 80px; 
   height: auto;
-  margin: 0 auto; /* Center the image */
+  margin: 0 auto; 
   margin-bottom: 5px;
   cursor: pointer;
 }
@@ -42,7 +42,7 @@
 .buildEase {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center text and image */
+  align-items: center; 
   font-size: 24px;
   font-weight: bold;
   color: rgba(85, 155, 198, 1);
@@ -53,7 +53,7 @@
   margin-left: 25px;
   width: 100%;
   max-width: 1796px;
-  align-items: center; /* Ensures all elements align horizontally */
+  align-items: center; 
   justify-content: space-around; 
   padding: 10px 20px;
   gap: 40px 62px;
@@ -142,7 +142,7 @@
 
 .profileCardWrapper {
   position: absolute;
-  top: 80px; /* below the icon */
+  top: 80px; 
   right: 140px;
   background-color: #ffffff;
   border-radius: 12px;
@@ -162,12 +162,12 @@
 }
 
 .img2 {
-  width: 100vw; /* Full width of the viewport */
-  height: auto; /* Maintain aspect ratio */
-  max-height: 300px; /* Reduce height without cropping */
-  object-fit: contain; /* Ensures the full image is visible */
+  width: 100vw; 
+  height: auto; 
+  max-height: 300px; 
+  object-fit: contain; 
   object-position: center;
-  display: block; /* Avoids unwanted spacing */
+  display: block;
 }
 
 .searchSection {
@@ -179,8 +179,8 @@
 
 .searchContainer {
   display: flex;
-  align-items: center; /* Ensure vertical alignment */
-  background: white; /* Full white background */
+  align-items: center; 
+  background: white; 
   border-radius: 30px;
   padding: 10px 20px;
   width: 100%;
@@ -188,14 +188,14 @@
 }
 
 .searchOngoingProject {
-  border-radius: 20px;  /* Reduced from 43px */
+  border-radius: 20px;  
   background-color: rgba(249, 249, 249, 1);
-  margin-top: 20px; /* Reduced margin */
-  width: 800px; /* Adjusted width */
-  max-width: 100%; /* Responsive */
-  padding: 10px 20px; /* Reduced padding */
+  margin-top: 20px; 
+  width: 800px;
+  max-width: 100%; 
+  padding: 10px 20px;
   font-family: Montserrat, -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: 16px; /* Reduced font size */
+  font-size: 16px; 
   color: rgba(176, 176, 176, 1);
   font-weight: 500;
   line-height: 1;
@@ -216,9 +216,9 @@
 
 .searchIcon {
   display: block;
-  width: 50px; /* Increase size */
+  width: 50px; 
   height: auto;
-  margin: 0 auto; /* Center the image */
+  margin: 0 auto; 
   margin-bottom: 5px;
   cursor: pointer;
 }
@@ -226,18 +226,18 @@
 .projectsSection {
   display: flex;
   flex-direction: column;
-  gap: 40px; /* Reduce excessive gap */
-  padding: 0 20px; /* Reduce horizontal padding */
-  align-items: center; /* Center everything */
+  gap: 40px; 
+  padding: 0 20px; 
+  align-items: center; 
 }
 
 .projectCard {
-  border-radius: 20px; /* Keep rounded corners */
+  border-radius: 20px; 
   background-color: #f3f3f3;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-  padding: 20px 30px; /* Reduce excessive padding */
-  max-width: 100%; /* Prevent overflow */
-  width: 90%; /* Adjust width to fit inside container */
+  padding: 20px 30px; 
+  max-width: 100%; 
+  width: 90%; 
   margin: 0 auto 50px auto;
   overflow: hidden;
   position: relative;
@@ -280,13 +280,13 @@
 }
 
 .imageColumn {
-  flex: 0 0 30%; /* Reduce width from 40% to 30% */
+  flex: 0 0 30%; 
 }
 
 .projectImage {
   width: 100%;
   height: auto;
-  max-height: 250px; /* Adjust the maximum height */
+  max-height: 250px; 
   object-fit: contain;
 }
 
@@ -382,7 +382,7 @@
 .projectMeta {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* Ensures all children take equal height */
+  align-items: flex-start; 
   text-align: center;
   margin-top: 15px;
   padding: 10px 0;
@@ -400,23 +400,20 @@
   font-weight: 500;
   color: #559bc6;
   gap: 5px;
-  flex: 1; /* Ensures equal width distribution */
+  flex: 1; 
 }
 
-/* Icon styles */
 .metaIcon {
   width: 24px;
   height: 24px;
   object-fit: contain;
 }
 
-/* Styling for the possession date text */
 .metaItem strong {
   font-size: 16px;
   color: #333;
 }
 
-/* Subtext for possession date */
 .metaSubText {
   font-size: 12px;
   color: #888;
@@ -591,7 +588,6 @@
   }
 }
 
-/* Buttons Container */
 .actionContainer {
   display: flex;
   flex-direction: column;
@@ -599,7 +595,6 @@
   margin-top: 20px;
 }
 
-/* Fix Button Styling */
 .viewAnnotatedButton,
 .downloadButton {
   display: flex;
@@ -623,7 +618,6 @@
   background-color: #3e7ea8;
 }
 
-/* Button Icons */
 .viewIconContainer,
 .downloadIconContainer {
   width: 40px;
@@ -633,7 +627,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;  /* Ensure all icons have the same width */
+  width: 40px;  
   height: 40px;
 }
 
@@ -644,7 +638,6 @@
   object-fit: contain;
 }
 
-/* Fix the Floating Number Issue */
 .ratingBadge {
   position: absolute;
   top: 10px;
@@ -662,7 +655,6 @@
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive Design */
 @media (max-width: 991px) {
 
   .viewAnnotatedButton,
@@ -679,13 +671,13 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  border-radius: 15px; /* Reduced from 25px */
+  border-radius: 15px; 
   background-color: rgb(85, 155, 198);
-  padding: 8px 16px; /* Reduced padding */
+  padding: 8px 16px; 
   font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
-  font-size: 24px; /* Reduced from 64px */
+  font-size: 24px; 
   color: #fff;
-  font-weight: 600; /* Slightly reduced font weight */
+  font-weight: 600; 
   border: none;
   cursor: pointer;
   z-index: 100;

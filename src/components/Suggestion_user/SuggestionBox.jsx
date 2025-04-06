@@ -25,7 +25,7 @@ export default function SuggestionBox({ onClose }) {
         setUserName(response.data.full_name || "U");
       }
     } catch (error) {
-      console.error("❌ Error fetching user name:", error);
+      console.error("Error fetching user name:", error);
     }
   };
 
@@ -35,23 +35,23 @@ export default function SuggestionBox({ onClose }) {
       const response = await fetch(`http://localhost:5000/user-properties/${userId}`);
 
       if (response.status === 404) {
-        console.warn(`⚠️ No properties found for user ${userId}`);
+        console.warn(`No properties found for user ${userId}`);
         return;
       }
 
       if (!response.ok) throw new Error("Failed to fetch properties.");
 
       const data = await response.json();
-      console.log("🟢 Properties received:", data);
+      console.log("Properties received:", data);
 
       if (data.length > 0) {
-        console.log("✅ Property ID retrieved:", data[0].id);
+        console.log("Property ID retrieved:", data[0].id);
         setPropertyId(data[0].id);
       } else {
-        console.warn("⚠️ No property found for this user.");
+        console.warn("No property found for this user.");
       }
     } catch (error) {
-      console.error("❌ Error fetching user properties:", error);
+      console.error("Error fetching user properties:", error);
     }
   };
 
@@ -70,15 +70,15 @@ export default function SuggestionBox({ onClose }) {
       });
 
       if (response.status === 200) {
-        alert("✅ Suggestion submitted successfully!");
+        alert("Suggestion submitted successfully!");
         setSuggestion("");
         onClose();
         window.location.reload();
       } else {
-        alert("❌ Failed to submit suggestion.");
+        alert("Failed to submit suggestion.");
       }
     } catch (error) {
-      console.error("❌ Error submitting suggestion:", error);
+      console.error("Error submitting suggestion:", error);
       alert("Error submitting suggestion. Please try again.");
     }
   };

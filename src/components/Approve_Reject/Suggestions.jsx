@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import ProjectHeader from "./ProjectHeader";
 import SuggestionsList from "./SuggestionsList";
 import styles from "./Suggestions.module.css";

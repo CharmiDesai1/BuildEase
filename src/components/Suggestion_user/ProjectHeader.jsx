@@ -8,15 +8,16 @@ const ProjectHeader = () => {
   const [propertyData, setPropertyData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  void userId;
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     if (storedUserId) {
-      console.log("✅ User ID retrieved from storage:", storedUserId);
+      console.log("User ID retrieved from storage:", storedUserId);
       setUserId(storedUserId);
       fetchUserProperties(storedUserId);
     } else {
-      console.error("❌ User ID is missing.");
+      console.error("User ID is missing.");
       setError("User not logged in");
       setLoading(false);
     }
@@ -24,9 +25,9 @@ const ProjectHeader = () => {
 
   const fetchUserProperties = async (userId) => {
     try {
-      console.log("📡 Fetching properties from:", `http://localhost:5000/user-properties/${userId}`);
+      console.log("Fetching properties from:", `http://localhost:5000/user-properties/${userId}`);
       const response = await axios.get(`http://localhost:5000/user-properties/${userId}`);
-      console.log("✅ Properties received:", response.data);
+      console.log("Properties received:", response.data);
 
       if (response.data.length > 0) {
         setPropertyData(response.data[0]);
@@ -34,7 +35,7 @@ const ProjectHeader = () => {
         setError("No property found for this user.");
       }
     } catch (error) {
-      console.error("❌ Error fetching user properties:", error);
+      console.error("Error fetching user properties:", error);
       setError("Failed to fetch user properties.");
     } finally {
       setLoading(false);

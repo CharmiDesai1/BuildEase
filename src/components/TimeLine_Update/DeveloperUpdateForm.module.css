@@ -1,4 +1,10 @@
-/* DeveloperUpdateForm.module.css */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to right, #3498db, #2980b9);
+}
 
 .form-container {
     max-width: 500px;

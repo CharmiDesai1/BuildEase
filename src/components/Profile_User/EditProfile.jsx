@@ -17,11 +17,11 @@ const EditProfile = () => {
     const storedUserId = localStorage.getItem("userId");
 
     if (!storedUserId) {
-      console.error("❌ User ID not found in localStorage. Redirecting to login.");
+      console.error("User ID not found in localStorage. Redirecting to login.");
       return;
     }
 
-    console.log("✅ User ID retrieved in EditProfile:", storedUserId);
+    console.log("User ID retrieved in EditProfile:", storedUserId);
     setUserId(storedUserId);
     axios
       .get(`http://localhost:5000/api/users/${storedUserId}`)
@@ -33,7 +33,7 @@ const EditProfile = () => {
         });
       })
       .catch((error) => {
-        console.error("❌ Error fetching user details:", error);
+        console.error("Error fetching user details:", error);
       });
   }, []);
 
@@ -45,7 +45,7 @@ const EditProfile = () => {
     e.preventDefault();
 
     if (!userId) {
-      console.error("❌ Cannot update profile: User ID is missing.");
+      console.error("Cannot update profile: User ID is missing.");
       return;
     }
 
@@ -57,10 +57,10 @@ const EditProfile = () => {
         phone: formData.phone.trim() !== "" ? formData.phone : null,
       });
 
-      console.log("✅ Profile updated:", response.data);
+      console.log("Profile updated:", response.data);
       navigate("/home-user-page");
     } catch (error) {
-      console.error("❌ Error updating profile:", error);
+      console.error("Error updating profile:", error);
     }
   };
 

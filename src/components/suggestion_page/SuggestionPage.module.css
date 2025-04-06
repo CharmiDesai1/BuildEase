@@ -11,13 +11,13 @@
 
 .header {
   width: 100%;
-  padding: 0; /* Remove extra padding */
-  margin: 0; /* Remove extra margin */
+  padding: 0;
+  margin: 0; 
   display: flex;
-  justify-content: space-between; /* Pushes content to the edges */
+  justify-content: space-between; 
   align-items: center;
   padding: 10px 20px;
-  background-color: white; /* Match background */
+  background-color: white; 
 }
 
 .logoIcon {
@@ -25,16 +25,16 @@
   width: 40px;
   height: 40px;
   margin-right: 10px;
-  margin: 0 auto; /* Center the image */
+  margin: 0 auto;
   margin-bottom: 5px;
   cursor: pointer;
 }
 
 .profileIcon {
   display: block;
-  width: 80px; /* Increase size */
+  width: 80px; 
   height: auto;
-  margin: 0 auto; /* Center the image */
+  margin: 0 auto; 
   margin-bottom: 5px;
   cursor: pointer;
 }
@@ -42,7 +42,7 @@
 .buildEase {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center text and image */
+  align-items: center; 
   font-size: 24px;
   font-weight: bold;
   color: rgba(85, 155, 198, 1);
@@ -53,7 +53,7 @@
   margin-left: 25px;
   width: 100%;
   max-width: 1796px;
-  align-items: center; /* Ensures all elements align horizontally */
+  align-items: center; 
   justify-content: space-around; 
   padding: 10px 20px;
   gap: 40px 62px;
@@ -141,7 +141,7 @@
 
 .profileCardWrapper {
   position: absolute;
-  top: 80px; /* below the icon */
+  top: 80px; 
   right: 140px;
   background-color: #ffffff;
   border-radius: 12px;
@@ -172,7 +172,7 @@
 
 .Warranty {
   display: block;
-  width: 45px; /* Increase size */
+  width: 45px; 
   height: auto;
   margin: 0 auto;
   margin-top: 10px;
@@ -181,7 +181,7 @@
 
 .notification {
   display: block;
-  width: 66px; /* Increase size */
+  width: 66px; 
   height: auto;
   margin: 0 auto;
   margin-top: 10px;
@@ -200,12 +200,12 @@
 }
 
 .img2 {
-  width: 100vw; /* Full width of the viewport */
-  height: auto; /* Maintain aspect ratio */
-  max-height: 300px; /* Reduce height without cropping */
-  object-fit: contain; /* Ensures the full image is visible */
+  width: 100vw; 
+  height: auto; 
+  max-height: 300px; 
+  object-fit: contain; 
   object-position: center;
-  display: block; /* Avoids unwanted spacing */
+  display: block; 
 }
 
 .breadcrumb {
@@ -225,8 +225,8 @@
 
 .searchContainer {
   display: flex;
-  align-items: center; /* Ensure vertical alignment */
-  background: white; /* Full white background */
+  align-items: center; 
+  background: white;
   border-radius: 30px;
   padding: 10px 20px;
   width: 100%;
@@ -261,9 +261,9 @@
 
 .searchIcon {
   display: block;
-  width: 75px; /* Increase size */
+  width: 75px; 
   height: auto;
-  margin: 0 auto; /* Center the image */
+  margin: 0 auto; 
   margin-bottom: 5px;
   cursor: pointer;
 }
@@ -325,13 +325,13 @@
 }
 
 .imageColumn {
-  flex: 0 0 30%; /* Reduce width from 40% to 30% */
+  flex: 0 0 30%; 
 }
 
 .projectImage {
   width: 100%;
   height: auto;
-  max-height: 250px; /* Adjust the maximum height */
+  max-height: 250px; 
   object-fit: contain;
 }
 
@@ -595,4 +595,3 @@
     font-size: 18px;
   }
 }
-

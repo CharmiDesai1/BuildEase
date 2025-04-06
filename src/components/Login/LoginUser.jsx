@@ -17,21 +17,21 @@ export const LoginUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        console.log("📡 Sending login request to backend:", formData);
+        console.log("Sending login request to backend:", formData);
         const response = await axios.post("http://localhost:5000/login-user", formData);
-        console.log("✅ Full Backend Response:", response.data);
+        console.log("Full Backend Response:", response.data);
         if (!response.data.user || !response.data.user.user_id) {
-            console.error("❌ No user_id found in response:", response.data);
+            console.error("No user_id found in response:", response.data);
             alert("Login failed: No user ID received.");
             return;
         }
         localStorage.setItem("userId", response.data.user.user_id);
-        console.log("✅ Stored userId in localStorage:", localStorage.getItem("userId"));
+        console.log("Stored userId in localStorage:", localStorage.getItem("userId"));
         navigate("/home-user-page");
     } catch (error) {
-        console.error("❌ User Login Failed:", error);
+        console.error("User Login Failed:", error);
         if (error.response) {
-            console.error("❌ Backend Response:", error.response.data);
+            console.error("Backend Response:", error.response.data);
         }
         alert("Invalid email or password!");
     }

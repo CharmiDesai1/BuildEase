@@ -43,7 +43,7 @@ const Notification = () => {
 
       axios.get(`http://localhost:5000/api/notifications/${userId}`)
         .then(response => setNotifications(response.data))
-        .catch(error => console.error("❌ Error fetching notifications:", error));
+        .catch(error => console.error("Error fetching notifications:", error));
     }
   }, []);
 

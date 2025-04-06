@@ -146,7 +146,7 @@ export const ProjectCard = ({
             )}
           </div>
           <button className={styles.downloadButton} onClick={handleDownload}>
-            DOWNLOAD
+            DOWNLOAD FLOOR PLAN
             <span className={styles.downloadIconContainer}>
               <img src={downloadIcon} alt="Download Icon" className={styles.downloadIcon} />
             </span>

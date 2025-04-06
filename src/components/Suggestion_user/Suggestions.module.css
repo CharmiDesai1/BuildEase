@@ -142,7 +142,7 @@
 
 .profileCardWrapper {
   position: absolute;
-  top: 80px; /* below the icon */
+  top: 80px;
   right: 140px;
   background-color: #ffffff;
   border-radius: 12px;
@@ -270,12 +270,12 @@
 
 .suggestionsContainer {
   width: 100%;
-  background-color: #f9f9f9; /* Light background */
+  background-color: #f9f9f9;
   padding: 10px;
   display: flex;
   flex-direction: row;
-  align-items: center; /* Centers horizontally */
-  justify-content: center; /* Ensures vertical alignment */
+  align-items: center;
+  justify-content: center;
   text-align: center;
   gap: 20px;
   width: 100%;
@@ -296,11 +296,11 @@
 }
 
   .Container {
-    background-color: #f9f9f9; /* Light background */
+    background-color: #f9f9f9;
     border-radius: 12px;
     padding: 0px;
-    margin-bottom: 0px; /* Adds spacing between comments */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow effect */
+    margin-bottom: 0px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
   }
 
   .suggestionCard {
@@ -308,7 +308,7 @@
     gap: 40px;
     width: 100%;
     margin-bottom: 20px;
-    align-items: center; /* Ensures vertical alignment */
+    align-items: center; 
   }
 
   .userInitial {
@@ -334,11 +334,11 @@
   }
 
   .plusIcon {
-    width: 40px; /* Adjust size */
+    width: 40px; 
     height: 40px;
-    cursor: pointer; /* ✅ Make it clickable */
-    display: inline-block; /* Forces it to stay inline */
-    vertical-align: middle; /* Aligns it properly */
+    cursor: pointer; 
+    display: inline-block;
+    vertical-align: middle;
   }  
 
   .headerRow {
@@ -630,7 +630,7 @@
 }
 
 .textarea {
-  width: 100%;
+  width: 97%;
   min-height: 100px;
   max-height: 200px;
   padding: 12px;
@@ -640,6 +640,7 @@
   font-size: 14px;
   margin-bottom: 10px;
   font-family: inherit;
+  padding-right: 10px;
 }
 
 .characterCount {
@@ -732,4 +733,3 @@
   cursor: not-allowed;
   opacity: 0.7;
 }
-  

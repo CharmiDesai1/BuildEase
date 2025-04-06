@@ -24,9 +24,9 @@ export const LoginPage = () => {
   
       if (developer && developer.developer_id) {
         localStorage.setItem("developer_id", developer.developer_id);
-        console.log("✅ Stored developer_id:", localStorage.getItem("developer_id"));
+        console.log("Stored developer_id:", localStorage.getItem("developer_id"));
       } else {
-        console.warn("⚠️ developer_id missing in response!");
+        console.warn("developer_id missing in response!");
       }
       navigate("/developers-landing-page");
     } catch (error) {

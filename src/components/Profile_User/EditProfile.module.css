@@ -8,7 +8,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; /* Full viewport height */
+  min-height: 100vh; 
   background: linear-gradient(to right, #6b89b1, #4754c8);
 }
 
@@ -37,14 +37,14 @@ html, body {
   }
   
   input {
-    width: calc(100% - 20px);  /* Ensures all inputs have the same width */
+    width: calc(100% - 20px);
     padding: 10px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
     transition: border-color 0.3s ease-in-out;
-    box-sizing: border-box; /* Ensures padding doesn't increase width */
+    box-sizing: border-box; 
     display: block;
   }  
   

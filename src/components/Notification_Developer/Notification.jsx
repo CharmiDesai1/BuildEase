@@ -28,7 +28,6 @@ const Notification = () => {
   useEffect(() => {
     const developerId = localStorage.getItem("developerId"); 
     if (developerId) {
-      // Fetch Developer Data
       fetch(`http://localhost:5000/api/developer/${developerId}`)
         .then(res => res.json())
         .then(data => {
@@ -41,10 +40,9 @@ const Notification = () => {
         })
         .catch(err => console.error("Failed to fetch developer data:", err));
 
-      // Fetch Developer Notifications
       axios.get(`http://localhost:5000/api/notifications/developer/${developerId}`)
         .then(response => setNotifications(response.data))
-        .catch(error => console.error("❌ Error fetching notifications:", error));
+        .catch(error => console.error("Error fetching notifications:", error));
     }
   }, []);
 

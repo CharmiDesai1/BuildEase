@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import styles from "./FloorPlanUser.module.css";
 import icon from "./Annotate.png";
-import { AnnotationTool } from "./AnnotationTool"; // ✅ Import annotation tool
+import { AnnotationTool } from "./AnnotationTool";
 
 export const FloorPlanViewer = () => {
   const [userId, setUserId] = useState(null);
@@ -13,6 +13,24 @@ export const FloorPlanViewer = () => {
   const [error, setError] = useState(null);
   const [showAnnotation, setShowAnnotation] = useState(false);
   const [propertyName, setPropertyName] = useState("");
+  void loading;
+  void error;
+  void userId;
+
+  const fetchPropertyId = useCallback(async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/user-properties/${userId}`);
+      if (response.data.length > 0) {
+        setPropertyId(response.data[0].id);
+      } else {
+        setLoading(false);
+        setError("No property associated with this user.");
+      }
+    } catch (error) {
+      setError("Failed to fetch property ID.");
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     let storedUserId = localStorage.getItem("userId");
@@ -32,22 +50,7 @@ export const FloorPlanViewer = () => {
       setLoading(false);
       setError("User ID not found.");
     }
-  }, []);
-
-  const fetchPropertyId = useCallback(async (userId) => {
-    try {
-      const response = await axios.get(`http://localhost:5000/user-properties/${userId}`);
-      if (response.data.length > 0) {
-        setPropertyId(response.data[0].id);
-      } else {
-        setLoading(false);
-        setError("No property associated with this user.");
-      }
-    } catch (error) {
-      setError("Failed to fetch property ID.");
-      setLoading(false);
-    }
-  }, []);
+  }, [fetchPropertyId]);
 
   useEffect(() => {
     if (propertyId) {
@@ -70,7 +73,7 @@ export const FloorPlanViewer = () => {
   };
 
   const handleAnnotateClick = () => {
-    setShowAnnotation(true); // ✅ Show annotation tool
+    setShowAnnotation(true);
   };
 
   return (
@@ -78,7 +81,7 @@ export const FloorPlanViewer = () => {
       <div className={styles.viewerControls}>
         <article className={styles.floorPlanCard}>
         <h2 className={styles.floorplanTitle}>
-          Floor plan for {propertyName} {/* ✅ Dynamically fetch property name */}
+          Floor plan for {propertyName}
         </h2>
           {!showAnnotation ? ( 
             <div className={styles.planContent}>

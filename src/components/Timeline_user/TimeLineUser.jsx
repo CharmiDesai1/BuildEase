@@ -9,11 +9,11 @@ const TimeLineUser = () => {
   useEffect(() => {
     setTimeout(() => {
       const storedPropertyId = localStorage.getItem("propertyId");
-      console.log("🟢 Checking property ID in localStorage:", storedPropertyId);
+      console.log("Checking property ID in localStorage:", storedPropertyId);
       if (storedPropertyId) {
         setPropertyId(parseInt(storedPropertyId, 10));
       } else {
-        console.warn("⚠️ No property ID found in localStorage.");
+        console.warn("No property ID found in localStorage.");
       }
     }, 500);
   }, []);
@@ -26,15 +26,15 @@ const TimeLineUser = () => {
 
   const fetchTimelineData = async (id) => {
     try {
-      console.log("📡 Fetching property name for ID:", id);
+      console.log("Fetching property name for ID:", id);
       const response = await fetch(`http://localhost:5000/api/timeline/${id}`);
       if (!response.ok) throw new Error("Failed to fetch property name.");
       const data = await response.json();
 
-      console.log("✅ Received property name:", data?.[0]?.property_name);
+      console.log("Received property name:", data?.[0]?.property_name);
       setPropertyName(data?.[0]?.property_name || "Unknown Property");
     } catch (error) {
-      console.error("❌ Error fetching property name:", error);
+      console.error("Error fetching property name:", error);
       setPropertyName("Unknown Property");
     }
   };

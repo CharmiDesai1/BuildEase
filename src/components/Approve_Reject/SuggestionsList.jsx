@@ -8,6 +8,7 @@ const SuggestionsList = () => {
   const [loading, setLoading] = useState(true);
   const [propertyId, setPropertyId] = useState(null);
   const [users, setUsers] = useState([]);
+  void users;
 
   useEffect(() => {
     const storedPropertyId = localStorage.getItem("propertyId");
@@ -42,7 +43,7 @@ const SuggestionsList = () => {
 
   const processedSuggestions = suggestions.map((suggestion) => ({
     ...suggestion,
-    submitter: suggestion.full_name || "Unknown User", // Use full_name directly
+    submitter: suggestion.full_name || "Unknown User",
 }));
 
 const formatDate = (dateString) => {

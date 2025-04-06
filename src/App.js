@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LoginPage } from "./components/Login/LoginPage";
 import { Signup } from "./components/Signup/Signup";
@@ -21,20 +21,6 @@ import EditProfileDeveloper from './components/Profile/EditProfile';
 import ForgotPassword from './components/Profile/ForgotResetPassword';
 
 function App() {
-  const [returnedData, setReturnedData] = useState(['hello']);
-
-  const fetchData = async () => {
-    const newData = await fetch ('/hello', {
-      method: 'GET',
-      headers: {
-        'content-type': 'application/json',
-        'Accept': 'application/json'
-      }
-    })
-    .then(res => res.json())
-    console.log(newData);
-    setReturnedData(newData.result)
-  }
 
   return (
     <Router>

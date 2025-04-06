@@ -16,12 +16,12 @@ function ChatInterface() {
     if (storedUserId) {
       setUserId(parseInt(storedUserId, 10));
     } else {
-      console.warn("⚠️ No userId found in local storage!");
+      console.warn("No userId found in local storage!");
     }
   }, []);
 
   const getBotResponse = async (userMessage) => {
-    if (!userId) return "⚠️ User not logged in. Please refresh and try again.";
+    if (!userId) return "User not logged in. Please refresh and try again.";
 
     try {
       const response = await axios.post("http://localhost:5000/api/chat", {
@@ -32,7 +32,7 @@ function ChatInterface() {
       return response.data.reply;
     } catch (error) {
       console.error("Backend Error:", error);
-      return "⚠️ Error fetching response. Please try again.";
+      return "Error fetching response. Please try again.";
     }
   };
 

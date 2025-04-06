@@ -8,52 +8,53 @@ const ProjectHeader = () => {
   const [propertyData, setPropertyData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  void propertyId;
 
   useEffect(() => {
-    const storedPropertyId = localStorage.getItem("propertyId"); // Retrieve propertyId from localStorage
-    console.log("🔍 Retrieved propertyId from localStorage:", storedPropertyId);
+    const storedPropertyId = localStorage.getItem("propertyId");
+    console.log("Retrieved propertyId from localStorage:", storedPropertyId);
 
+    const fetchProjects = async () => {
+      try {
+        console.log("📡 Fetching projects from: http://localhost:5000/api/projects");
+        const response = await axios.get("http://localhost:5000/api/projects");
+  
+        if (response.data.length > 0) {
+          const firstPropertyId = response.data[0].property_id;
+          console.log("Property ID obtained:", firstPropertyId);
+  
+          setPropertyId(firstPropertyId);
+          localStorage.setItem("propertyId", firstPropertyId); 
+          fetchPropertyDetails(firstPropertyId);
+        } else {
+          setError("No projects found.");
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+        setError("Failed to fetch projects.");
+        setLoading(false);
+      }
+    };
+    
     if (storedPropertyId) {
       setPropertyId(storedPropertyId);
       fetchPropertyDetails(storedPropertyId);
     } else {
-      console.warn("⚠️ No propertyId found in localStorage. Fetching first available project.");
-      fetchProjects(); // Fallback to fetching the first project if no ID is found
+      console.warn("No propertyId found in localStorage. Fetching first available project.");
+      fetchProjects();
     }
   }, []);
 
-  const fetchProjects = async () => {
-    try {
-      console.log("📡 Fetching projects from: http://localhost:5000/api/projects");
-      const response = await axios.get("http://localhost:5000/api/projects");
-
-      if (response.data.length > 0) {
-        const firstPropertyId = response.data[0].property_id; // Get first project's ID as fallback
-        console.log("✅ Property ID obtained:", firstPropertyId);
-
-        setPropertyId(firstPropertyId);
-        localStorage.setItem("propertyId", firstPropertyId); // Store it for future use
-        fetchPropertyDetails(firstPropertyId);
-      } else {
-        setError("No projects found.");
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("❌ Error fetching projects:", error);
-      setError("Failed to fetch projects.");
-      setLoading(false);
-    }
-  };
-
   const fetchPropertyDetails = async (id) => {
     try {
-      console.log("📡 Fetching property details from:", `http://localhost:5000/properties/${id}`);
+      console.log("Fetching property details from:", `http://localhost:5000/properties/${id}`);
       const response = await axios.get(`http://localhost:5000/properties/${id}`);
-      console.log("✅ Property details received:", response.data);
+      console.log("Property details received:", response.data);
 
       setPropertyData(response.data);
     } catch (error) {
-      console.error("❌ Error fetching property details:", error);
+      console.error("Error fetching property details:", error);
       setError("Failed to fetch property details.");
     } finally {
       setLoading(false);

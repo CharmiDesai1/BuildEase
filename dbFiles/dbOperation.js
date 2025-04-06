@@ -137,34 +137,31 @@ const googleLoginUser = async (displayName, email) => {
 };
 
 const loginUser = async (email, password) => {
-    console.log("📡 loginUser function called with:", email);
+    console.log("loginUser function called with:", email);
 
     try {
-        await poolConnect; // ✅ Ensure the connection is established
+        await poolConnect;
         const result = await pool
             .request()
             .input("email", sql.VarChar(100), email)
             .query("SELECT * FROM Users WHERE email = @email");
 
-        console.log("✅ Query executed. Result:", result.recordset);
-
         if (!result.recordset.length) {
-            console.log("❌ No user found for:", email);
+            console.log("No user found for:", email);
             return { success: false, message: "Invalid email or password" };
         }
 
         const user = result.recordset[0];
-        console.log("✅ Found user:", user);
 
         if (!user.user_id) {
-            console.error("❌ user_id is missing in database!");
+            console.error("user_id is missing in database!");
             return { success: false, message: "User ID missing in database record" };
         }
 
         return { success: true, user };
 
     } catch (error) {
-        console.error("❌ Database error:", error);
+        console.error("Database error:", error);
         return { success: false, message: "Database error", error };
     }
 };
@@ -297,7 +294,7 @@ const voteOnSuggestion = async (userId, suggestionId, voteType) => {
     try {
       voted_users = JSON.parse(voted_users || "[]");
     } catch (e) {
-      console.error("❌ Error parsing voted_users JSON:", e);
+      console.error("Error parsing voted_users JSON:", e);
       voted_users = [];
     }
 
@@ -334,7 +331,7 @@ const voteOnSuggestion = async (userId, suggestionId, voteType) => {
 
     return { success: true, message: "Vote updated successfully." };
   } catch (error) {
-    console.error("❌ Error voting on suggestion:", error);
+    console.error("Error voting on suggestion:", error);
     return { success: false, message: "Database error" };
   }
 };
@@ -355,7 +352,7 @@ const insertSuggestion = async (property_id, user_id, suggestion_text) => {
 
     return { success: true, message: "Suggestion added successfully." };
   } catch (error) {
-    console.error("❌ Error inserting suggestion:", error);
+    console.error("Error inserting suggestion:", error);
     return { success: false, message: "Database error." };
   }
 };

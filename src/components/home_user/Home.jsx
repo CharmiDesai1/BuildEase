@@ -1,21 +1,40 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import axios from "axios"; 
-import { useNavigate } from "react-router-dom"; 
+import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 import styles from "./Home.module.css";
 import { Header } from "./Header";
 import { PropertyCard } from "./PropertyCard"; 
 import { SearchBar } from "./SearchBar";
 import { ScrollToTop } from "./BackToTopButton";
 
-function Home() { 
-  const navigate = useNavigate(); 
+function Home() {
   const [userId, setUserId] = useState(null);
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const fetchPropertyId = useCallback(async (userId) => {
+    try {
+      console.log("Fetching property ID for userId:", userId);
+      const response = await axios.get(`http://localhost:5000/user-properties/${userId}`);
+      console.log("API Response:", response.data);
+
+      if (response.data.length > 0) {
+        const propertyId = response.data[0].id;
+        console.log("Property ID retrieved:", propertyId);
+        localStorage.setItem("propertyId", propertyId);
+        fetchProjects(propertyId);
+      } else {
+        console.warn("No property found for this user.");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching property ID:", error);
+      setError("Failed to fetch property ID.");
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     let storedUserId = localStorage.getItem("userId");
@@ -30,43 +49,21 @@ function Home() {
     }
   
     if (storedUserId) {
-      console.log("✅ User ID found:", storedUserId);
+      console.log("User ID found:", storedUserId);
       setUserId(storedUserId);
       fetchPropertyId(storedUserId);
     } else {
-      console.error("❌ User ID is missing.");
+      console.error("User ID is missing.");
       setLoading(false);
     }
-  }, []);
-
-  const fetchPropertyId = async (userId) => {
-    try {
-      console.log("📡 Fetching property ID for userId:", userId);
-      const response = await axios.get(`http://localhost:5000/user-properties/${userId}`);
-      console.log("🟢 API Response:", response.data);
-
-      if (response.data.length > 0) {
-        const propertyId = response.data[0].id;
-        console.log("✅ Property ID retrieved:", propertyId);
-        localStorage.setItem("propertyId", propertyId);
-        fetchProjects(propertyId);
-      } else {
-        console.warn("⚠️ No property found for this user.");
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("❌ Error fetching property ID:", error);
-      setError("Failed to fetch property ID.");
-      setLoading(false);
-    }
-  };
+  }, [fetchPropertyId]);
 
   const fetchProjects = async (propertyId) => {
     try {
-      console.log("📡 Fetching project details for propertyId:", propertyId);
+      console.log("Fetching project details for propertyId:", propertyId);
       const response = await axios.get(`http://localhost:5000/properties/${propertyId}`);
-      console.log("✅ Project Data Type:", typeof response.data);
-      console.log("✅ Project Data:", response.data);
+      console.log("Project Data Type:", typeof response.data);
+      console.log("Project Data:", response.data);
       if (Array.isArray(response.data)) {
         setProjects(response.data);
         setFilteredProjects(response.data);
@@ -74,30 +71,15 @@ function Home() {
         setProjects([response.data]);
         setFilteredProjects([response.data]);
       } else {
-        console.error("❌ API response is invalid:", response.data);
+        console.error("API response is invalid:", response.data);
         setProjects([]);
       }
   
       setLoading(false);
     } catch (error) {
-      console.error("❌ Error fetching projects:", error);
+      console.error("Error fetching projects:", error);
       setError("Failed to fetch project details.");
       setLoading(false);
-    }
-  };  
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:5000/user/login-user", formData);
-      console.log("✅ User Login Successful:", response.data);
-      localStorage.setItem("userId", response.data.user.user_id);
-      setUserId(response.data.user.user_id);
-      fetchPropertyId(response.data.user.user_id);
-      navigate("/home-user-page");
-    } catch (error) {
-      console.error("❌ User Login Failed:", error);
-      alert("Invalid email or password!");
     }
   };
 

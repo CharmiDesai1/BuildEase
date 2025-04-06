@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import styles from "./AnnotationTool.module.css";
 
@@ -33,26 +33,7 @@ export const AnnotationTool = ({ imageUrl, propertyId }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!userId || !propertyId) return;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-
-    const image = imageRef.current;
-    if (image.complete) {
-      initializeCanvas();
-    } else {
-      image.onload = initializeCanvas;
-    }
-
-    function initializeCanvas() {
-      canvas.width = image.width;
-      canvas.height = image.height;
-      redrawCanvas();
-    }
-  }, [imageUrl, annotations]);
-
-  const redrawCanvas = () => {
+  const redrawCanvas = useCallback(() => {
     const ctx = canvasRef.current.getContext("2d");
     ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     ctx.drawImage(imageRef.current, 0, 0);
@@ -78,7 +59,27 @@ export const AnnotationTool = ({ imageUrl, propertyId }) => {
         ctx.stroke();
       }
     });
-  };
+  }, [annotations]);
+
+  useEffect(() => {
+    if (!userId || !propertyId) return;
+    const canvas = canvasRef.current;
+
+    const image = imageRef.current;
+    if (image.complete) {
+      initializeCanvas();
+    } else {
+      image.onload = initializeCanvas;
+    }
+
+    function initializeCanvas() {
+      const image = imageRef.current;
+      const rect = image.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      redrawCanvas();
+    }
+  }, [imageUrl, annotations, userId, propertyId, redrawCanvas]);
 
   const handleMouseDown = (event) => {
     const rect = canvasRef.current.getBoundingClientRect();
@@ -196,7 +197,7 @@ export const AnnotationTool = ({ imageUrl, propertyId }) => {
 
   return (
     <div className={styles.annotationContainer}>
-      <h2>Annotating Floor Plan</h2>
+      <h3>Annotating Floor Plan</h3>
       <div className={styles.toolbar}>
         <button onClick={() => setTool("freehand")}>🖍 Freehand</button>
         <button onClick={() => setTool("text")}>🔤 Text</button>

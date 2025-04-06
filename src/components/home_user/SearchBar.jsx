@@ -5,9 +5,8 @@ import icon3 from "./search.png";
 export function SearchBar({ projects = [], setFilteredProjects }) {
   const [selectedProject, setSelectedProject] = useState("");
 
-  // 🔍 Ensure `projects` is always an array
   if (!Array.isArray(projects)) {
-    console.error("❌ Error: projects is not an array", projects);
+    console.error("Error: projects is not an array", projects);
     return <p className={styles.error}>Error loading projects.</p>;
   }
 
@@ -16,10 +15,10 @@ export function SearchBar({ projects = [], setFilteredProjects }) {
     setSelectedProject(query);
 
     if (query === "" || query === "all") {
-      setFilteredProjects(projects); // ✅ Show all projects when no search
+      setFilteredProjects(projects);
     } else {
       const filtered = projects.filter((project) =>
-        project.project_name.toLowerCase().includes(query.toLowerCase()) // ✅ Use correct key
+        project.project_name.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredProjects(filtered);
     }

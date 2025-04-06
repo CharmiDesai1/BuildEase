@@ -6,13 +6,13 @@ export function ProjectCard({ title, type, carpetArea, status, bhk, image, prope
   const navigate = useNavigate();
 
   const handleSuggestionClick = () => {
-    console.log("🚀 Button clicked for propertyId:", propertyId);
+    console.log("Button clicked for propertyId:", propertyId);
   
     if (propertyId) {
       localStorage.setItem("propertyId", propertyId);
-      console.log("✅ Stored propertyId in localStorage:", propertyId);
+      console.log("Stored propertyId in localStorage:", propertyId);
     } else {
-      console.warn("⚠️ propertyId is missing!");
+      console.warn("propertyId is missing!");
     }
   
     navigate("/approve-page");

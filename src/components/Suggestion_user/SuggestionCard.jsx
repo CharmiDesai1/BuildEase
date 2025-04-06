@@ -11,14 +11,14 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
 
   const handleVote = async (voteType) => {
     if (!userId || !suggestionId) {
-      alert("❌ User ID or Suggestion ID missing.");
+      alert("User ID or Suggestion ID missing.");
       return;
     }
     
     if (userVote === voteType) return;
 
     const payload = { userId, suggestionId, voteType };
-    console.log("📡 Sending vote request:", payload);
+    console.log("Sending vote request:", payload);
 
     try {
       const response = await fetch("http://localhost:5000/api/vote", {
@@ -28,7 +28,7 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
       });
 
       const data = await response.json();
-      console.log("✅ Vote API Response:", data);
+      console.log("Vote API Response:", data);
 
       if (data.success) {
         if (voteType === "up") {
@@ -43,11 +43,11 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
 
         setTimeout(() => window.location.reload(), 500);
       } else {
-        alert("❌ Error: " + data.message);
+        alert("Error: " + data.message);
       }
     } catch (error) {
-      console.error("❌ Error voting:", error);
-      alert("❌ Error submitting vote. Try again.");
+      console.error("Error voting:", error);
+      alert("Error submitting vote. Try again.");
     }
   };  
 

@@ -9,6 +9,8 @@ import onholdIcon from "./Onhold.png";
 
 const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes, suggestionId, userId, status }) => {
   const [suggestionStatus, setSuggestionStatus] = useState(status);
+  void suggestionStatus;
+
   const handleVote = async (voteType, currentLikes, currentDislikes) => {
     const payload = { userId, suggestionId, voteType };
     try {
@@ -31,7 +33,7 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
 
   const updateStatus = async (newStatus) => {
     try {
-      console.log(`📡 Updating status for suggestion ${suggestionId} → ${newStatus}`);
+      console.log(`Updating status for suggestion ${suggestionId} → ${newStatus}`);
       const response = await fetch("http://localhost:5000/api/update-status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,14 +42,14 @@ const SuggestionCard = ({ initial, date, suggestion, submitter, likes, dislikes,
 
       const data = await response.json();
       if (data.success) {
-        console.log("✅ Status updated:", newStatus);
+        console.log("Status updated:", newStatus);
         setSuggestionStatus(newStatus);
       } else {
-        alert("❌ Error: " + data.message);
+        alert("Error: " + data.message);
       }
     } catch (error) {
-      console.error("❌ Error updating status:", error);
-      alert("❌ Failed to update status.");
+      console.error("Error updating status:", error);
+      alert("Failed to update status.");
     }
   };
 

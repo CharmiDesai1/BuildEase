@@ -9,6 +9,7 @@ const DevelopersLandingPage = () => {
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const location = useLocation();
+  void filteredProjects;
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -16,9 +17,9 @@ const DevelopersLandingPage = () => {
 
     if (developerId) {
       localStorage.setItem("developer_id", developerId);
-      console.log("✅ Stored developer_id:", developerId);
+      console.log("Stored developer_id:", developerId);
     } else {
-      console.warn("⚠️ No developer_id found in query");
+      console.warn("No developer_id found in query");
     }
   }, [location]);
 

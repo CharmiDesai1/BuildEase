@@ -8,6 +8,7 @@ import { ScrollToTop } from "./ScrollToTop";
 function SuggestionPage() {
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
+  void filteredProjects;
 
   useEffect(() => {
     fetch("http://localhost:5000/api/projects")

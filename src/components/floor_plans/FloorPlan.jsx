@@ -2,23 +2,23 @@
 import React, { useState, useEffect } from "react";
 import styles from "./FloorPlan.module.css";
 import { Header } from "./Header"; 
-import { ProjectCard } from "./PropertyCard"; // ✅ Fixed import
+import { ProjectCard } from "./PropertyCard";
 import { SearchBar } from "./SearchBar";
 import { ScrollToTop } from "./BackToTopButton";
 
 function FloorPlan() {
   const [projects, setProjects] = useState([]);
-  const [filteredProjects, setFilteredProjects] = useState([]); // ✅ Kept but still unused
+  const [filteredProjects, setFilteredProjects] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:5000/projects")
       .then((response) => response.json())
       .then((data) => {
-        console.log("✅ Projects fetched:", data); // Debugging log
+        console.log("Projects fetched:", data);
         setProjects(data);
         setFilteredProjects(data);
       })
-      .catch((error) => console.error("❌ Error fetching projects:", error));
+      .catch((error) => console.error("Error fetching projects:", error));
   }, []);
   
 

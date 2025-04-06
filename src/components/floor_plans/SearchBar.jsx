@@ -9,11 +9,11 @@ export function SearchBar({ projects, setFilteredProjects }) {
     const query = event.target.value;
     setSelectedProject(query);
 
-    if (query === "" || query === "all") {  // ✅ Show all projects when no search
+    if (query === "" || query === "all") { 
       setFilteredProjects(projects);
     } else {
       const filtered = projects.filter((project) =>
-        project.project_name.toLowerCase().includes(query.toLowerCase()) // ✅ Fix: Use `project_name`
+        project.project_name.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredProjects(filtered);
     }
@@ -30,7 +30,7 @@ export function SearchBar({ projects, setFilteredProjects }) {
           value={selectedProject}
           onChange={handleSelection}
         >
-          <option value="all">Select a project (Show all)</option> {/* ✅ Default to show all */}
+          <option value="all">Select a project (Show all)</option>
           {projects.map((project, index) => (
             <option key={index} value={project.project_name}>
               {project.project_name}

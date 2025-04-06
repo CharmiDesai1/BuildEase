@@ -21,20 +21,20 @@ const TimelineChart = ({ title = "Property Timeline Chart", propertyId }) => {
 
   useEffect(() => {
     if (!propertyId) {
-      console.warn("⚠️ No property ID found.");
+      console.warn("No property ID found.");
       setLoading(false);
       return;
     }
 
     const fetchTimelineData = async () => {
       try {
-        console.log("📡 Fetching timeline data for propertyId:", propertyId);
+        console.log("Fetching timeline data for propertyId:", propertyId);
         const response = await fetch(`http://localhost:5000/api/timeline/${propertyId}`);
 
         if (!response.ok) throw new Error("Failed to fetch timeline data.");
 
         const data = await response.json();
-        console.log("✅ Timeline data received:", data);
+        console.log("Timeline data received:", data);
 
         const processedData = data.map((item) => ({
           date: item.date ? formatDate(item.date) : "TBD",
@@ -45,7 +45,7 @@ const TimelineChart = ({ title = "Property Timeline Chart", propertyId }) => {
         setTimelineItems(processedData);
         setLastUpdated(`Last updated ${new Date().toLocaleDateString("en-GB")}`);
       } catch (error) {
-        console.error("❌ Error fetching timeline data:", error);
+        console.error("Error fetching timeline data:", error);
       } finally {
         setLoading(false);
       }

@@ -14,6 +14,8 @@ export function OngoingProjects() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
+  void developerId;
+  void setSearchQuery;
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -93,7 +95,7 @@ export function OngoingProjects() {
                     window.open(`http://localhost:5000/download/${project.property_id}`, "_blank")
                   }
                 >
-                  DOWNLOAD
+                  DOWNLOAD FLOOR PLAN
                   <span className={styles.downloadIconContainer}>
                     <img src={downloadIcon} alt="Download Icon" className={styles.downloadIcon} />
                   </span>

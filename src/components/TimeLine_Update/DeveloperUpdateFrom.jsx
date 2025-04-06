@@ -5,8 +5,6 @@ import styles from "./DeveloperUpdateForm.module.css";
 const DeveloperUpdateForm = () => {
   const { propertyId } = useParams();
   const navigate = useNavigate();
-  const params = new URLSearchParams(window.location.search);
-  const developerId = params.get("developerId") || localStorage.getItem("developerId");
   const [projectName, setProjectName] = useState("");
   const [formData, setFormData] = useState({
     planning_permit_date: "",
@@ -18,7 +16,7 @@ const DeveloperUpdateForm = () => {
 
   useEffect(() => {
     if (!propertyId) {
-      console.warn("⚠️ No property ID found in URL.");
+      console.warn("No property ID found in URL.");
       return;
     }
     fetchProjectName(propertyId);
@@ -31,10 +29,10 @@ const DeveloperUpdateForm = () => {
       if (response.ok) {
         setProjectName(data.project_name);
       } else {
-        console.error("❌ Error fetching project name:", data.message);
+        console.error("Error fetching project name:", data.message);
       }
     } catch (error) {
-      console.error("❌ Failed to fetch project name:", error);
+      console.error("Failed to fetch project name:", error);
     }
   };
 
@@ -67,17 +65,18 @@ const DeveloperUpdateForm = () => {
       });
   
       if (response.ok) {
-        alert("✅ Project details updated successfully!");
+        alert("Project details updated successfully!");
         navigate(`/developers-landing-page`);
       } else {
-        alert("❌ Failed to update project details.");
+        alert("Failed to update project details.");
       }
     } catch (error) {
-      console.error("❌ Error updating project details:", error);
+      console.error("Error updating project details:", error);
     }
   };  
 
   return (
+    <div className={styles.container}>
     <div className={styles["form-container"]}>
       <h2>Update Project Timeline for <span className={styles.projectName}>{projectName || "Loading..."}</span></h2>
       <form onSubmit={handleSubmit}>
@@ -108,6 +107,7 @@ const DeveloperUpdateForm = () => {
 
         <button className={styles["submit-button"]} type="submit">Update Timeline</button>
       </form>
+    </div>
     </div>
   );
 };

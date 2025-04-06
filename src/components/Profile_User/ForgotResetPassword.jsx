@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import styles from "./ForgotResetPassword.module.css"; // Import CSS module
+import styles from "./ForgotResetPassword.module.css";
 
 const ForgotResetPassword = () => {
   const navigate = useNavigate();

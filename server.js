@@ -59,26 +59,26 @@ passport.use(
         const user = users.find(u => u.email === email);
 
         if (developer) {
-          console.log("✅ Developer Login Successful");
+          console.log("Developer Login Successful");
           return done(null, { email, developer_id: developer.developer_id, role: "developer" });
         } 
         else if (user) {
-          console.log("✅ User Login Successful");
+          console.log("User Login Successful");
           return done(null, { email, user_id: user.user_id, role: "user" });
         } 
         else {
-          console.log("🆕 New User - Registering as Regular User");
+          console.log("New User - Registering as Regular User");
           await dbOperation.googleLoginUser(displayName, email); 
 
           const newUser = await dbOperation.getUserByEmail(email);
           if (newUser && newUser.user_id) {
             return done(null, { email, user_id: newUser.user_id, role: "user" });
           } else {
-            return done(new Error("❌ Failed to retrieve new user ID"), null);
+            return done(new Error("Failed to retrieve new user ID"), null);
           }
         }
       } catch (error) {
-        console.error("❌ Google Authentication Error:", error);
+        console.error("Google Authentication Error:", error);
         return done(error, null);
       }
     }
@@ -94,10 +94,10 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
-    console.log("✅ User after login:", req.user);
+    console.log("User after login:", req.user);
 
     if (!req.user || (!req.user.user_id && !req.user.developer_id)) {
-      console.error("❌ Google Login Failed: Missing user ID");
+      console.error("Google Login Failed: Missing user ID");
       return res.redirect("http://localhost:3000/login?error=id_missing");
     }
 
@@ -156,25 +156,25 @@ app.post('/login-user', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-      console.log("📡 Login API called with:", email);
+      console.log("Login API called with:", email);
       const result = await dbOperation.loginUser(email, password);
 
       if (!result.success) {
-          console.error("❌ Login failed:", result.message);
+          console.error("Login failed:", result.message);
           return res.status(401).json({ message: result.message });
       }
 
-      console.log("✅ User Login Successful:", result.user);
+      console.log("User Login Successful:", result.user);
 
       if (!result.user || !result.user.user_id) {
-          console.error("❌ user_id is missing in backend response!");
+          console.error("user_id is missing in backend response!");
           return res.status(500).json({ message: "User ID missing in response" });
       }
 
       return res.status(200).json({ message: "Login successful", user: result.user });
 
   } catch (error) {
-      console.error("❌ Login Error (Full Error Log):", error);
+      console.error("Login Error (Full Error Log):", error);
       return res.status(500).json({ message: "Login failed", error: error.message });
   }
 });
@@ -194,7 +194,7 @@ app.get("/projects", async (req, res) => {
     const projects = await fetchProjects();
     res.json(projects);
   } catch (error) {
-    console.error("❌ Error fetching projects:", error);
+    console.error("Error fetching projects:", error);
     res.status(500).send("Internal Server Error: " + error.message);
   }
 });
@@ -207,7 +207,7 @@ app.get("/annotations/:property_id", async (req, res) => {
       return res.status(400).json({ error: "Property ID is required" });
     }
 
-    console.log(`📌 Fetching annotations for property_id: ${property_id}`);
+    console.log(`Fetching annotations for property_id: ${property_id}`);
 
     const pool = await sql.connect(dbConfig);
     const result = await pool
@@ -224,13 +224,13 @@ app.get("/annotations/:property_id", async (req, res) => {
       `);
 
     if (result.recordset.length === 0) {
-      console.log(`❌ No annotations found for property_id: ${property_id}`);
+      console.log(`No annotations found for property_id: ${property_id}`);
       return res.status(404).json({ message: "No annotations found for this property" });
     }
 
     res.json(result.recordset);
   } catch (error) {
-    console.error(`❌ Error fetching annotations for property ID: ${req.params.property_id}`, error.message);
+    console.error(`Error fetching annotations for property ID: ${req.params.property_id}`, error.message);
     res.status(500).json({ error: error.message });
   }
 });
@@ -240,7 +240,7 @@ app.get("/annotated/:property_id/:user_id/:file_name", async (req, res) => {
     const { property_id, user_id, file_name } = req.params;
     const imagePath = path.join(UPLOADS_DIR, property_id, user_id, file_name);
 
-    console.log(`🔍 Fetching file from database for: ${property_id}, ${user_id}, ${file_name}`);
+    console.log(`Fetching file from database for: ${property_id}, ${user_id}, ${file_name}`);
 
     const pool = await sql.connect(dbConfig);
     const result = await pool
@@ -257,7 +257,7 @@ app.get("/annotated/:property_id/:user_id/:file_name", async (req, res) => {
       `);
 
     if (result.recordset.length === 0 || !result.recordset[0].annotated_file_data) {
-      console.error(`❌ File not found in database.`);
+      console.error(`File not found in database.`);
       return res.status(404).json({ error: "File not found" });
     }
 
@@ -269,7 +269,7 @@ app.get("/annotated/:property_id/:user_id/:file_name", async (req, res) => {
 
     fs.ensureDirSync(path.dirname(imagePath));
     fs.writeFileSync(imagePath, fileData);
-    console.log(`✅ Updated file saved at: ${imagePath}`);
+    console.log(`Updated file saved at: ${imagePath}`);
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `inline; filename="${file_name}.pdf"`);
@@ -280,7 +280,7 @@ app.get("/annotated/:property_id/:user_id/:file_name", async (req, res) => {
     doc.end();
 
   } catch (error) {
-    console.error("❌ Error processing request:", error);
+    console.error("Error processing request:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -327,7 +327,7 @@ app.get("/annotated/:id", async (req, res) => {
     stream.on("finish", () => {
       res.setHeader("Content-Disposition", `inline; filename="annotated_${id}.pdf"`);
       res.setHeader("Content-Type", "application/pdf");
-      console.log(`✅ Sending PDF: ${annotated_floor_plan_file_name} (ID: ${id})`);
+      console.log(`Sending PDF: ${annotated_floor_plan_file_name} (ID: ${id})`);
 
       const fileStream = fs.createReadStream(pdfPath);
       fileStream.pipe(res);
@@ -337,7 +337,7 @@ app.get("/annotated/:id", async (req, res) => {
       });
     });
   } catch (error) {
-    console.error(`❌ Error fetching annotated image (ID: ${id}):`, error);
+    console.error(`Error fetching annotated image (ID: ${id}):`, error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
@@ -381,10 +381,10 @@ app.get("/download/:id", async (req, res) => {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Length", floor_plan_file_data.length);
 
-    console.log(`✅ Sending PDF: ${floor_plan_file_name} (ID: ${id})`);
+    console.log(`Sending PDF: ${floor_plan_file_name} (ID: ${id})`);
     res.send(floor_plan_file_data);
   } catch (error) {
-    console.error(`❌ Error fetching PDF (ID: ${req.params.id}):`, error);
+    console.error(`Error fetching PDF (ID: ${req.params.id}):`, error);
     res.status(500).send("Internal Server Error: " + error.message);
   }
 });
@@ -400,10 +400,10 @@ app.get("/brochure/:id", async (req, res) => {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Length", brochure_file_data.length);
 
-    console.log(`✅ Sending PDF: ${brochure_file_name} (ID: ${id})`);
+    console.log(`Sending PDF: ${brochure_file_name} (ID: ${id})`);
     res.send(brochure_file_data);
   } catch (error) {
-    console.error(`❌ Error fetching PDF (ID: ${req.params.id}):`, error);
+    console.error(`Error fetching PDF (ID: ${req.params.id}):`, error);
     res.status(500).send("Internal Server Error: " + error.message);
   }
 });
@@ -455,20 +455,20 @@ app.get("/user-properties/:userId", async (req, res) => {
       `);
 
     if (result.recordset.length === 0) {
-      console.warn(`⚠️ No properties found for user ${userId}`);
+      console.warn(`No properties found for user ${userId}`);
       return res.status(404).json({ message: "No properties found for this user." });
     }
 
     res.json(result.recordset);
   } catch (error) {
-    console.error("❌ Error fetching user properties:", error);
+    console.error("Error fetching user properties:", error);
     res.status(500).json({ message: "Internal Server Error: " + error.message });
   }
 });
 
 app.get("/download-property/:userId/:propertyId/:fileType", async (req, res) => {
   const { userId, propertyId, fileType } = req.params;
-  console.log(`📡 Open request received for user: ${userId}, property: ${propertyId}, fileType: ${fileType}`);
+  console.log(`Open request received for user: ${userId}, property: ${propertyId}, fileType: ${fileType}`);
 
   try {
     const pool = await sql.connect(dbConfig);
@@ -482,7 +482,7 @@ app.get("/download-property/:userId/:propertyId/:fileType", async (req, res) => 
       `);
 
     if (result.recordset.length === 0) {
-      console.error("❌ No file found for this property.");
+      console.error("No file found for this property.");
       return res.status(404).json({ message: "File not found." });
     }
 
@@ -491,7 +491,7 @@ app.get("/download-property/:userId/:propertyId/:fileType", async (req, res) => 
     const fileData = fileType === "floorplan" ? file.floor_plan_file_data : file.brochure_file_data;
 
     if (!fileData) {
-      console.error("❌ File data is missing or corrupted.");
+      console.error("File data is missing or corrupted.");
       return res.status(400).json({ message: "File data is missing or corrupted." });
     }
 
@@ -499,7 +499,7 @@ app.get("/download-property/:userId/:propertyId/:fileType", async (req, res) => 
     res.setHeader("Content-Type", "application/pdf");
     res.send(fileData);
   } catch (error) {
-    console.error("❌ Error retrieving file:", error);
+    console.error("Error retrieving file:", error);
     res.status(500).json({ message: "Server error while retrieving file." });
   }
 });
@@ -530,10 +530,10 @@ app.get("/api/suggestions", async (req, res) => {
         ORDER BY ps.id DESC
       `);
 
-    console.log("✅ Suggestions fetched:", result.recordset);
+    console.log("Suggestions fetched:", result.recordset);
     res.status(200).json(result.recordset);
   } catch (error) {
-    console.error("❌ Error fetching suggestions:", error);
+    console.error("Error fetching suggestions:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
@@ -554,7 +554,7 @@ app.get("/api/get-user/:userId", async (req, res) => {
 
     res.status(200).json(result.recordset[0]);
   } catch (error) {
-    console.error("❌ Error fetching user:", error);
+    console.error("Error fetching user:", error);
     res.status(500).json({ message: "Database error" });
   }
 });
@@ -562,10 +562,10 @@ app.get("/api/get-user/:userId", async (req, res) => {
 app.post("/api/vote", async (req, res) => {
   const { userId, suggestionId, voteType } = req.body;
 
-  console.log("📩 Received Vote API Request:", req.body);
+  console.log("Received Vote API Request:", req.body);
 
   if (!userId || !suggestionId || !voteType) {
-    console.error("❌ Missing required fields:", { userId, suggestionId, voteType });
+    console.error("Missing required fields:", { userId, suggestionId, voteType });
     return res.status(400).json({ message: "Missing required fields." });
   }
 
@@ -573,7 +573,7 @@ app.post("/api/vote", async (req, res) => {
     const result = await dbOperation.voteOnSuggestion(userId, suggestionId, voteType);
     res.json(result);
   } catch (error) {
-    console.error("❌ Vote API Error:", error);
+    console.error("Vote API Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
@@ -617,7 +617,7 @@ app.get("/api/floorplan/:propertyId", async (req, res) => {
     });
 
   } catch (error){
-    console.error("❌ Error fetching floor plan:", error);
+    console.error("Error fetching floor plan:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
@@ -675,7 +675,7 @@ app.get("/api/dev/get-user/:propertyId", async (req, res) => {
 
     res.json({ users: result.recordset });
   } catch (error) {
-    console.error("❌ Error fetching users:", error);
+    console.error("Error fetching users:", error);
     res.status(500).json({ error: "Database error" });
   }
 });
@@ -693,7 +693,7 @@ app.get("/api/dev/user-details/:userId", async (req, res) => {
     }
     res.json({ full_name: result.recordset[0].full_name });
   } catch (error) {
-    console.error("❌ Error fetching user details:", error);
+    console.error("Error fetching user details:", error);
     res.status(500).json({ error: "Database error" });
   }
 });
@@ -725,7 +725,7 @@ app.get("/api/dev/suggestions/:propertyId", async (req, res) => {
     
     res.json(result.recordset);
   } catch (error) {
-    console.error("❌ Error fetching suggestions:", error);
+    console.error("Error fetching suggestions:", error);
     res.status(500).json({ error: "Database error" });
   }
 });
@@ -748,10 +748,10 @@ app.post("/api/update-status", async (req, res) => {
         WHERE id = @suggestionId
       `);
 
-    console.log(`✅ Status updated for suggestion ID: ${suggestionId} → ${status}`);
+    console.log(`Status updated for suggestion ID: ${suggestionId} → ${status}`);
     res.status(200).json({ success: true, message: "Status updated successfully." });
   } catch (error) {
-    console.error("❌ Error updating status:", error);
+    console.error("Error updating status:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
@@ -829,7 +829,7 @@ app.get("/api/timeline/:propertyId", async (req, res) => {
 
       res.json(result.recordset);
   } catch (error) {
-    console.error("❌ Error fetching timeline data:", error);
+    console.error("Error fetching timeline data:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
@@ -853,7 +853,7 @@ app.get("/api/get-project-name", async (req, res) => {
 
     res.status(200).json({ project_name: result.recordset[0].project_name });
   } catch (error) {
-    console.error("❌ Error fetching project name:", error);
+    console.error("Error fetching project name:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
@@ -899,7 +899,7 @@ app.post("/api/update-timeline", async (req, res) => {
     res.status(200).json({ message: exists ? "Timeline updated successfully!" : "New timeline entry created!" });
 
   } catch (error) {
-    console.error("❌ Database error:", error);
+    console.error("Database error:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
@@ -990,14 +990,14 @@ app.post("/api/chat", async (req, res) => {
     };
 
     const response = await axios.post(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, requestPayload);
-    console.log("🔹 Gemini API Response:", response.data);
+    console.log("Gemini API Response:", response.data);
 
     botResponse = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "I'm unable to respond right now.";
-    botResponse = botResponse.split(". ").slice(0, 3).join(". ");
+    botResponse = botResponse.split(". ").slice(0, 2).join(". ");
 
     res.json({ reply: botResponse });
   } catch (error) {
-    console.error("❌ Gemini API Error:", error.response?.data || error.message);
+    console.error("Gemini API Error:", error.response?.data || error.message);
     res.status(500).json({ error: "AI service unavailable." });
   }
 });
@@ -1056,7 +1056,7 @@ app.get("/api/notifications/:userId", async (req, res) => {
 
     res.json(result.recordset);
   } catch (error) {
-    console.error("❌ Error fetching notifications:", error);
+    console.error("Error fetching notifications:", error);
     res.status(500).json({ error: "Failed to fetch notifications" });
   }
 });
@@ -1076,7 +1076,7 @@ app.get("/api/developer/:developerId", async (req, res) => {
 
     res.json(result.recordset[0]);
   } catch (error) {
-    console.error("❌ Error fetching developer:", error);
+    console.error("Error fetching developer:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -1128,7 +1128,7 @@ app.get("/api/notifications/developer/:developerId", async (req, res) => {
 
     res.json(result.recordset);
   } catch (error) {
-    console.error("❌ Error fetching developer notifications:", error);
+    console.error("Error fetching developer notifications:", error);
     res.status(500).json({ error: "Failed to fetch notifications" });
   }
 });
@@ -1196,7 +1196,7 @@ app.post("/api/users/update", async (req, res) => {
     }
     res.json({ message: "User updated successfully" });
   } catch (error) {
-    console.error("❌ Error updating user:", error);
+    console.error("Error updating user:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
@@ -1333,7 +1333,7 @@ app.post("/api/developers/update", async (req, res) => {
     }
     res.json({ message: "Developer updated successfully" });
   } catch (error) {
-    console.error("❌ Error updating developer:", error);
+    console.error("Error updating developer:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
@@ -1422,14 +1422,14 @@ app.get("/api/properties/:userId", async (req, res) => {
 
     res.json(result.recordset);
   } catch (error) {
-    console.error("❌ Error fetching properties:", error);
+    console.error("Error fetching properties:", error);
     res.status(500).json({ error: "Database error" });
   }
 });
 
 app.get("/api/property-id/:projectName", async (req, res) => {
   const projectName = decodeURIComponent(req.params.projectName);
-  console.log("🔍 Fetching property_id for:", projectName);
+  console.log("Fetching property_id for:", projectName);
 
   try {
     const pool = await sql.connect(dbConfig);
@@ -1442,7 +1442,7 @@ app.get("/api/property-id/:projectName", async (req, res) => {
 
     res.json({ property_id: result.recordset[0].property_id });
   } catch (error) {
-    console.error("❌ Error fetching property ID:", error);
+    console.error("Error fetching property ID:", error);
     res.status(500).json({ error: "Database error" });
   }
 });

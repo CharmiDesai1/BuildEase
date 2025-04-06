@@ -17,11 +17,11 @@ const EditProfile = () => {
     const storedDeveloperId = localStorage.getItem("developerId");
 
     if (!storedDeveloperId) {
-      console.error("❌ Developer ID not found in localStorage. Redirecting to login.");
+      console.error("Developer ID not found in localStorage. Redirecting to login.");
       return;
     }
 
-    console.log("✅ Developer ID retrieved in EditProfile:", storedDeveloperId);
+    console.log("Developer ID retrieved in EditProfile:", storedDeveloperId);
     setDeveloperId(storedDeveloperId);
     axios
       .get(`http://localhost:5000/api/developers/${storedDeveloperId}`)
@@ -33,7 +33,7 @@ const EditProfile = () => {
         });
       })
       .catch((error) => {
-        console.error("❌ Error fetching developer details:", error);
+        console.error("Error fetching developer details:", error);
       });
   }, []);
 
@@ -45,7 +45,7 @@ const EditProfile = () => {
     e.preventDefault();
 
     if (!developerId) {
-      console.error("❌ Cannot update profile: Developer ID is missing.");
+      console.error("Cannot update profile: Developer ID is missing.");
       return;
     }
 
@@ -57,10 +57,10 @@ const EditProfile = () => {
         phone: formData.phone.trim() !== "" ? formData.phone : null,
       });
 
-      console.log("✅ Profile updated:", response.data);
+      console.log("Profile updated:", response.data);
       navigate("/developers-landing-page");
     } catch (error) {
-      console.error("❌ Error updating profile:", error);
+      console.error("Error updating profile:", error);
     }
   };
 
