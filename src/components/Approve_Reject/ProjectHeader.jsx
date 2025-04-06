@@ -16,7 +16,7 @@ const ProjectHeader = () => {
 
     const fetchProjects = async () => {
       try {
-        console.log("📡 Fetching projects from: http://localhost:5000/api/projects");
+        console.log("Fetching projects from: http://localhost:5000/api/projects");
         const response = await axios.get("http://localhost:5000/api/projects");
   
         if (response.data.length > 0) {

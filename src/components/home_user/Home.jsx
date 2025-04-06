@@ -42,7 +42,7 @@ function Home() {
     const googleUserId = urlParams.get("userId");
   
     if (googleUserId) {
-      console.log("🔍 Google login detected, saving userId:", googleUserId);
+      console.log("Google login detected, saving userId:", googleUserId);
       localStorage.setItem("userId", googleUserId);
       storedUserId = googleUserId;
       window.history.replaceState(null, "", "/home-user-page");
