@@ -1,4 +1,5 @@
 body {
+  height: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
   background-color: #1a1a1a;
@@ -58,6 +59,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100vh; 
   padding: 0 20px;
   position: relative;
@@ -88,7 +90,7 @@ opacity: 0.95;
 .loginContainer {
   position: relative;
   width: 100%;
-  max-width: 500px; 
+  max-width: 500px;
   padding: 40px 20px;
   border-radius: 16px;
   border: 1px solid rgba(83, 76, 76, 1);
@@ -288,4 +290,11 @@ opacity: 0.95;
 .socialIcon {
   width: 24px;
   height: 24px;
+}
+
+.message {
+  font-size: 14px;
+  color: #d9534f;
+  margin-top: 10px;
+  white-space: pre-line;
 }

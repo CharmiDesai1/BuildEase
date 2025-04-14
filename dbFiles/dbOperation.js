@@ -18,8 +18,30 @@ const getDevelopers = async () => {
     }
 };
 
+const validatePassword = (password) => {
+  const minLength = 12;
+  const hasLowercase = /[a-z]/.test(password);
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasDigit = /\d/.test(password);
+  const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+  const lengthValid = password.length >= minLength;
+
+  const errors = [];
+
+  if (!lengthValid) errors.push(`Password must be at least ${minLength} characters long (currently ${password.length}).`);
+  if (!hasLowercase) errors.push('Password must include at least one lowercase letter.');
+  if (!hasUppercase) errors.push('Password must include at least one uppercase letter.');
+  if (!hasDigit) errors.push('Password must include at least one number.');
+  if (!hasSpecialChar) errors.push('Password must include at least one special character.');
+
+  if (errors.length > 0) {
+      throw new Error(errors.join(' '));
+  }
+};
+
 const insertDeveloper = async (fullName, email, password) => {
     try {
+        validatePassword(password);
         await poolConnect;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         let result = await pool.request()
@@ -96,19 +118,21 @@ const getUsers = async () => {
 };
 
 const insertUser = async (fullName, email, password) => {
-    try {
-        await poolConnect;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
-        let result = await pool.request()
-            .input('full_name', sql.VarChar(100), fullName)
-            .input('email', sql.VarChar(100), email)
-            .input('password_hash', sql.NVarChar(sql.MAX), hashedPassword)
-            .query(`INSERT INTO Users (full_name, email, password_hash) VALUES (@full_name, @email, @password_hash)`);
-        return result;
-    } catch (error) {
-        console.error('Insert User Error:', error);
-        throw error;
-    }
+  try {
+      validatePassword(password);
+      await poolConnect;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      let result = await pool.request()
+          .input('full_name', sql.VarChar(100), fullName)
+          .input('email', sql.VarChar(100), email)
+          .input('password_hash', sql.NVarChar(sql.MAX), hashedPassword)
+          .query(`INSERT INTO Users (full_name, email, password_hash) VALUES (@full_name, @email, @password_hash)`);
+      return result;
+
+  } catch (error) {
+      console.error('Insert User Error:', error);
+      throw error;
+  }
 };
 
 const googleLoginUser = async (displayName, email) => {

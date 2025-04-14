@@ -1252,9 +1252,33 @@ app.post("/api/users/verify-otp", (req, res) => {
   res.status(400).json({ message: "Invalid OTP" });
 });
 
+const validatePassword = (password) => {
+  const minLength = 12;
+  const hasLowercase = /[a-z]/.test(password);
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasDigit = /\d/.test(password);
+  const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+  const lengthValid = password.length >= minLength;
+
+  const errors = [];
+
+  if (!lengthValid) errors.push(`Password must be at least ${minLength} characters long (currently ${password.length}).`);
+  if (!hasLowercase) errors.push('Password must include at least one lowercase letter.');
+  if (!hasUppercase) errors.push('Password must include at least one uppercase letter.');
+  if (!hasDigit) errors.push('Password must include at least one number.');
+  if (!hasSpecialChar) errors.push('Password must include at least one special character.');
+
+  if (errors.length > 0) {
+    const error = new Error(errors.join(' '));
+    error.statusCode = 400;
+    throw error;
+  }
+};
+
 app.post("/api/users/reset-password", async (req, res) => {
   const { userId, newPassword } = req.body;
   try {
+    validatePassword(newPassword);
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     const pool = await sql.connect(dbConfig);
     await pool
@@ -1380,6 +1404,7 @@ app.post("/api/developers/verify-otp", (req, res) => {
 app.post("/api/developers/reset-password", async (req, res) => {
   const { developerId, newPassword } = req.body;
   try {
+    validatePassword(newPassword);
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     const pool = await sql.connect(dbConfig);
     await pool

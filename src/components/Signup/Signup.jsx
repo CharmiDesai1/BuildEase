@@ -7,6 +7,7 @@ import "./styles.css";
 
 export const Signup = () => {
   const navigate = useNavigate();
+  const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -21,6 +22,25 @@ export const Signup = () => {
     });
   };
 
+  const validatePasswordClient = (password) => {
+    const minLength = 12;
+    const hasLowercase = /[a-z]/.test(password);
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasDigit = /\d/.test(password);
+    const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+    const lengthValid = password.length >= minLength;
+  
+    const errors = [];
+  
+    if (!lengthValid) errors.push(`At least ${minLength} characters (currently ${password.length}).`);
+    if (!hasLowercase) errors.push("Include at least one lowercase letter.");
+    if (!hasUppercase) errors.push("Include at least one uppercase letter.");
+    if (!hasDigit) errors.push("Include at least one number.");
+    if (!hasSpecialChar) errors.push("Include at least one special character.");
+  
+    return errors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -28,14 +48,19 @@ export const Signup = () => {
       alert("All fields are required!");
       return;
     }
-
+    const validationErrors = validatePasswordClient(formData.password);
+    if (validationErrors.length > 0) {
+      setMessage("Password error:\n" + validationErrors.join(" "));
+      return;
+    }
     try {
-      const response = await axios.post("http://localhost:5000/signup", formData);
+      const response = await axios.post("http://localhost:5000/signup-user", formData);
+      console.log("Signup response:", response.data);
       alert("Signup Successful!");
       navigate("/developers-landing-page");
     } catch (error) {
-      console.error("Signup failed:", error);
-      alert("Signup Failed! Please try again.");
+      const errorMsg = error.response?.data?.message || "Error updating password";
+      setMessage(errorMsg);
     }
   };
 
@@ -75,6 +100,7 @@ export const Signup = () => {
               onChange={handleChange}
               required
             />
+            {message && <p className="message">{message}</p>}
           </div>
           <div className="loginActions">
             <button type="submit" className="loginButton">
